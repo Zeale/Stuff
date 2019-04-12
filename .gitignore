@@ -1,1 +1,4 @@
 /bin/
+/bld/**/*.exe
+/bld/**/*.jar
+/bld/**/*.ico
