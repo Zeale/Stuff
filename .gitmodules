@@ -1,3 +1,6 @@
 [submodule "libs/submodules/standard-console"]
 	path = libs/submodules/standard-console
 	url = https://github.com/Zeale/standard-console
+[submodule "libs/submodules/java-library"]
+	path = libs/submodules/java-library
+	url = https://github.com/Zeale/java-library/
