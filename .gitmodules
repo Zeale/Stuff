@@ -1,0 +1,3 @@
+[submodule "libs/submodules/standard-console"]
+	path = libs/submodules/standard-console
+	url = https://github.com/Zeale/standard-console
