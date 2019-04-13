@@ -2,3 +2,4 @@
 /bld/**/*.exe
 /bld/**/*.jar
 /bld/**/*.ico
+*.sed
