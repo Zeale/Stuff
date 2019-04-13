@@ -3,6 +3,7 @@ package zeale.apps.stuff;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class Launch extends Application {
 	public static void main(String[] args) {
@@ -17,6 +18,7 @@ public class Launch extends Application {
 		/// close exit primary-window
 		primaryStage.setOnCloseRequest(event -> Platform.exit());
 		primaryStage.show();
-		
+
+		new HomeWindow().display(primaryStage);
 	}
 }
