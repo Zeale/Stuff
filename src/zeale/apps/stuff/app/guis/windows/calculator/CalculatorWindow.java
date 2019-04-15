@@ -7,18 +7,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Accordion;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 
-public class CalculatorWindow extends Window {
+public final class CalculatorWindow extends Window {
 
 	private @FXML VBox leftAccordionWrapper;
 
-	private @FXML void init() {
+	private @FXML void initialize() {
 		StackPane.setAlignment(leftAccordionWrapper, Pos.CENTER_LEFT);
 	}
 
@@ -34,13 +33,13 @@ public class CalculatorWindow extends Window {
 
 	// TODO Add a checked exception for window loading failures.
 	@Override
-	protected void show(Stage stage, ApplicationProperties properties) throws RuntimeException {
+	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("CalculatorGUI.fxml"));
 		loader.setController(this);
 		try {
 			stage.setScene(new Scene(loader.load()));
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new WindowLoadFailureException("Failed to load the UI for the Calculator Window.", e);
 		}
 	}
 
