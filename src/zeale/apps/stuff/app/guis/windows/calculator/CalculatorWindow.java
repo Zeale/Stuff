@@ -5,20 +5,22 @@ import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 
 public final class CalculatorWindow extends Window {
 
-	private @FXML VBox leftAccordionWrapper;
+	private @FXML Button searchButton;
 
 	private @FXML void initialize() {
-		StackPane.setAlignment(leftAccordionWrapper, Pos.CENTER_LEFT);
+		ImageView searchIcon = new ImageView("/zeale/apps/stuff/rsrc/app/gui/windows/calculator/Search Icon.png");
+		searchIcon.setPreserveRatio(true);
+		searchIcon.setFitHeight(16);
+		searchButton.setGraphic(searchIcon);
 	}
 
 	private @FXML void buttonPushed(ActionEvent event) {
