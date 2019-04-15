@@ -29,9 +29,90 @@
 
 
 
-.root .tab-pane {
-	-fx-border-color: #161616;
-}
+/* Root */
 .root {
-	-fx-background-color: #2B2B2B;
+	-stuff-light: #2B2B2B;
+	-stuff-dark: #161616;
+	-fx-background-color: -stuff-light;
+	-fx-text-fill: white;
+	-fx-focus-color: transparent;
+}
+
+.text-field {
+	-fx-background-color: -stuff-dark;
+	-fx-border-radius: 0;
+	-fx-highlight-fill: gold;
+	-fx-highlight-text-fill: black;
+	-fx-text-fill: gold;
+}
+
+.accordion TitledPane {
+	-fx-animated: true;
+}
+
+.accordion TitledPane .title {
+	-fx-background-color: -stuff-dark;
+}
+
+.accordion TitledPane .title .text {
+	-fx-fill: gold;
+}
+
+.accordion TitledPane:expanded .title .text {
+	-fx-font-weight: bold;
+}
+
+.accordion TitledPane .content {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+
+
+
+/* Tab Pane */
+.tab-pane {
+	-fx-border-color: -stuff-dark;
+}
+
+.tab-pane:top .tab-header-area .tab-header-background {
+	-fx-background-color: -stuff-dark;
+}
+
+.tab-pane:top .tab-header-area .headers-region .tab {
+	-fx-background-color: black;
+}
+
+.tab-pane:top .tab-header-area .headers-region .tab .tab-container .focus-indicator {
+	-fx-border-color: transparent;
+}
+
+.tab-pane:top .tab-header-area .headers-region .tab .tab-container .tab-label {
+	-fx-text-fill: gold;
+}
+
+.tab-pane:top .tab-header-area .headers-region .tab:selected .tab-container .tab-label {
+	-fx-font-weight: bold;
+}
+
+
+
+/* Search Control - The accordion (wrapped in a VBox) on the left of the window. */
+#SearchControl {
+	-fx-border-color: transparent -stuff-dark transparent transparent;
+}
+
+#SearchControl #SearchButton {
+	-fx-background-color: transparent;
+}
+
+#SearchControl #SearchButton:hover {
+	-fx-background-color: -stuff-dark;
+}
+
+
+
+/* Navigation Control - The accordion on the right. */
+#NavigationControl {
+	-fx-border-color: transparent transparent transparent -stuff-dark;
 }
