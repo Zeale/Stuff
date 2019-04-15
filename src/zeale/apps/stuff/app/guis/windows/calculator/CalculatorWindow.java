@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
@@ -15,16 +16,27 @@ import zeale.apps.stuff.api.guis.windows.Window;
 public final class CalculatorWindow extends Window {
 
 	private @FXML Button searchButton;
+	private @FXML TextField inputField;
 
 	private @FXML void initialize() {
-		ImageView searchIcon = new ImageView("/zeale/apps/stuff/rsrc/app/gui/windows/calculator/Search Icon.png");
-		searchIcon.setPreserveRatio(true);
-		searchIcon.setFitHeight(16);
-		searchButton.setGraphic(searchIcon);
+
+		try {
+			ImageView searchIcon = new ImageView("/zeale/apps/stuff/rsrc/app/gui/windows/calculator/Search Icon.png");
+			searchIcon.setPreserveRatio(true);
+			searchIcon.setFitHeight(16);
+			searchButton.setGraphic(searchIcon);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	private @FXML void buttonPushed(ActionEvent event) {
-
+		Object source = event.getSource();
+		if (source instanceof Button) {
+			inputField.appendText(((Button) source).getText());
+		} else {
+			// TODO Print error to console.
+		}
 	}
 
 	@Override
