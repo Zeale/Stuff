@@ -40,6 +40,7 @@
 
 .text-field {
 	-fx-background-color: -stuff-dark;
+	-fx-background-radius: 0;
 	-fx-border-radius: 0;
 	-fx-highlight-fill: gold;
 	-fx-highlight-text-fill: black;
@@ -65,6 +66,10 @@
 .accordion TitledPane .content {
 	-fx-background-color: transparent;
 	-fx-border-color: transparent;
+}
+
+.scroll-pane, .scroll-pane .viewport {
+	-fx-background-color: transparent;
 }
 
 
@@ -104,6 +109,7 @@
 
 #SearchControl #SearchButton {
 	-fx-background-color: transparent;
+	-fx-background-radius: 0;
 }
 
 #SearchControl #SearchButton:hover {
