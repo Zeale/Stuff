@@ -47,14 +47,17 @@ public abstract class Window {
 	 * method is called more than once an exception will be thrown.
 	 * 
 	 * @param stage The {@link Stage} to show on.
+	 * @throws WindowLoadFailureException In case this window fails to show itself
+	 *                                    on the given {@link Stage}.
 	 */
-	public final void display(Stage stage) {
+	public final void display(Stage stage) throws WindowLoadFailureException {
 		display(stage, DEFAULT_APPLICATION_PROPERTIES);
 	}
 
 	private boolean called;
 
-	public final synchronized void display(Stage stage, ApplicationProperties properties) {
+	public final synchronized void display(Stage stage, ApplicationProperties properties)
+			throws WindowLoadFailureException {
 		if (called)
 			throw new RuntimeException("Cannot \"show\" a Window object twice.");
 		if (stage.getProperties().containsKey(STAGE_WINDOW_KEY)) {
@@ -65,5 +68,34 @@ public abstract class Window {
 		called = true;
 	}
 
-	protected abstract void show(Stage stage, ApplicationProperties properties);
+	public static class WindowLoadFailureException extends Exception {
+
+		/**
+		 * SUID
+		 */
+		private static final long serialVersionUID = 1L;
+
+		protected WindowLoadFailureException(String message, Throwable cause, boolean enableSuppression,
+				boolean writableStackTrace) {
+			super(message, cause, enableSuppression, writableStackTrace);
+		}
+
+		public WindowLoadFailureException() {
+		}
+
+		public WindowLoadFailureException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		public WindowLoadFailureException(String message) {
+			super(message);
+		}
+
+		public WindowLoadFailureException(Throwable cause) {
+			super(cause);
+		}
+
+	}
+
+	protected abstract void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException;
 }
