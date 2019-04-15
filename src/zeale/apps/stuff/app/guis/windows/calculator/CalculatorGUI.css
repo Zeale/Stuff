@@ -1,0 +1,37 @@
+/* Pop Buttons */
+.pop-button:armed.button {
+	-fx-border-color: black;
+	-fx-border-width: 2.0px 2.0px 0.0 0.0;
+	-fx-text-fill: #535353;
+	-fx-label-padding: 2.0px 2.0px 0.0 0.0;
+}
+
+.pop-button {
+	-fx-font-family: Consolas;
+	-fx-border-width: 2.0px;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+	-fx-border-color: black;
+	-fx-background-color: #00000015;
+}
+
+.pop-button.date-picker .date-picker-display-node {
+	-fx-font-family: Consolas;
+	-fx-border-width: 0.0;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+	-fx-background-color: #00000015;
+}
+
+.pop-button.button {
+	-fx-border-width: 0.0 0.0 2.0px 2.0px;
+}
+
+
+
+.root .tab-pane {
+	-fx-border-color: #161616;
+}
+.root {
+	-fx-background-color: #2B2B2B;
+}
