@@ -10,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-import jdk.nashorn.internal.ir.CallNode.EvalArgs;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 
@@ -35,6 +34,15 @@ public final class CalculatorWindow extends Window {
 		Object source = event.getSource();
 		if (source instanceof Button) {
 			inputField.appendText(((Button) source).getText());
+		} else {
+			// TODO Print error to console.
+		}
+	}
+
+	private @FXML void functionPushed(ActionEvent event) {
+		Object source = event.getSource();
+		if (source instanceof Button) {
+			inputField.appendText(((Button) source).getText() + "(");
 		} else {
 			// TODO Print error to console.
 		}

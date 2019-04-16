@@ -34,11 +34,11 @@
                            <content>
                               <ScrollPane fitToHeight="true" fitToWidth="true">
                                  <content>
-                                    <HBox alignment="CENTER">
+                                    <HBox alignment="CENTER" spacing="20.0">
                                        <children>
-                                          <StackPane minHeight="220.0" minWidth="150.0" HBox.hgrow="ALWAYS">
+                                          <StackPane minHeight="220.0" minWidth="150.0" style="-fx-border-color: transparent -stuff-dark transparent transparent;" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <GridPane maxHeight="160.0" maxWidth="160.0" StackPane.alignment="CENTER_RIGHT">
+                                                <GridPane maxHeight="160.0" maxWidth="160.0" StackPane.alignment="CENTER">
                                                   <columnConstraints>
                                                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -69,6 +69,9 @@
                                                       <Button disable="true" mnemonicParsing="false" styleClass="pop-button" text=" " GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                       <Button disable="true" mnemonicParsing="false" styleClass="pop-button" text=" " GridPane.columnIndex="3" GridPane.rowIndex="1" />
                                                    </children>
+                                                   <StackPane.margin>
+                                                      <Insets />
+                                                   </StackPane.margin>
                                                 </GridPane>
                                              </children>
                                           </StackPane>
@@ -130,7 +133,34 @@
                                           </StackPane>
                                           <StackPane minHeight="250.0" minWidth="150.0" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <Button mnemonicParsing="false" onAction="#clearInputField" styleClass="pop-button" text="Clear" StackPane.alignment="BOTTOM_RIGHT" />
+                                                <AnchorPane style="-fx-border-color: transparent transparent transparent -stuff-dark;">
+                                                   <children>
+                                                      <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <content>
+                                                            <GridPane alignment="TOP_CENTER">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                                                  <RowConstraints valignment="CENTER" vgrow="ALWAYS" />
+                                                               </rowConstraints>
+                                                               <children>
+                                                                  <Button mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="sec" GridPane.rowIndex="1" />
+                                                                  <Button mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="cos" GridPane.columnIndex="1" />
+                                                                  <Button mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="csc" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <Button mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="tan" GridPane.rowIndex="2" />
+                                                                  <Button mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="sin" />
+                                                                  <Button mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="cot" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                               </children>
+                                                            </GridPane>
+                                                         </content>
+                                                      </ScrollPane>
+                                                   </children>
+                                                </AnchorPane>
+                                                <Button mnemonicParsing="false" onAction="#clearInputField" styleClass="pop-button" text="Clear" StackPane.alignment="BOTTOM_CENTER" />
                                              </children>
                                           </StackPane>
                                        </children>
@@ -189,9 +219,6 @@
             <TitledPane animated="false" text="Calculus">
                <content>
                   <VBox>
-                     <children>
-                        <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" text="Button" textAlignment="CENTER" VBox.vgrow="ALWAYS" />
-                     </children>
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
