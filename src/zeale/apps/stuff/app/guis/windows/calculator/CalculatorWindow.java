@@ -56,7 +56,7 @@ public final class CalculatorWindow extends Window {
 
 	private @FXML void solve(ActionEvent event) {
 		try {
-			inputField.setText(Evaluator.solveToNumber(inputField.getText()).toPlainString());
+			inputField.setText(Evaluator.solveToString(inputField.getText()));
 		} catch (Exception e) {
 			inputField.setText("~~" + e.getMessage());
 		}
