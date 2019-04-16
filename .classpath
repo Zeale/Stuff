@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/standard-console"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Evaluator"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

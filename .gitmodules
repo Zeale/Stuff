@@ -4,3 +4,6 @@
 [submodule "libs/submodules/java-library"]
 	path = libs/submodules/java-library
 	url = https://github.com/Zeale/java-library/
+[submodule "libs/submodules/Evaluator"]
+	path = libs/submodules/Evaluator
+	url = https://github.com/Zeale/Evaluator/
