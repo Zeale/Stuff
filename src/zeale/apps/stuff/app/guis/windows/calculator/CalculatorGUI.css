@@ -63,6 +63,10 @@
 	-fx-fill: gold;
 }
 
+.accordion TitledPane .title:hover .text {
+	-fx-fill: red;
+}
+
 .accordion TitledPane:expanded .title .text {
 	-fx-font-weight: bold;
 }
@@ -75,7 +79,6 @@
 .scroll-pane, .scroll-pane .viewport {
 	-fx-background-color: transparent;
 }
-
 
 
 
@@ -102,6 +105,10 @@
 
 .tab-pane:top .tab-header-area .headers-region .tab:selected .tab-container .tab-label {
 	-fx-font-weight: bold;
+}
+
+.tab-pane:top .tab-header-area .headers-region .tab:hover .tab-container .tab-label {
+	-fx-text-fill: red;
 }
 
 
@@ -138,4 +145,8 @@
 
 #NavigationControl VBox .button .text {
 	-fx-fill: gold;
+}
+
+#NavigationControl VBox .button:hover .text {
+	-fx-fill: red;
 }
