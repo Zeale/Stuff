@@ -2,6 +2,8 @@ package zeale.apps.stuff.app.guis.windows.calculator;
 
 import java.io.IOException;
 
+import org.alixia.libs.evaluator.Evaluator;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -53,7 +55,11 @@ public final class CalculatorWindow extends Window {
 	}
 
 	private @FXML void solve(ActionEvent event) {
-		// TODO Solve problem.
+		try {
+			inputField.setText(Evaluator.solveToNumber(inputField.getText()).toPlainString());
+		} catch (Exception e) {
+			inputField.setText("~~" + e.getMessage());
+		}
 	}
 
 	@Override
