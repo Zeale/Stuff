@@ -1,27 +1,25 @@
 package zeale.apps.stuff.app.guis.windows;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import krow.fx.scene.HorizontalScrollBox;
 import krow.guis.PopupHelper;
 import main.alixia.javalibrary.javafx.tools.FXTools;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
+import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
 
 public class HomeWindow extends Window {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -42,14 +40,21 @@ public class HomeWindow extends Window {
 		centerer.getChildren().setAll(horizontalScrollBox);
 		FXTools.setAllAnchors(0d, centerer);
 
-		List<Circle> circles = new LinkedList<>();
-		for (int i = 0; i < 10; i++) {
-			Circle circle = new Circle(64, Color.hsb(Math.random() * 360, 1, 1));
-			circles.add(circle);
-			PopupHelper.applyInfoPopup(circle, PopupHelper.buildPopup(new Label("Test")).popup);
-		}
+		// Add items.
+		ImageView calculatorAppIcon = new ImageView(new Image(
+				"/zeale/apps/stuff/rsrc/app/guis/windows/calculator/PlusOrMinusSymbol.png", 128, 128, true, false));
+		calculatorAppIcon.setPickOnBounds(true);
+		PopupHelper.applyInstantInfoPopup(calculatorAppIcon, PopupHelper.buildPopup(new Label("Calculator")).popup);
+		calculatorAppIcon.setOnMouseClicked(event -> {
+			try {
+				new CalculatorWindow().display(stage);
+			} catch (WindowLoadFailureException e) {
+				// TODO Print to console.
+				e.printStackTrace();
+			}
+		});
 
-		horizontalScrollBox.getChildren().addAll(circles);
+		horizontalScrollBox.getChildren().addAll(calculatorAppIcon);
 
 		stage.setScene(new Scene(anchorPane));
 		stage.centerOnScreen();
