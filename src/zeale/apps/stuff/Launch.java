@@ -1,8 +1,11 @@
 package zeale.apps.stuff;
 
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import zeale.apps.stuff.api.installation.InstallationData;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow;
 
@@ -21,11 +24,18 @@ public class Launch extends Application {
 		primaryStage.setOnCloseRequest(event -> Platform.exit());
 		primaryStage.show();
 
-		if (getParameters().getNamed().containsKey("~install-cleanup")) {
-			// TODO Clean old directory.
+		Parameters args = getParameters();
+
+		if (args.getNamed().containsKey(InstallationData.INSTALLATION_CLEANUP_DIRECTIVE_ARGUMENT)) {
+			try {
+				new File(args.getNamed().get(InstallationData.INSTALLATION_CLEANUP_DIRECTIVE_ARGUMENT)).delete();
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
 		}
 
-		(!Stuff.PROPERTIES_FILE.exists() || getParameters().getUnnamed().contains("~install") ? new InstallSetupWindow()
+		(args.getUnnamed().contains(InstallationData.INSTALLATION_DIRECTIVE_ARGUMENT) ? new InstallSetupWindow()
 				: new HomeWindow()).display(primaryStage);
 	}
 }

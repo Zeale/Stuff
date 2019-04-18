@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
+import zeale.apps.stuff.api.installation.InstallationData;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class InstallSetupWindow extends Window {
 
@@ -41,16 +43,11 @@ public class InstallSetupWindow extends Window {
 	}
 
 	private static void copyInstall(File from, File to) throws IOException {
-		to.mkdirs();
-		if (!to.isDirectory())
-			throw new RuntimeException("The destination folder could not be created.");
-
 		copyDirectory(from, to);
 	}
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		// TODO Auto-generated method stub
 
 		stage.show();
 
@@ -91,6 +88,9 @@ public class InstallSetupWindow extends Window {
 					return;
 				running = true;
 				File to = new File(input.getText());
+				to.mkdirs();
+				if (!to.isDirectory())
+					throw new RuntimeException("The destination folder could not be created.");
 				if (!to.equals(Stuff.INSTALLATION_DIRECTORY)) {
 					try {
 						File currFile = new File(
@@ -102,22 +102,28 @@ public class InstallSetupWindow extends Window {
 						box.getChildren().remove(inputBox);
 						info.setText("Finished setting installation directory. Press continue to continue.");
 
-						continueButton.setOnAction(new EventHandler<ActionEvent>() {
-
-							@Override
-							public void handle(ActionEvent event) {
-								try {
-									Runtime.getRuntime().exec(currFile.getName() + " --~install-cleanup=\""
-											+ currFile.getAbsolutePath() + '"', null, to);
-									Platform.exit();
-								} catch (IOException e) {
-									// TODO Auto-generated catch block
-								}
+						continueButton.setOnAction(event1 -> {
+							try {
+								Runtime.getRuntime()
+										.exec(currFile.getName() + " "
+												+ InstallationData.INSTALLATION_CLEANUP_DIRECTIVE_ARGUMENT + "=\""
+												+ currFile.getAbsolutePath() + '"', null, to);
+								Platform.exit();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
 						});
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
+					}
+				} else {
+					try {
+						new HomeWindow().display(stage);
+					} catch (WindowLoadFailureException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
