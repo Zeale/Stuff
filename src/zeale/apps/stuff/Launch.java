@@ -5,7 +5,7 @@ import java.io.File;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import zeale.apps.stuff.api.installation.InstallationData;
+import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow;
 
@@ -26,16 +26,16 @@ public class Launch extends Application {
 
 		Parameters args = getParameters();
 
-		if (args.getNamed().containsKey(InstallationData.INSTALLATION_CLEANUP_DIRECTIVE_ARGUMENT)) {
+		if (args.getNamed().containsKey(ProgramArguments.INSTALLATION_CLEANUP)) {
 			try {
-				new File(args.getNamed().get(InstallationData.INSTALLATION_CLEANUP_DIRECTIVE_ARGUMENT)).delete();
+				new File(args.getNamed().get(ProgramArguments.INSTALLATION_CLEANUP)).delete();
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
 			}
 		}
 
-		(args.getUnnamed().contains(InstallationData.INSTALLATION_DIRECTIVE_ARGUMENT) ? new InstallSetupWindow()
+		(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow()
 				: new HomeWindow()).display(primaryStage);
 	}
 }

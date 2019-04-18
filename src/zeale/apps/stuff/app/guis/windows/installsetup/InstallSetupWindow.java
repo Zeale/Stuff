@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
-import zeale.apps.stuff.api.installation.InstallationData;
+import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class InstallSetupWindow extends Window {
@@ -105,9 +105,9 @@ public class InstallSetupWindow extends Window {
 						continueButton.setOnAction(event1 -> {
 							try {
 								Runtime.getRuntime()
-										.exec(currFile.getName() + " "
-												+ InstallationData.INSTALLATION_CLEANUP_DIRECTIVE_ARGUMENT + "=\""
-												+ currFile.getAbsolutePath() + '"', null, to);
+										.exec(currFile.getName() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
+												+ currFile.getAbsolutePath() + "\" "
+												+ ProgramArguments.INSTALLATION_STAGE_2, null, to);
 								Platform.exit();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
