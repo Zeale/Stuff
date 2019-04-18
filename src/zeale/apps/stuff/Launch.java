@@ -7,7 +7,8 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
-import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow;
+import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow1;
+import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow2;
 
 public class Launch extends Application {
 
@@ -35,7 +36,8 @@ public class Launch extends Application {
 			}
 		}
 
-		(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow()
-				: new HomeWindow()).display(primaryStage);
+		(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow1()
+				: args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_2) ? new InstallSetupWindow2()
+						: new HomeWindow()).display(primaryStage);
 	}
 }

@@ -25,12 +25,18 @@ import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
-public class InstallSetupWindow extends Window {
+public class InstallSetupWindow1 extends Window {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-
+		// Undo the modifications that this Window did to the Stage. (This doesn't
+		// really undo anything, it just sets values to the default. That's ok for now
+		// though.)
+		stage.setMinHeight(0);
+		stage.setMinWidth(0);
+		stage.setMaxHeight(Double.MAX_VALUE);
+		stage.setMaxWidth(Double.MAX_VALUE);
+		stage.setAlwaysOnTop(false);
 	}
 
 	private static void copyDirectory(File from, File to) throws IOException {
@@ -46,9 +52,11 @@ public class InstallSetupWindow extends Window {
 		copyDirectory(from, to);
 	}
 
+	private Stage stage;
+
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-
+		this.stage = stage;
 		stage.show();
 
 		Text info = new Text(
@@ -94,7 +102,7 @@ public class InstallSetupWindow extends Window {
 				if (!to.equals(Stuff.INSTALLATION_DIRECTORY)) {
 					try {
 						File currFile = new File(
-								InstallSetupWindow.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+								InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
 										.getAbsoluteFile();
 						Files.copy(currFile.toPath(), new File(to, currFile.getName()).toPath(),
 								StandardCopyOption.REPLACE_EXISTING);
