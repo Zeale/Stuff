@@ -4,8 +4,10 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
+import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow;
 
 public class Launch extends Application {
+
 	public static void main(String[] args) {
 		Platform.setImplicitExit(false);
 		launch(Launch.class, args);
@@ -19,6 +21,11 @@ public class Launch extends Application {
 		primaryStage.setOnCloseRequest(event -> Platform.exit());
 		primaryStage.show();
 
-		new HomeWindow().display(primaryStage);
+		if (getParameters().getNamed().containsKey("~install-cleanup")) {
+			// TODO Clean old directory.
+		}
+
+		(!Stuff.PROPERTIES_FILE.exists() || getParameters().getUnnamed().contains("~install") ? new InstallSetupWindow()
+				: new HomeWindow()).display(primaryStage);
 	}
 }
