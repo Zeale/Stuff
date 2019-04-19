@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import javax.swing.filechooser.FileSystemView;
 
@@ -17,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import mslinks.ShellLink;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.tools.console.api.texts.Text;
@@ -40,11 +38,12 @@ public class InstallSetupWindow2 extends Window {
 
 	private Stage stage;
 
-	private static void link(Path from, Path to) throws IOException {
-		File toFile = to.toFile();
-		toFile.getParentFile().mkdirs();// Make path if it doesn't already exist.
-		toFile.delete();// Delete the file if there's already something there for whatever reason.
+	private static void link(File from, File to) throws IOException {
+		to.getParentFile().mkdirs();// Make path if it doesn't already exist.
+		to.delete();// Delete the file if there's already something there for whatever reason.
 
+		ShellLink link = ShellLink.createLink(from.getAbsolutePath());
+		link.saveTo(to.getAbsolutePath());
 	}
 
 	@Override
@@ -63,17 +62,20 @@ public class InstallSetupWindow2 extends Window {
 			@Override
 			public void handle(ActionEvent event) {
 
-				// We have to use a shortcut to the program o
+				// We have to use a shortcut to the program, not a symlink or hardlink, as those
+				// make the program think it's currently running off of whatever location the
+				// link exists (and was called) at. For now we'll use a third party library,
+				// until I can painstakingly read the shelllink spec and write shelllinks out by
+				// hand.
 
 				START_MENU_BLOCK: if (startMenu.isSelected()) {
-					Path currProgram = new File(
+					File currProgram = new File(
 							InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
-									.getAbsoluteFile().toPath();
+									.getAbsoluteFile();
 
 					try {
 						link(currProgram,
-								Paths.get("C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Zeale/Stuff.exe")
-										.toAbsolutePath());
+								new File("C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Zeale/Stuff.lnk"));
 						break START_MENU_BLOCK;
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -81,8 +83,8 @@ public class InstallSetupWindow2 extends Window {
 					}
 
 					try {
-						link(currProgram, Paths.get(System.getenv("APPDATA"),
-								"Microsoft/Windows/Start Menu/Programs/Zeale/Stuff.exe"));
+						link(currProgram, new File(System.getenv("APPDATA"),
+								"Microsoft/Windows/Start Menu/Programs/Zeale/Stuff.lnk"));
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -90,13 +92,12 @@ public class InstallSetupWindow2 extends Window {
 				}
 
 				if (desktop.isSelected()) {
-					Path currProgram = new File(
+					File currProgram = new File(
 							InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
-									.getAbsoluteFile().toPath();
+									.getAbsoluteFile();
 
 					try {
-						link(currProgram,
-								new File(FileSystemView.getFileSystemView().getHomeDirectory(), "Stuff.exe").toPath());
+						link(currProgram, new File(FileSystemView.getFileSystemView().getHomeDirectory(), "Stuff.lnk"));
 					} catch (IOException e) {
 						// TODO: handle exception
 						e.printStackTrace();
