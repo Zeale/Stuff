@@ -3,3 +3,4 @@
 /bld/**/*.jar
 /bld/**/*.ico
 *.sed
+/libs/**/*.jar
