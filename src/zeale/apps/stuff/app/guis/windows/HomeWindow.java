@@ -1,11 +1,15 @@
 package zeale.apps.stuff.app.guis.windows;
 
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -34,6 +38,21 @@ public class HomeWindow extends Window {
 		centerer.setFillWidth(true);
 		centerer.setAlignment(Pos.CENTER);
 		HorizontalScrollBox horizontalScrollBox = new HorizontalScrollBox();
+		Glow hoverGlow = new Glow(1);
+		horizontalScrollBox.getChildren().addListener((ListChangeListener<Node>) c -> {
+			while (c.next())
+				if (c.wasAdded())
+					for (Node n1 : c.getAddedSubList()) {
+						n1.setOnMouseEntered(event1 -> n1.setEffect(hoverGlow));
+						n1.setOnMouseExited(event2 -> n1.setEffect(null));
+					}
+				else if (c.wasRemoved())
+					for (Node n1 : c.getRemoved()) {
+						n1.setOnMouseEntered(null);
+						n1.setOnMouseExited(null);
+					}
+
+		});
 		horizontalScrollBox.setNodeHeight(128);
 		horizontalScrollBox.setNodeWidth(128);
 		horizontalScrollBox.setAlignment(Pos.CENTER);
@@ -41,11 +60,18 @@ public class HomeWindow extends Window {
 		FXTools.setAllAnchors(0d, centerer);
 
 		// Add items.
-		ImageView calculatorAppIcon = new ImageView(new Image(
-				"/zeale/apps/stuff/rsrc/app/guis/windows/calculator/PlusOrMinusSymbol.png", 128, 128, true, false));
+
+		ImageView calculatorAppIcon = new ImageView(
+				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/calculator/Calculator.png", -1, 128, true, false));
+
+		calculatorAppIcon.setPreserveRatio(true);
+		calculatorAppIcon.setFitHeight(128);
 		calculatorAppIcon.setPickOnBounds(true);
-		PopupHelper.applyInstantInfoPopup(calculatorAppIcon, PopupHelper.buildPopup(new Label("Calculator")).popup);
-		calculatorAppIcon.setOnMouseClicked(event -> {
+		StackPane calculatorBox = new StackPane(calculatorAppIcon);
+		calculatorBox.setPrefSize(128, 128);
+
+		PopupHelper.applyInstantInfoPopup(calculatorBox, PopupHelper.buildPopup(new Label("Calculator")).popup);
+		calculatorBox.setOnMouseClicked(event -> {
 			try {
 				new CalculatorWindow().display(stage);
 			} catch (WindowLoadFailureException e) {
@@ -54,7 +80,7 @@ public class HomeWindow extends Window {
 			}
 		});
 
-		horizontalScrollBox.getChildren().addAll(calculatorAppIcon);
+		horizontalScrollBox.getChildren().addAll(calculatorBox);
 
 		stage.setScene(new Scene(anchorPane));
 		stage.centerOnScreen();
