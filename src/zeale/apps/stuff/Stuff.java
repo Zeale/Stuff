@@ -9,7 +9,8 @@ public class Stuff {
 	 * simply getting the program's working directory. Some sort of storage API will
 	 * need to be made later.
 	 */
-	private static final File INSTALLATION_DIRECTORY = new File("");
+	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
+			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat");
 
 	public static void main(String[] args) {
 		// The application can be launched from here, but this will just revert to the
