@@ -20,6 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
+<?import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="1300.0" pickOnBounds="false" stylesheets="@CalculatorGUI.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -63,6 +64,7 @@
                                                                   <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="(" GridPane.columnIndex="1" />
                                                                   <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=")" GridPane.columnIndex="2" />
                                                                   <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="!" />
+                                                                  <TaggedCalculatorButton GridPane.columnIndex="3" />
                                                                </children>
                                                                <StackPane.margin>
                                                                   <Insets />
@@ -178,18 +180,18 @@
                                                       </TextField>
                                                       <TilePane alignment="CENTER" hgap="20.0" prefTileHeight="50.0" prefTileWidth="50.0" vgap="20.0">
                                                          <children>
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="[" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="]" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="{" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="}" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&lt;" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&gt;" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&amp;" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&amp;&amp;" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="|" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="||" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=":" />
-                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="p" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Bracket" text="[" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Bracket" text="]" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Brace" text="{" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Brace" text="}" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Chevron" text="&lt;" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Chevron" text="&gt;" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Ampersand (Bitwise/Logical AND)" text="&amp;" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Double Ampersand (Bitwise/Logical AND)" text="&amp;&amp;" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Pipeline (Bitwise/Logical OR)" text="|" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Double Pipeline (Bitwise/Logical OR)" text="||" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Colon" text=":" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Letter P (Probability)" text="p" />
                                                          </children>
                                                       </TilePane>
                                                    </children>
