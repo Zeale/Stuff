@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
@@ -59,22 +60,9 @@
                                                                   <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
                                                                </rowConstraints>
                                                                <children>
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="[" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="}" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="(" GridPane.columnIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=":" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=")" GridPane.columnIndex="3" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="{" GridPane.rowIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="]" GridPane.columnIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&amp;" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="!" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="p" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="|" GridPane.rowIndex="3" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&amp;&amp;" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="||" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&lt;" GridPane.rowIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&gt;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <Button disable="true" mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=" " GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="(" GridPane.columnIndex="1" />
+                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=")" GridPane.columnIndex="2" />
+                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="!" />
                                                                </children>
                                                                <StackPane.margin>
                                                                   <Insets />
@@ -177,6 +165,42 @@
                                        </content>
                                     </Tab>
                                     <Tab text="Functions" />
+                                    <Tab text="Extended Functionality">
+                                       <content>
+                                          <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                                             <content>
+                                                <VBox spacing="30.0">
+                                                   <children>
+                                                      <TextField>
+                                                         <VBox.margin>
+                                                            <Insets left="20.0" right="20.0" />
+                                                         </VBox.margin>
+                                                      </TextField>
+                                                      <TilePane alignment="CENTER" hgap="20.0" prefTileHeight="50.0" prefTileWidth="50.0" vgap="20.0">
+                                                         <children>
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="[" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="]" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="{" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="}" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&lt;" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&gt;" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&amp;" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="&amp;&amp;" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="|" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="||" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=":" />
+                                                            <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="p" />
+                                                         </children>
+                                                      </TilePane>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="30.0" top="30.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                       </content>
+                                    </Tab>
                                  </tabs>
                                  <VBox.margin>
                                     <Insets />
