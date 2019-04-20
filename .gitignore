@@ -4,3 +4,4 @@
 /bld/**/*.ico
 *.sed
 /libs/**/*.jar
+TEMP~*.fxml
