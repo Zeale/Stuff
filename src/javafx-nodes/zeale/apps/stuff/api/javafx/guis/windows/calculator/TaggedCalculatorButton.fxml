@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton?>
-
-
-<fx:root type="TaggedCalculatorButton" onAction="#buttonPushed"
-	xmlns:fx="http://javafx.com/fxml/1"
-	xmlns="http://javafx.com/javafx/10.0.1">
-</fx:root>
