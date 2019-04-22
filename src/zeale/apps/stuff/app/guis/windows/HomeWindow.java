@@ -43,8 +43,16 @@ public class HomeWindow extends Window {
 			while (c.next())
 				if (c.wasAdded())
 					for (Node n1 : c.getAddedSubList()) {
-						n1.setOnMouseEntered(event1 -> n1.setEffect(hoverGlow));
-						n1.setOnMouseExited(event2 -> n1.setEffect(null));
+						n1.setOnMouseEntered(event1 -> {
+							n1.setEffect(hoverGlow);
+							n1.setScaleX(1.05);
+							n1.setScaleY(1.05);
+						});
+						n1.setOnMouseExited(event2 -> {
+							n1.setScaleX(1);
+							n1.setScaleY(1);
+							n1.setEffect(null);
+						});
 					}
 				else if (c.wasRemoved())
 					for (Node n1 : c.getRemoved()) {
