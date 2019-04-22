@@ -64,7 +64,6 @@
                                                                   <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="(" GridPane.columnIndex="1" />
                                                                   <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=")" GridPane.columnIndex="2" />
                                                                   <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="!" />
-                                                                  <TaggedCalculatorButton GridPane.columnIndex="3" />
                                                                </children>
                                                                <StackPane.margin>
                                                                   <Insets />
@@ -173,12 +172,12 @@
                                              <content>
                                                 <VBox spacing="30.0">
                                                    <children>
-                                                      <TextField>
+                                                      <TextField fx:id="extendedFunctionalitySearch">
                                                          <VBox.margin>
                                                             <Insets left="20.0" right="20.0" />
                                                          </VBox.margin>
                                                       </TextField>
-                                                      <TilePane alignment="CENTER" hgap="20.0" prefTileHeight="50.0" prefTileWidth="50.0" vgap="20.0">
+                                                      <TilePane fx:id="extendedFunctionalityTilePane" alignment="CENTER" hgap="20.0" prefTileHeight="50.0" prefTileWidth="50.0" vgap="20.0">
                                                          <children>
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Bracket" text="[" />
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Bracket" text="]" />
