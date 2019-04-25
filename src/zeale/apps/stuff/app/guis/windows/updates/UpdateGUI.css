@@ -1,0 +1,16 @@
+.scroll-pane, .scroll-pane > .viewport {
+	-fx-background-color: transparent;
+	-fx-border-color: transparent;
+}
+
+#UpdateList_ScrollPane {
+	-fx-border-width: 0 1 0 0;
+	-fx-border-color: -stuff-dark;
+	-fx-border-style: solid;
+}
+
+HBox > Text {
+	-fx-fill: white;
+	-fx-font-weight: bold;
+	-fx-font-size: 16px;
+}

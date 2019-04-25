@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <ScrollPane id="UpdateList_ScrollPane" fitToWidth="true" hbarPolicy="NEVER" stylesheets="@UpdateGUI.css" BorderPane.alignment="CENTER">
+         <content>
+            <VBox alignment="TOP_CENTER" minWidth="100.0" prefWidth="150.0">
+               <children>
+                  <HBox alignment="CENTER">
+                     <children>
+                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </left>
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+      <HBox alignment="CENTER_LEFT" maxHeight="100.0" minHeight="100.0" prefHeight="100.0" spacing="30.0" BorderPane.alignment="CENTER">
+         <children>
+            <ProgressIndicator progress="0.0" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+   </bottom>
+   <stylesheets>
+      <URL value="@../BasicStyles.css" />
+      <URL value="@UpdateGUI.css" />
+   </stylesheets>
+</BorderPane>
