@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Accordion?>
@@ -22,7 +23,7 @@
 <?import javafx.scene.text.Font?>
 <?import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="1300.0" pickOnBounds="false" stylesheets="@CalculatorGUI.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="1300.0" pickOnBounds="false" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
@@ -278,4 +279,8 @@
          </right>
       </BorderPane>
    </children>
+   <stylesheets>
+      <URL value="@../BasicStyles.css" />
+      <URL value="@CalculatorGUI.css" />
+   </stylesheets>
 </AnchorPane>

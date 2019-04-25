@@ -30,15 +30,6 @@
 
 
 
-/* Root */
-.root {
-	-stuff-light: #2B2B2B;
-	-stuff-dark: #161616;
-	-fx-background-color: -stuff-light;
-	-fx-text-fill: white;
-	-fx-focus-color: transparent;
-}
-
 .button {
 	-fx-cursor: hand;
 }
@@ -47,9 +38,9 @@
 	-fx-background-color: -stuff-dark;
 	-fx-background-radius: 0;
 	-fx-border-radius: 0;
-	-fx-highlight-fill: gold;
+	-fx-highlight-fill: -stuff-text-fill;
 	-fx-highlight-text-fill: black;
-	-fx-text-fill: gold;
+	-fx-text-fill: -stuff-text-fill;
 }
 
 .accordion TitledPane {
@@ -61,7 +52,7 @@
 }
 
 .accordion TitledPane .title .text {
-	-fx-fill: gold;
+	-fx-fill: -stuff-text-fill;
 }
 
 .accordion TitledPane .title:hover .text {
@@ -101,7 +92,7 @@
 }
 
 .tab-pane:top .tab-header-area .headers-region .tab .tab-container .tab-label {
-	-fx-text-fill: gold;
+	-fx-text-fill: -stuff-text-fill;
 }
 
 .tab-pane:top .tab-header-area .headers-region .tab:selected .tab-container .tab-label {
@@ -145,7 +136,7 @@
 }
 
 #NavigationControl VBox .button .text {
-	-fx-fill: gold;
+	-fx-fill: -stuff-text-fill;
 }
 
 #NavigationControl VBox .button:hover .text {
