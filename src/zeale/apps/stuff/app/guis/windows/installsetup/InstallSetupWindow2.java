@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import javax.swing.filechooser.FileSystemView;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -48,57 +50,69 @@ public class InstallSetupWindow2 extends Window {
 
 		Button continueButton = new Button("Continue");
 
-		continueButton.setOnAction(event -> {
+		continueButton.setOnAction(new EventHandler<ActionEvent>() {
 
-			// We have to use a shortcut to the program, not a symlink or hardlink, as those
-			// make the program think it's currently running off of whatever location the
-			// link exists (and was called) at. For now we'll use a third party library,
-			// until I can painstakingly read the shelllink spec and write shelllinks out by
-			// hand.
+			private volatile boolean running;
 
-			START_MENU_BLOCK: if (startMenu.isSelected()) {
-				File currProgram1 = new File(
-						InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
-								.getAbsoluteFile();
+			@Override
+			public synchronized void handle(ActionEvent event) {
+				if (running)
+					return;
+				running = true;
+
+				// We have to use a shortcut to the program, not a symlink or hardlink, as those
+				// make the program think it's currently running off of whatever location the
+				// link exists (and was called) at. For now we'll use a third party library,
+				// until I can painstakingly read the shelllink spec and write shelllinks out by
+				// hand.
+
+				START_MENU_BLOCK: if (startMenu.isSelected()) {
+					File currProgram1 = new File(
+							InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+									.getAbsoluteFile();
+
+					try {
+						link(currProgram1,
+								new File("C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Zeale/Stuff.lnk"));
+						break START_MENU_BLOCK;
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+					try {
+						link(currProgram1, new File(System.getenv("APPDATA"),
+								"Microsoft/Windows/Start Menu/Programs/Zeale/Stuff.lnk"));
+					} catch (IOException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+				}
+
+				if (desktop.isSelected()) {
+					File currProgram2 = new File(
+							InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+									.getAbsoluteFile();
+
+					try {
+						link(currProgram2,
+								new File(FileSystemView.getFileSystemView().getHomeDirectory(), "Stuff.lnk"));
+					} catch (IOException e3) {
+						// TODO: handle exception
+						e3.printStackTrace();
+					}
+				}
 
 				try {
-					link(currProgram1,
-							new File("C:/ProgramData/Microsoft/Windows/Start Menu/Programs/Zeale/Stuff.lnk"));
-					break START_MENU_BLOCK;
-				} catch (IOException e1) {
+					new HomeWindow().display(stage);
+				} catch (WindowLoadFailureException e4) {
 					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					e4.printStackTrace();
 				}
 
-				try {
-					link(currProgram1, new File(System.getenv("APPDATA"),
-							"Microsoft/Windows/Start Menu/Programs/Zeale/Stuff.lnk"));
-				} catch (IOException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
+				running = false;
+
 			}
-
-			if (desktop.isSelected()) {
-				File currProgram2 = new File(
-						InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
-								.getAbsoluteFile();
-
-				try {
-					link(currProgram2, new File(FileSystemView.getFileSystemView().getHomeDirectory(), "Stuff.lnk"));
-				} catch (IOException e3) {
-					// TODO: handle exception
-					e3.printStackTrace();
-				}
-			}
-
-			try {
-				new HomeWindow().display(stage);
-			} catch (WindowLoadFailureException e4) {
-				// TODO Auto-generated catch block
-				e4.printStackTrace();
-			}
-
 		});
 
 		VBox box = new VBox(20, prompt, checkBoxBox, continueButton);

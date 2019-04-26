@@ -39,19 +39,6 @@ public class InstallSetupWindow1 extends Window {
 		stage.setAlwaysOnTop(false);
 	}
 
-	private static void copyDirectory(File from, File to) throws IOException {
-		to.mkdirs();
-		for (File f : from.listFiles())
-			if (!f.isDirectory())
-				Files.copy(f.toPath(), new File(to, f.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-			else
-				copyDirectory(f, new File(to, f.getName()));
-	}
-
-	private static void copyInstall(File from, File to) throws IOException {
-		copyDirectory(from, to);
-	}
-
 	private Stage stage;
 
 	@Override
@@ -134,6 +121,7 @@ public class InstallSetupWindow1 extends Window {
 						e.printStackTrace();
 					}
 				}
+				running = false;
 			}
 
 		});
