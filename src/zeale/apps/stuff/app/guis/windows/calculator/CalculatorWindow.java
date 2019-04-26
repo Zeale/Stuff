@@ -87,6 +87,10 @@ public final class CalculatorWindow extends Window {
 		} else {
 			// TODO Print error to console.
 		}
+
+		int cp = inputField.getCaretPosition();
+		inputField.requestFocus();
+		inputField.positionCaret(cp);
 	}
 
 	private @FXML void functionPushed(ActionEvent event) {
