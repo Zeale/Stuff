@@ -192,6 +192,8 @@
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Double Pipeline (Bitwise/Logical OR)" text="||" />
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Colon" text=":" />
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Letter P (Probability)" text="p" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="True (Boolean Value)" text="true" />
+                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="False (Boolean Value)" text="false" />
                                                          </children>
                                                          <padding>
                                                             <Insets left="30.0" right="30.0" />
