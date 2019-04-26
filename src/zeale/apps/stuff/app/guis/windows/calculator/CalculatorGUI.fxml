@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
@@ -178,7 +178,7 @@
                                                             <Insets left="20.0" right="20.0" />
                                                          </VBox.margin>
                                                       </TextField>
-                                                      <TilePane fx:id="extendedFunctionalityTilePane" alignment="CENTER" hgap="20.0" prefTileHeight="50.0" prefTileWidth="50.0" vgap="20.0">
+                                                      <FlowPane fx:id="extendedFunctionalityFlowPane" alignment="TOP_CENTER" columnHalignment="CENTER" hgap="40.0" vgap="50.0">
                                                          <children>
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Bracket" text="[" />
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Bracket" text="]" />
@@ -193,7 +193,10 @@
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Colon" text=":" />
                                                             <TaggedCalculatorButton onAction="#buttonPushed" tag="Letter P (Probability)" text="p" />
                                                          </children>
-                                                      </TilePane>
+                                                         <padding>
+                                                            <Insets left="30.0" right="30.0" />
+                                                         </padding>
+                                                      </FlowPane>
                                                    </children>
                                                    <padding>
                                                       <Insets bottom="30.0" top="30.0" />

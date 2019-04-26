@@ -17,7 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
@@ -29,12 +29,12 @@ public final class CalculatorWindow extends Window {
 	private @FXML TextField inputField;
 
 	private @FXML TextField extendedFunctionalitySearch;
-	private @FXML TilePane extendedFunctionalityTilePane;
+	private @FXML Pane extendedFunctionalityFlowPane;
 
 	private @FXML void initialize() {
 
-		List<TaggedCalculatorButton> buttons = new ArrayList<>(extendedFunctionalityTilePane.getChildren().size());
-		for (Node n : extendedFunctionalityTilePane.getChildren())
+		List<TaggedCalculatorButton> buttons = new ArrayList<>(extendedFunctionalityFlowPane.getChildren().size());
+		for (Node n : extendedFunctionalityFlowPane.getChildren())
 			if (n instanceof TaggedCalculatorButton)
 				buttons.add((TaggedCalculatorButton) n);
 
@@ -48,7 +48,7 @@ public final class CalculatorWindow extends Window {
 			public synchronized void changed(ObservableValue<? extends String> observable, String oldValue,
 					String newValue) {
 				if (newValue.contains(oldValue) && newValue.length() > oldValue.length())
-					for (Iterator<Node> iterator = extendedFunctionalityTilePane.getChildren().iterator(); iterator
+					for (Iterator<Node> iterator = extendedFunctionalityFlowPane.getChildren().iterator(); iterator
 							.hasNext();) {
 						Node n = iterator.next();
 						if (n instanceof TaggedCalculatorButton
@@ -56,7 +56,7 @@ public final class CalculatorWindow extends Window {
 							iterator.remove();
 					}
 				else {
-					for (Iterator<Node> iterator = extendedFunctionalityTilePane.getChildren().iterator(); iterator
+					for (Iterator<Node> iterator = extendedFunctionalityFlowPane.getChildren().iterator(); iterator
 							.hasNext();) {
 						Node n = iterator.next();
 						if (n instanceof TaggedCalculatorButton)
@@ -64,7 +64,7 @@ public final class CalculatorWindow extends Window {
 					}
 					for (TaggedCalculatorButton tcb : buttons)
 						if (matches(newValue, tcb.getTag()))
-							extendedFunctionalityTilePane.getChildren().add(tcb);
+							extendedFunctionalityFlowPane.getChildren().add(tcb);
 				}
 
 			}
