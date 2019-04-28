@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public final class CalculatorWindow extends Window {
 
@@ -93,6 +94,15 @@ public final class CalculatorWindow extends Window {
 		inputField.positionCaret(cp);
 	}
 
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			new HomeWindow().display(stage);
+		} catch (WindowLoadFailureException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	private @FXML void functionPushed(ActionEvent event) {
 		Object source = event.getSource();
 		if (source instanceof Button) {
@@ -120,9 +130,12 @@ public final class CalculatorWindow extends Window {
 
 	}
 
+	private Stage stage;
+
 	// TODO Add a checked exception for window loading failures.
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
+		this.stage = stage;
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("CalculatorGUI.fxml"));
 		loader.setController(this);
 		try {
