@@ -105,6 +105,47 @@
 
 
 
+/* Menu Bar */
+.menu-bar {
+	-fx-background-color: -stuff-dark;
+}
+
+.menu-bar .container .menu .label {
+	-fx-text-fill: -stuff-text-fill;
+}
+
+.menu-bar .container {
+	-fx-spacing: 0;
+}
+
+.menu-bar .container .menu:hover {
+	-fx-background-color: -stuff-light;
+}
+.menu-bar .container .menu:showing {
+	-fx-background-color: -stuff-text-fill;
+}
+.menu-bar .container .menu:showing > .label {
+	-fx-text-fill: -stuff-dark;
+}
+
+.menu-bar .container .menu:showing .context-menu {
+	-fx-background-color: -stuff-dark;
+}
+
+.menu-bar .container .menu:showing .menu-item:hover,
+.menu-bar .container .menu:showing .menu-item:showing,
+.menu-bar .container .menu:showing .menu-item:focused {
+	/* :focused is needed bc if the cursor is moved outside of the menu, items which do not have submenus will have the default blue effect. The top level menu items don't suffer from this effect. /shrug */
+	-fx-background-color: -stuff-text-fill;
+}
+.menu-bar .container .menu:showing .menu-item:hover .label,
+.menu-bar .container .menu:showing .menu-item:showing .label,
+.menu-bar .container .menu:showing .menu-item:focused .label {
+	-fx-text-fill: -stuff-dark;
+}
+
+
+
 /* Search Control - The accordion (wrapped in a VBox) on the left of the window. */
 #SearchControl {
 	-fx-border-color: transparent -stuff-dark transparent transparent;
