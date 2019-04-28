@@ -107,8 +107,6 @@ public class InstallSetupWindow1 extends Window {
 								Platform.exit();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
-								info.setText(e.getMessage());
-								e.printStackTrace();
 							}
 						});
 
