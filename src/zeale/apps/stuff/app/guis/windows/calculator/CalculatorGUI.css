@@ -164,7 +164,7 @@
 
 /* Navigation Control - The accordion on the right. */
 #NavigationControl {
-	-fx-border-color: transparent transparent transparent -stuff-dark;
+	-fx-border-color: -stuff-dark transparent transparent -stuff-dark;
 }
 
 #NavigationControl VBox {
