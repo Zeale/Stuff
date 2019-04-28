@@ -24,12 +24,12 @@
     <runtimeBits>64/32</runtimeBits>
   </jre>
   <versionInfo>
-    <fileVersion>0.0.0.1</fileVersion>
-    <txtFileVersion>v0.0.0.1b0-nightly</txtFileVersion>
+    <fileVersion>0.0.0.2</fileVersion>
+    <txtFileVersion>v0.0.0.2b0-nightly</txtFileVersion>
     <fileDescription>Various tools and stuff. (Created by Zeale.)</fileDescription>
-    <copyright>© 2019, the Zeale.</copyright>
-    <productVersion>0.0.0.1</productVersion>
-    <txtProductVersion>v0.0.0.1b0-nightly</txtProductVersion>
+    <copyright>© 2019, Zeale.</copyright>
+    <productVersion>0.0.0.2</productVersion>
+    <txtProductVersion>v0.0.0.2b0-nightly</txtProductVersion>
     <productName>Stuff</productName>
     <companyName>Alixia</companyName>
     <internalName>Stuff</internalName>
