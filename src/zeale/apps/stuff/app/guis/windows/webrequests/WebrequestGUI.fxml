@@ -34,7 +34,7 @@
       </MenuBar>
    </top>
    <center>
-      <HBox spacing="1.0" BorderPane.alignment="CENTER">
+      <HBox spacing="1.0" style="-fx-background-color: -stuff-dark;" BorderPane.alignment="CENTER">
          <children>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">
               <tabs>
@@ -55,7 +55,7 @@
       </HBox>
    </center>
    <bottom>
-      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: -stuff-light; -fx-border-color: -stuff-dark;" BorderPane.alignment="CENTER" />
    </bottom>
    <stylesheets>
       <URL value="@../stylesheets/BasicStyles.css" />
