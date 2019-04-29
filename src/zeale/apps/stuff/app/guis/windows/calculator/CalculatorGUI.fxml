@@ -299,7 +299,7 @@
       </BorderPane>
    </children>
    <stylesheets>
-      <URL value="@../BasicStyles.css" />
+      <URL value="@../stylesheets/BasicStyles.css" />
       <URL value="@CalculatorGUI.css" />
    </stylesheets>
 </AnchorPane>
