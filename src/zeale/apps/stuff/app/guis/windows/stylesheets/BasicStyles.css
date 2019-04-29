@@ -89,7 +89,7 @@
 	-fx-background-color: -stuff-dark;
 }
 
-.menu-bar .container .menu .label {
+.menu-bar .container .menu > .label {
 	-fx-text-fill: -stuff-text-fill;
 }
 
