@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -56,4 +57,9 @@
    <bottom>
       <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </bottom>
+   <stylesheets>
+      <URL value="@../stylesheets/BasicStyles.css" />
+      <URL value="@../stylesheets/Pop%20Button.css" />
+      <URL value="@Webrequests.css" />
+   </stylesheets>
 </BorderPane>
