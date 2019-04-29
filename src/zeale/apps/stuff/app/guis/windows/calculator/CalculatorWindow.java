@@ -19,9 +19,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public final class CalculatorWindow extends Window {
 
@@ -91,6 +93,15 @@ public final class CalculatorWindow extends Window {
 		int cp = inputField.getCaretPosition();
 		inputField.requestFocus();
 		inputField.positionCaret(cp);
+	}
+
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private @FXML void functionPushed(ActionEvent event) {
