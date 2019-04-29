@@ -3,14 +3,28 @@
 	-stuff-light: #2B2B2B;
 	-stuff-dark: #161616;
 	-stuff-text-fill: gold;
+	-stuff-hover-fill: red;
 	-fx-background-color: -stuff-light;
-	-fx-text-fill: white;
+	-fx-text-fill: -stuff-text-fill;
 	-fx-focus-color: transparent;
+	
+	/* Override (some) Pop Button styles */
+	-pop-button--text-color: -stuff-text-fill;
+	-pop-button--clicked-text-color: -stuff-text-fill;
 }
 
-/* Button Hovering */
+.pop-button:hover.button, .pop-button:hover.menu-button > .label {
+	-fx-text-fill: -stuff-hover-fill;
+}
+
+/* Buttons */
 .button {
 	-fx-cursor: hand;
+}
+
+/* Texts */
+.text {
+	-fx-text-fill: -stuff-text-fill;
 }
 
 /* Text Fields */
@@ -37,7 +51,7 @@
 }
 
 .accordion TitledPane .title:hover .text {
-	-fx-fill: red;
+	-fx-fill: -stuff-hover-fill;
 }
 
 .accordion TitledPane:expanded .title .text {
@@ -80,7 +94,7 @@
 }
 
 .tab-pane:top .tab-header-area .headers-region .tab:hover .tab-container .tab-label {
-	-fx-text-fill: red;
+	-fx-text-fill: -stuff-hover-fill;
 }
 
 /* MenuBars */

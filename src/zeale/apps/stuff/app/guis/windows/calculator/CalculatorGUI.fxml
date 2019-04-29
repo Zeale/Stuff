@@ -299,8 +299,8 @@
       </BorderPane>
    </children>
    <stylesheets>
+      <URL value="@../stylesheets/Pop%20Button.css" />
       <URL value="@../stylesheets/BasicStyles.css" />
       <URL value="@CalculatorGUI.css" />
-      <URL value="@../stylesheets/Pop%20Button.css" />
    </stylesheets>
 </AnchorPane>
