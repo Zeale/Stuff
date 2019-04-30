@@ -3,3 +3,11 @@
 	-fx-border-width: 0;
 	-fx-background-color: -stuff-light;
 }
+
+#ErrorClearButton {
+	-fx-text-fill: firebrick;
+}
+
+#ErrorClearButton:hover {
+	-fx-text-fill: -stuff-hover-fill;
+}

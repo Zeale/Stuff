@@ -100,7 +100,7 @@
                         </StackPane>
                      </content>
                   </Tab>
-                  <Tab text="Result">
+                  <Tab text="Finalized Request">
                      <content>
                         <StackPane>
                            <children>
@@ -110,6 +110,23 @@
                               <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
                            </padding>
                         </StackPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Errors">
+                     <content>
+                        <VBox alignment="CENTER" spacing="15.0">
+                           <children>
+                              <TextArea fx:id="errorBox" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </TextArea>
+                              <Button id="ErrorClearButton" mnemonicParsing="false" onAction="#clearErrorLog" styleClass="pop-button" text="Clear" />
+                           </children>
+                           <padding>
+                              <Insets bottom="15.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                        </VBox>
                      </content>
                   </Tab>
               </tabs>

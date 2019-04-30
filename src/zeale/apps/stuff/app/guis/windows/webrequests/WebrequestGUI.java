@@ -57,11 +57,15 @@ public class WebrequestGUI extends Window {
 		}
 	}
 
-	private @FXML TextArea resultBox, bodyBox, rawBox;
+	private @FXML TextArea resultBox, bodyBox, rawBox, errorBox;
 	private @FXML WebView renderView;
 
 	private @FXML void send(ActionEvent e) {
+		// TODO Code
+	}
 
+	private @FXML void clearErrorLog(ActionEvent e) {
+		// TODO Code
 	}
 
 }
