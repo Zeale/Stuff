@@ -2,6 +2,7 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuButton?>
@@ -115,12 +116,7 @@
             </TabPane>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">
               <tabs>
-                <Tab text="Rendered">
-                     <content>
-                        <WebView fx:id="renderBox" prefHeight="200.0" prefWidth="200.0" />
-                     </content>
-                  </Tab>
-                <Tab text="Raw">
+                <Tab text="Response">
                      <content>
                         <StackPane>
                            <children>
@@ -131,13 +127,25 @@
                            </padding>
                         </StackPane>
                      </content></Tab>
+                <Tab text="Rendered">
+                     <content>
+                        <WebView fx:id="renderView" prefHeight="200.0" prefWidth="200.0" />
+                     </content>
+                  </Tab>
               </tabs>
             </TabPane>
          </children>
       </HBox>
    </center>
    <bottom>
-      <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: -stuff-light; -fx-border-color: -stuff-dark;" BorderPane.alignment="CENTER" />
+      <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: -stuff-light; -fx-border-color: -stuff-dark;" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" onAction="#send" styleClass="pop-button" text="Send">
+               <padding>
+                  <Insets bottom="30.0" left="54.7058824" right="54.7058824" top="30.0" />
+               </padding>
+            </Button>
+         </children></StackPane>
    </bottom>
    <stylesheets>
       <URL value="@../stylesheets/Pop%20Button.css" />

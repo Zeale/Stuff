@@ -7,7 +7,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
@@ -53,6 +55,13 @@ public class WebrequestGUI extends Window {
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the UI for the Web Request Window.", e);
 		}
+	}
+
+	private @FXML TextArea resultBox, bodyBox, rawBox;
+	private @FXML WebView renderView;
+
+	private @FXML void send(ActionEvent e) {
+
 	}
 
 }
