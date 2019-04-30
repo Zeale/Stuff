@@ -9,8 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class WebrequestGUI extends Window {
 
@@ -31,6 +33,15 @@ public class WebrequestGUI extends Window {
 		Object source = e.getSource();
 		if (source instanceof MenuItem)
 			requestDialog.setText(((MenuItem) source).getText());
+	}
+
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

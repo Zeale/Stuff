@@ -9,6 +9,7 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
@@ -25,19 +26,9 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu mnemonicParsing="false" text="Commands">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
             </items>
           </Menu>
         </menus>
@@ -96,16 +87,50 @@
                            </children>
                         </VBox>
                      </content></Tab>
+                  <Tab text="Body">
+                     <content>
+                        <StackPane>
+                           <children>
+                              <TextArea fx:id="bodyBox" />
+                           </children>
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                        </StackPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Result">
+                     <content>
+                        <StackPane>
+                           <children>
+                              <TextArea fx:id="resultBox" editable="false" />
+                           </children>
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                        </StackPane>
+                     </content>
+                  </Tab>
               </tabs>
             </TabPane>
             <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" HBox.hgrow="ALWAYS">
               <tabs>
                 <Tab text="Rendered">
                      <content>
-                        <WebView prefHeight="200.0" prefWidth="200.0" />
+                        <WebView fx:id="renderBox" prefHeight="200.0" prefWidth="200.0" />
                      </content>
                   </Tab>
-                <Tab text="Raw" />
+                <Tab text="Raw">
+                     <content>
+                        <StackPane>
+                           <children>
+                              <TextArea fx:id="rawBox" editable="false" />
+                           </children>
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                        </StackPane>
+                     </content></Tab>
               </tabs>
             </TabPane>
          </children>
