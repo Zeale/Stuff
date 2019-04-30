@@ -37,6 +37,15 @@ Text {
 	-fx-text-fill: -stuff-text-fill;
 }
 
+/* Text Areas */
+.text-area, .text-area .scroll-pane .viewport .content {
+	-fx-background-color: -stuff-dark;
+	-fx-border-radius: 0;
+	-fx-text-fill: -stuff-text-fill;
+	-fx-font-family: Consolas;
+	-fx-font-size: 12px;
+}
+
 /* Accordions */
 .accordion TitledPane {
 	-fx-animated: true;
