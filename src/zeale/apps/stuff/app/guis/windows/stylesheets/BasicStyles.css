@@ -23,8 +23,8 @@
 }
 
 /* Texts */
-.text {
-	-fx-text-fill: -stuff-text-fill;
+Text {
+	-fx-fill: -stuff-text-fill;
 }
 
 /* Text Fields */
