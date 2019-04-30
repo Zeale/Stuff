@@ -47,7 +47,7 @@
                               <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                            </padding>
                            <children>
-                              <TextField promptText="Request URL, (e.g. http://dusttoash.org)">
+                              <TextField fx:id="urlPrompt" promptText="Request URL, (e.g. http://dusttoash.org)">
                                  <tooltip>
                                     <Tooltip text="This is the request URL. It specifies where to send your request, how to send it, and what to request." />
                                  </tooltip>
@@ -79,10 +79,10 @@
                                           <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="PATCH" />
                                       </items>
                                     </MenuButton>
-                                    <TextField GridPane.columnIndex="1" />
-                                    <TextField fx:id="requestDialog" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Request Argument" GridPane.rowIndex="1" />
-                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField fx:id="userAgentPrompt" GridPane.columnIndex="1" />
+                                    <TextField fx:id="methodPrompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Parameters" GridPane.rowIndex="1" />
+                                    <TextField fx:id="parameterPrompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
                            </children>
@@ -104,7 +104,7 @@
                      <content>
                         <StackPane>
                            <children>
-                              <TextArea fx:id="resultBox" editable="false" />
+                              <TextArea fx:id="finalizedRequestBox" editable="false" />
                            </children>
                            <padding>
                               <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
@@ -137,7 +137,7 @@
                      <content>
                         <StackPane>
                            <children>
-                              <TextArea fx:id="rawBox" editable="false" />
+                              <TextArea fx:id="responseBox" editable="false" />
                            </children>
                            <padding>
                               <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
@@ -157,7 +157,7 @@
    <bottom>
       <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: -stuff-light; -fx-border-color: -stuff-dark;" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#send" styleClass="pop-button" text="Send">
+            <Button fx:id="sendButton" mnemonicParsing="false" onAction="#send" styleClass="pop-button" text="Send">
                <padding>
                   <Insets bottom="30.0" left="54.7058824" right="54.7058824" top="30.0" />
                </padding>
