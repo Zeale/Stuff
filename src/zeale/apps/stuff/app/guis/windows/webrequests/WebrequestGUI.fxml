@@ -6,6 +6,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
@@ -73,13 +74,22 @@
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User Agent" />
                                     <MenuButton mnemonicParsing="false" styleClass="pop-button" text="Method" GridPane.rowIndex="2">
                                       <items>
-                                        <MenuItem mnemonicParsing="false" text="Action 1" />
-                                        <MenuItem mnemonicParsing="false" text="Action 2" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectCustomRequest" text="Custom" />
+                                          <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="GET" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="POST" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="HEAD" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="DELETE" />
+                                        <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="PUT" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="CONNECT" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="OPTIONS" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="TRACE" />
+                                          <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="PATCH" />
                                       </items>
                                     </MenuButton>
                                     <TextField GridPane.columnIndex="1" />
-                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" GridPane.rowIndex="1" />
+                                    <TextField fx:id="requestDialog" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Request Argument" GridPane.rowIndex="1" />
                                     <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                  </children>
                               </GridPane>
