@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton;
@@ -96,7 +97,7 @@ public final class CalculatorWindow extends Window {
 
 	private @FXML void goHome(ActionEvent event) {
 		try {
-			new HomeWindow().display(stage);
+			Stuff.displayWindow(new HomeWindow());
 		} catch (WindowLoadFailureException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,12 +131,9 @@ public final class CalculatorWindow extends Window {
 
 	}
 
-	private Stage stage;
-
 	// TODO Add a checked exception for window loading failures.
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		this.stage = stage;
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("CalculatorGUI.fxml"));
 		loader.setController(this);
 		try {

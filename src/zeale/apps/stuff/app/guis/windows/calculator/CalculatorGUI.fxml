@@ -131,13 +131,13 @@
                                                             <Button mnemonicParsing="false" onAction="#solve" styleClass="pop-button" text="Solve" StackPane.alignment="BOTTOM_CENTER" />
                                                          </children>
                                                       </StackPane>
-                                                      <StackPane minHeight="200.0" minWidth="40.0" prefHeight="250.0" prefWidth="70.0" HBox.hgrow="ALWAYS">
+                                                      <StackPane minHeight="200.0" minWidth="150.0" prefHeight="250.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                                                          <children>
                                                             <AnchorPane style="-fx-border-color: transparent transparent transparent -stuff-dark;">
                                                                <children>
-                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                      <content>
-                                                                        <GridPane alignment="TOP_CENTER" minHeight="315.0" minWidth="175.0">
+                                                                        <GridPane alignment="TOP_CENTER">
                                                                            <columnConstraints>
                                                                               <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
                                                                               <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
@@ -299,7 +299,8 @@
       </BorderPane>
    </children>
    <stylesheets>
-      <URL value="@../BasicStyles.css" />
+      <URL value="@../stylesheets/Pop%20Button.css" />
+      <URL value="@../stylesheets/BasicStyles.css" />
       <URL value="@CalculatorGUI.css" />
    </stylesheets>
 </AnchorPane>
