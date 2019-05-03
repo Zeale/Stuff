@@ -17,11 +17,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.TilePane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public final class CalculatorWindow extends Window {
 
@@ -29,12 +33,12 @@ public final class CalculatorWindow extends Window {
 	private @FXML TextField inputField;
 
 	private @FXML TextField extendedFunctionalitySearch;
-	private @FXML TilePane extendedFunctionalityTilePane;
+	private @FXML Pane extendedFunctionalityFlowPane;
 
 	private @FXML void initialize() {
 
-		List<TaggedCalculatorButton> buttons = new ArrayList<>(extendedFunctionalityTilePane.getChildren().size());
-		for (Node n : extendedFunctionalityTilePane.getChildren())
+		List<TaggedCalculatorButton> buttons = new ArrayList<>(extendedFunctionalityFlowPane.getChildren().size());
+		for (Node n : extendedFunctionalityFlowPane.getChildren())
 			if (n instanceof TaggedCalculatorButton)
 				buttons.add((TaggedCalculatorButton) n);
 
@@ -48,7 +52,7 @@ public final class CalculatorWindow extends Window {
 			public synchronized void changed(ObservableValue<? extends String> observable, String oldValue,
 					String newValue) {
 				if (newValue.contains(oldValue) && newValue.length() > oldValue.length())
-					for (Iterator<Node> iterator = extendedFunctionalityTilePane.getChildren().iterator(); iterator
+					for (Iterator<Node> iterator = extendedFunctionalityFlowPane.getChildren().iterator(); iterator
 							.hasNext();) {
 						Node n = iterator.next();
 						if (n instanceof TaggedCalculatorButton
@@ -56,7 +60,7 @@ public final class CalculatorWindow extends Window {
 							iterator.remove();
 					}
 				else {
-					for (Iterator<Node> iterator = extendedFunctionalityTilePane.getChildren().iterator(); iterator
+					for (Iterator<Node> iterator = extendedFunctionalityFlowPane.getChildren().iterator(); iterator
 							.hasNext();) {
 						Node n = iterator.next();
 						if (n instanceof TaggedCalculatorButton)
@@ -64,7 +68,7 @@ public final class CalculatorWindow extends Window {
 					}
 					for (TaggedCalculatorButton tcb : buttons)
 						if (matches(newValue, tcb.getTag()))
-							extendedFunctionalityTilePane.getChildren().add(tcb);
+							extendedFunctionalityFlowPane.getChildren().add(tcb);
 				}
 
 			}
@@ -87,6 +91,19 @@ public final class CalculatorWindow extends Window {
 		} else {
 			// TODO Print error to console.
 		}
+
+		int cp = inputField.getCaretPosition();
+		inputField.requestFocus();
+		inputField.positionCaret(cp);
+	}
+
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private @FXML void functionPushed(ActionEvent event) {
@@ -98,11 +115,22 @@ public final class CalculatorWindow extends Window {
 		}
 	}
 
+	private @FXML void inputFieldKeyEvent(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER && inputField.getLength() != 0) {
+			solve();
+			inputField.positionCaret(inputField.getLength());
+		}
+	}
+
 	private @FXML void clearInputField(ActionEvent event) {
 		inputField.clear();
 	}
 
 	private @FXML void solve(ActionEvent event) {
+		solve();
+	}
+
+	private void solve() {
 		try {
 			inputField.setText(Evaluator.solveToString(inputField.getText()));
 		} catch (Exception e) {

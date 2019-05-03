@@ -23,7 +23,6 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.installation.ProgramArguments;
-import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class InstallSetupWindow1 extends Window {
 
@@ -37,19 +36,6 @@ public class InstallSetupWindow1 extends Window {
 		stage.setMaxHeight(Double.MAX_VALUE);
 		stage.setMaxWidth(Double.MAX_VALUE);
 		stage.setAlwaysOnTop(false);
-	}
-
-	private static void copyDirectory(File from, File to) throws IOException {
-		to.mkdirs();
-		for (File f : from.listFiles())
-			if (!f.isDirectory())
-				Files.copy(f.toPath(), new File(to, f.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-			else
-				copyDirectory(f, new File(to, f.getName()));
-	}
-
-	private static void copyInstall(File from, File to) throws IOException {
-		copyDirectory(from, to);
 	}
 
 	private Stage stage;
@@ -99,12 +85,14 @@ public class InstallSetupWindow1 extends Window {
 				to.mkdirs();
 				if (!to.isDirectory())
 					throw new RuntimeException("The destination folder could not be created.");
+				File currFile = new File(
+						InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+								.getAbsoluteFile();
 				if (!to.equals(Stuff.INSTALLATION_DIRECTORY)) {
 					try {
-						File currFile = new File(
-								InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
-										.getAbsoluteFile();
-						Files.copy(currFile.toPath(), new File(to, currFile.getName()).toPath(),
+
+						File executable = new File(to, currFile.getName());
+						Files.copy(currFile.toPath(), executable.toPath(),
 								StandardCopyOption.REPLACE_EXISTING);
 
 						box.getChildren().remove(inputBox);
@@ -113,13 +101,12 @@ public class InstallSetupWindow1 extends Window {
 						continueButton.setOnAction(event1 -> {
 							try {
 								Runtime.getRuntime()
-										.exec(currFile.getName() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
+										.exec(executable.getAbsolutePath() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
 												+ currFile.getAbsolutePath() + "\" "
 												+ ProgramArguments.INSTALLATION_STAGE_2, null, to);
 								Platform.exit();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace();
 							}
 						});
 
@@ -128,12 +115,17 @@ public class InstallSetupWindow1 extends Window {
 					}
 				} else {
 					try {
-						new HomeWindow().display(stage);
-					} catch (WindowLoadFailureException e) {
+						Runtime.getRuntime()
+								.exec(currFile.getName() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
+										+ currFile.getAbsolutePath() + "\" " + ProgramArguments.INSTALLATION_STAGE_2,
+										null, to);
+						Platform.exit();
+					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+				running = false;
 			}
 
 		});

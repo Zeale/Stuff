@@ -1,9 +1,0 @@
-/* Root */
-.root {
-	-stuff-light: #2B2B2B;
-	-stuff-dark: #161616;
-	-stuff-text-fill: gold;
-	-fx-background-color: -stuff-light;
-	-fx-text-fill: white;
-	-fx-focus-color: transparent;
-}

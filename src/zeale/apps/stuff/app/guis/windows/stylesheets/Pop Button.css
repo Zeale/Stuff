@@ -1,0 +1,70 @@
+/* Pop Buttons */
+
+/* Define Var Defaults */
+.root {
+	-pop-button--text-color: white;
+	-pop-button--border-color: black;
+	-pop-button--clicked-text-color: #535353;
+	-pop-button--background-color: #00000015;
+}
+
+/* Handle Clicking */
+.pop-button:armed.button, .pop-button:showing.menu-button {
+	-fx-border-color: -pop-button--border-color -pop-button--border-color transparent transparent;
+	-fx-border-width: 2;
+}
+
+.pop-button:armed.button, .pop-button:showing.menu-button, 
+.pop-button:showing.menu-button .label {
+	-fx-text-fill: -pop-button--clicked-text-color;
+}
+
+.pop-button:showing.menu-button .arrow {
+	-fx-rotate: 180;
+}
+
+/* Basic Styling */
+.pop-button {
+	-fx-font-family: Consolas;
+	-fx-border-width: 2.0px;
+	-fx-text-fill: -pop-button--text-color;
+	-fx-font-weight: bold;
+	-fx-border-color: -pop-button--border-color;
+	-fx-background-color: -pop-button--background-color;
+	-fx-font-size: 16px;
+	-fx-border-color: transparent transparent -pop-button--border-color -pop-button--border-color;
+	-fx-cursor: hand;
+}
+
+
+/*** Specific Nodes ***/
+
+
+/* DatePickers */
+.pop-button.date-picker .date-picker-display-node {
+	-fx-border-width: 0.0;
+	-fx-text-fill: -pop-button--text-color;
+	-fx-font-weight: bold;
+	-fx-background-color: -pop-button--background-color;
+}
+
+/* MenuButtons */
+.pop-button.menu-button .label {
+	-fx-text-fill: -pop-button--text-color;
+}
+
+.pop-button.menu-button .arrow {
+	-fx-background-color: black;
+}
+
+
+/* TODO: Fix the following. */
+/*
+.pop-button.menu-button .menu-item {
+	-fx-background-color: -pop-button--background-color;
+	-fx-text-fill: -pop-button--text-color;
+}
+
+.pop-button.menu-button .menu {
+	-fx-background-color: black;
+}*/
