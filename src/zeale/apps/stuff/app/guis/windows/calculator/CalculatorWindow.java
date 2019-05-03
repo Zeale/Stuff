@@ -17,6 +17,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -113,11 +115,22 @@ public final class CalculatorWindow extends Window {
 		}
 	}
 
+	private @FXML void inputFieldKeyEvent(KeyEvent event) {
+		if (event.getCode() == KeyCode.ENTER && inputField.getLength() != 0) {
+			solve();
+			inputField.positionCaret(inputField.getLength());
+		}
+	}
+
 	private @FXML void clearInputField(ActionEvent event) {
 		inputField.clear();
 	}
 
 	private @FXML void solve(ActionEvent event) {
+		solve();
+	}
+
+	private void solve() {
 		try {
 			inputField.setText(Evaluator.solveToString(inputField.getText()));
 		} catch (Exception e) {
