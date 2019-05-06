@@ -16,9 +16,11 @@ import javafx.stage.Stage;
 import krow.fx.scene.HorizontalScrollBox;
 import krow.guis.PopupHelper;
 import main.alixia.javalibrary.javafx.tools.FXTools;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
+import zeale.apps.stuff.app.guis.windows.updates.UpdateWindow;
 
 public class HomeWindow extends Window {
 
@@ -88,10 +90,28 @@ public class HomeWindow extends Window {
 				e.printStackTrace();
 			}
 		});
-		
-		// Update Application
 
-		horizontalScrollBox.getChildren().addAll(calculatorBox);
+		// Update Application
+		ImageView updateAppIcon = new ImageView(
+				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/updates/Update Icon.png", -1, 128, true, false));
+
+		updateAppIcon.setPreserveRatio(true);
+		updateAppIcon.setFitHeight(128);
+		updateAppIcon.setPickOnBounds(true);
+		StackPane updateBox = new StackPane(updateAppIcon);
+		updateBox.setPrefSize(128, 128);
+
+		PopupHelper.applyInstantInfoPopup(updateBox, PopupHelper.buildPopup(new Label("Updates")).popup);
+		updateBox.setOnMouseClicked(event -> {
+			try {
+				Stuff.displayWindow(new UpdateWindow());
+			} catch (WindowLoadFailureException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+
+		horizontalScrollBox.getChildren().addAll(calculatorBox, updateBox);
 
 		stage.setScene(new Scene(anchorPane));
 		stage.centerOnScreen();
