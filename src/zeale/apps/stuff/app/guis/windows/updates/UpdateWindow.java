@@ -1,7 +1,11 @@
 package zeale.apps.stuff.app.guis.windows.updates;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -34,8 +38,13 @@ public class UpdateWindow extends Window {
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		// TODO Auto-generated method stub
-
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateGUI.fxml"));
+		loader.setController(this);
+		try {
+			stage.setScene(new Scene(loader.load()));
+		} catch (IOException e) {
+			throw new WindowLoadFailureException("Failed to load the UI for the Updates application's window.", e);
+		}
 	}
 
 }

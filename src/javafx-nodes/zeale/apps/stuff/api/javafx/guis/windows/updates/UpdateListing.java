@@ -6,7 +6,6 @@ import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -45,20 +44,17 @@ public class UpdateListing extends HBox {
 
 		setStyle("-fx-border-width:0 0 1 0;-fx-border-color:-stuff-dark;");
 
-		icon.addListener(new ChangeListener<Image>() {
-
-			@Override
-			public void changed(ObservableValue<? extends Image> observable, Image oldValue, Image newValue) {
-				if (newValue == null) {
-					getChildren().remove(iconView);
-					iconView = null;
-				} else if (oldValue == null) {
-					(iconView = new ImageView(newValue)).setFitHeight(64);
-					iconView.setFitWidth(64);
-					getChildren().add(0, iconView);
-				} else {
-					iconView.setImage(newValue);
-				}
+		// Might want to not do this later.
+		icon.addListener((ChangeListener<Image>) (observable, oldValue, newValue) -> {
+			if (newValue == null) {
+				getChildren().remove(iconView);
+				iconView = null;
+			} else if (oldValue == null) {
+				(iconView = new ImageView(newValue)).setFitHeight(64);
+				iconView.setFitWidth(64);
+				getChildren().add(0, iconView);
+			} else {
+				iconView.setImage(newValue);
 			}
 		});
 

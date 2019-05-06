@@ -69,6 +69,7 @@ public class HomeWindow extends Window {
 
 		// Add items.
 
+		// Calculator Application
 		ImageView calculatorAppIcon = new ImageView(
 				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/calculator/Calculator.png", -1, 128, true, false));
 
@@ -87,6 +88,8 @@ public class HomeWindow extends Window {
 				e.printStackTrace();
 			}
 		});
+		
+		// Update Application
 
 		horizontalScrollBox.getChildren().addAll(calculatorBox);
 
