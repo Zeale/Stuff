@@ -15,6 +15,8 @@ import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow2;
 
 public class Stuff extends Application {
 
+	public static final String APPLICATION_VERSION = "0.2.0";
+
 	/**
 	 * The program's installation directory. This is laxly detected (as of now) by
 	 * simply getting the program's working directory. Some sort of storage API will

@@ -21,14 +21,14 @@
       </ScrollPane>
    </left>
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <AnchorPane fx:id="updatePanel" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
       <StackPane BorderPane.alignment="CENTER">
          <children>
             <HBox alignment="CENTER" maxHeight="100.0" minHeight="100.0" prefHeight="100.0" spacing="30.0" style="-fx-border-width: 1 0 0 0; -fx-border-color: -stuff-dark;">
                <children>
-                  <Text fill="#ff1100" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Auto Updates Coming Soon!!!" HBox.hgrow="ALWAYS" />
+                  <Text fx:id="statusText" fill="#ff1100" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Auto Updates Coming Soon!!!" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Current Status..." StackPane.alignment="TOP_LEFT" />
