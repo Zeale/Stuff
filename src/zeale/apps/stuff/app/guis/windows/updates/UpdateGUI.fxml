@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
-<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <left>
-      <ScrollPane id="UpdateList_ScrollPane" fitToWidth="true" hbarPolicy="NEVER" stylesheets="@UpdateGUI.css" BorderPane.alignment="CENTER">
+      <ScrollPane id="UpdateList_ScrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-border-width: 0 1 0 0;" stylesheets="@UpdateGUI.css" BorderPane.alignment="CENTER">
          <content>
             <VBox alignment="TOP_CENTER" minWidth="100.0" prefWidth="150.0">
                <children>
-                  <HBox alignment="CENTER">
+                  <HBox alignment="CENTER" onDragDetected="#updateSelected">
                      <children>
-                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
                      </children>
                   </HBox>
@@ -31,15 +34,30 @@
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
    <bottom>
-      <HBox alignment="CENTER_LEFT" maxHeight="100.0" minHeight="100.0" prefHeight="100.0" spacing="30.0" BorderPane.alignment="CENTER">
+      <StackPane BorderPane.alignment="CENTER">
          <children>
-            <ProgressIndicator progress="0.0" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Text" HBox.hgrow="ALWAYS" />
+            <HBox alignment="CENTER" maxHeight="100.0" minHeight="100.0" prefHeight="100.0" spacing="30.0" style="-fx-border-width: 1 0 0 0; -fx-border-color: -stuff-dark;">
+               <children>
+                  <Text fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Not Active..." HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Current Status..." StackPane.alignment="TOP_LEFT" />
          </children>
-      </HBox>
+      </StackPane>
    </bottom>
    <stylesheets>
-      <URL value="@../BasicStyles.css" />
+      <URL value="@../stylesheets/BasicStyles.css" />
       <URL value="@UpdateGUI.css" />
    </stylesheets>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Commands">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
 </BorderPane>
