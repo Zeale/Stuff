@@ -3,21 +3,22 @@ package zeale.apps.stuff.app.guis.windows.updates;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
@@ -41,58 +42,101 @@ public class UpdateWindow extends Window {
 
 	private @FXML void initialize() {
 		defaultText = statusText.getText();// Get text from FXML file.
+		refresh();
 	}
 
-	private void refresh() throws MalformedURLException, IOException {
-
-		try (Scanner scanner = new Scanner(new URL(updateRepository).openConnection().getInputStream())) {
-			statusText.setText("Querying repository for updates...");
-			String version = scanner.nextLine(), date = scanner.nextLine(), title = scanner.nextLine();
-			List<String> addtions = new LinkedList<>(), changes = new LinkedList<>(), removals = new LinkedList<>(),
-					fixes = new LinkedList<>(), information = new LinkedList<>();
-			while (scanner.hasNextLine()) {
-				String update = scanner.nextLine();
-				if (update.isEmpty())
-					continue;
-				// This can be updated later.
-				switch (update.charAt(0)) {
-				case '+':
-					addtions.add(update.substring(2));
-					break;
-				case '-':
-					removals.add(update.substring(2));
-					break;
-				case '~':
-					changes.add(update.substring(2));
-					break;
-				case '*':
-					fixes.add(update.substring(2));
-					break;
-				default:
-					information.add(update);
-				}
-
-			}
-
-			UpdateListing listing = new UpdateListing(title,
-					new Image("/zeale/apps/stuff/rsrc/app/guis/windows/updates/Update Icon.png", -1, 128, true, false));
-			// TODO Add a small selection API.
-			listing.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-				@Override
-				public void handle(MouseEvent event) {
-					if (event.getButton() == MouseButton.PRIMARY) {
-						TextFlow textBox = new TextFlow();
-						textBox.setTextAlignment(TextAlignment.CENTER);
-						updatePanel.getChildren().setAll(textBox);
-						
+	Thread queryThread = new Thread(new Runnable() {
+		@Override
+		public void run() {
+			try (Scanner scanner = new Scanner(new URL(updateRepository).openConnection().getInputStream())) {
+				Platform.runLater(() -> statusText.setText("Querying repository for updates..."));
+				String version = scanner.nextLine(), date = scanner.nextLine(), title = scanner.nextLine();
+				List<String> addtions = new LinkedList<>(), changes = new LinkedList<>(), removals = new LinkedList<>(),
+						fixes = new LinkedList<>(), information = new LinkedList<>();
+				while (scanner.hasNextLine()) {
+					String update = scanner.nextLine();
+					if (update.isEmpty())
+						continue;
+					// This can be updated later.
+					switch (update.charAt(0)) {
+					case '+':
+						addtions.add(update.substring(2));
+						break;
+					case '-':
+						removals.add(update.substring(2));
+						break;
+					case '~':
+						changes.add(update.substring(2));
+						break;
+					case '*':
+						fixes.add(update.substring(2));
+						break;
+					default:
+						information.add(update);
 					}
-				}
-			});
-		} finally {
-			statusText.setText(defaultText);
-		}
 
+				}
+
+				Platform.runLater(() -> {
+					UpdateListing listing = new UpdateListing(title, new Image(
+							"/zeale/apps/stuff/rsrc/app/guis/windows/updates/Update Icon.png", -1, 128, true, false));
+					// TODO Add a small selection API.
+					listing.setOnMouseClicked(event -> {
+						if (event.getButton() == MouseButton.PRIMARY) {
+							TextFlow textBox = new TextFlow();
+							textBox.setTextAlignment(TextAlignment.CENTER);
+							updatePanel.getChildren().setAll(textBox);
+
+							Text titleText = new Text(title + "\n\n"), versionText = new Text(version + " "),
+									dateText = new Text(date);
+							titleText.setFill(Color.WHITE);
+							titleText.setFont(Font.font(24));
+							versionText.setFill(Color.LIGHTBLUE);
+							versionText.setFont(Font.font(null, FontPosture.ITALIC, 18));
+							dateText.setFill(Color.WHITE);
+
+							textBox.getChildren().addAll(titleText, versionText, dateText);
+
+							class Printer {
+								void print(List<String> items, Color color, String prependedText) {
+									for (String s1 : items) {
+										Text text1 = new Text(prependedText + " " + s1 + "\n");
+										text1.setFill(color);
+										textBox.getChildren().add(text1);
+									}
+								}
+							}
+
+							Printer printer = new Printer();
+							printer.print(addtions, Color.GREEN, "+");
+							printer.print(fixes, Color.BLUE, "•");
+							printer.print(changes, Color.DARKORANGE, "~");
+							printer.print(removals, Color.FIREBRICK, "-");
+							printer.print(information, Color.BEIGE, "\uD83D\uDEC8");
+
+						}
+					});
+					updateSelectorBox.getChildren().add(listing);
+				});
+
+			} catch (MalformedURLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			} finally {
+				Platform.runLater(() -> statusText.setText(defaultText));
+				(queryThread = new Thread(this)).setDaemon(true);
+			}
+		}
+	});
+	{
+		queryThread.setDaemon(true);
+	}
+
+	private void refresh() {
+		queryThread.start();
 	}
 
 	private @FXML void goHome(ActionEvent e) {

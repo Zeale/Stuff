@@ -16,7 +16,7 @@
    <left>
       <ScrollPane id="UpdateList_ScrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-border-width: 0 1 0 0;" stylesheets="@UpdateGUI.css" BorderPane.alignment="CENTER">
          <content>
-            <VBox alignment="TOP_CENTER" minWidth="100.0" prefWidth="150.0" />
+            <VBox fx:id="updateSelectorBox" alignment="TOP_CENTER" minWidth="100.0" prefWidth="150.0" />
          </content>
       </ScrollPane>
    </left>
