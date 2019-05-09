@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import zeale.applicationss.notesss.utilities.Utilities;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
@@ -84,11 +85,12 @@ public class UpdateWindow extends Window {
 					listing.setOnMouseClicked(event -> {
 						if (event.getButton() == MouseButton.PRIMARY) {
 							TextFlow textBox = new TextFlow();
-							textBox.setTextAlignment(TextAlignment.CENTER);
+							Utilities.setAllAnchors(20d, textBox);
 							updatePanel.getChildren().setAll(textBox);
 
 							Text titleText = new Text(title + "\n\n"), versionText = new Text(version + " "),
-									dateText = new Text(date);
+									dateText = new Text(date + "\n\n\n\n");
+							titleText.setTextAlignment(TextAlignment.CENTER);
 							titleText.setFill(Color.WHITE);
 							titleText.setFont(Font.font(24));
 							versionText.setFill(Color.LIGHTBLUE);
