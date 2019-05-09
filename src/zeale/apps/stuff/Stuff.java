@@ -4,6 +4,7 @@ import java.io.File;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
@@ -12,8 +13,22 @@ import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow1;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow2;
+import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class Stuff extends Application {
+
+	private static final PhoenixReference<Image> windowIcon = new PhoenixReference<Image>() {
+		@Override
+		protected Image generate() {
+			return new Image("zeale/apps/stuff/rsrc/app/guis/appicon.png");
+		}
+	};
+
+	public static Stage makeStage() {
+		Stage stage = new Stage();
+		stage.getIcons().add(windowIcon.get());
+		return stage;
+	}
 
 	/**
 	 * The program's installation directory. This is laxly detected (as of now) by
@@ -40,7 +55,7 @@ public class Stuff extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		stage = primaryStage;
+		(stage = primaryStage).getIcons().add(windowIcon.get());
 		// When the primary window is closed, we shut down the application. (This
 		// behavior is very likely to change later.
 
