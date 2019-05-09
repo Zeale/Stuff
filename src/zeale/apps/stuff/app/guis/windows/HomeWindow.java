@@ -19,6 +19,7 @@ import main.alixia.javalibrary.javafx.tools.FXTools;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
 
 public class HomeWindow extends Window {
@@ -84,8 +85,8 @@ public class HomeWindow extends Window {
 			try {
 				new CalculatorWindow().display(stage);
 			} catch (WindowLoadFailureException e) {
-				// TODO Print to console.
-				e.printStackTrace();
+				Logging.err("Failed to open the Calculator Window...\n");
+				Logging.err(e);
 			}
 		});
 

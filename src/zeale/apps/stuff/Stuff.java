@@ -10,6 +10,7 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.installation.ProgramArguments;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow1;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow2;
@@ -85,11 +86,13 @@ public class Stuff extends Application {
 		Parameters args = getParameters();
 
 		if (args.getNamed().containsKey(ProgramArguments.INSTALLATION_CLEANUP)) {
+			File file = new File(args.getNamed().get(ProgramArguments.INSTALLATION_CLEANUP));
 			try {
-				new File(args.getNamed().get(ProgramArguments.INSTALLATION_CLEANUP)).delete();
+				file.delete();
 			} catch (Exception e) {
-				// TODO: handle exception
 				e.printStackTrace();
+				Logging.wrn("Failed to delete temporary files needed for installation.");
+				Logging.wrn("File location: " + file);
 			}
 		}
 
