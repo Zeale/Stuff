@@ -19,7 +19,7 @@ import zeale.apps.tools.console.std.StandardConsole.StandardConsoleView;
 
 public class Stuff extends Application {
 
-	private static final StandardConsole PROGRAM_CONSOLE = new StandardConsole();
+	public static final StandardConsole PROGRAM_CONSOLE = new StandardConsole();
 
 	private static final PhoenixReference<Image> windowIcon = new PhoenixReference<Image>() {
 		@Override
