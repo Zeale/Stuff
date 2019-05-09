@@ -76,52 +76,12 @@ public class WebrequestGUI extends Window {
 
 		finalizedRequestBox.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
 
-			private boolean sendable = true;
-
-			private String blockSend() {
-				WebrequestGUI.this.sendable.set(sendable = false);
-				return "???";
-			}
-
-			private void unblockSend() {
-				if (sendable)
-					WebrequestGUI.this.sendable.set(true);
-			}
-
 			@Override
 			public String call() throws Exception {
-				sendable = true;
-				synchronized (WebrequestGUI.this) {
-
-					// Request
-					String txt = methodPrompt.getText();
-					if (txt.isEmpty())
-						txt = blockSend();
-					else
-						for (char c : txt.toCharArray())
-							if (Character.isWhitespace(c)) {
-								txt = blockSend();
-								break;
-							}
-					finalizedRequestBox.setText(txt + " HTTP/1.1");
-
-					// TODO Move this stuff to methods.
-					//Query (either 
-					String postContent = null;
-
-					try {
-						URL url = new URL(urlPrompt.getText());
-						finalizedRequestBox.appendText(url.getPath());
-						if (txt.equals("GET"))
-							finalizedRequestBox.appendText(url.getQuery());
-						else
-							postContent = url.getQuery();
-					} catch (Exception e) {
-						finalizedRequestBox.appendText(blockSend());
-					}
-
-					unblockSend();
-
+				StringBuilder request = new StringBuilder();
+				request.append(methodPrompt.getText());
+				if (!urlPrompt.getText().isEmpty()) {
+					
 				}
 				return null;
 			}

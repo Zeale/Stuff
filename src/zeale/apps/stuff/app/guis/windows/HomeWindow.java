@@ -88,6 +88,9 @@ public class HomeWindow extends Window {
 			}
 		});
 
+		ImageView webRequestAppIcon = new ImageView(
+				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/Browser.png", -1, 128, true, false));
+
 		horizontalScrollBox.getChildren().addAll(calculatorBox);
 
 		stage.setScene(new Scene(anchorPane));
