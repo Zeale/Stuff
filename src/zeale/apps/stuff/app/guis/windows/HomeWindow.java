@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import krow.fx.scene.HorizontalScrollBox;
 import krow.guis.PopupHelper;
 import main.alixia.javalibrary.javafx.tools.FXTools;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
@@ -76,7 +77,7 @@ public class HomeWindow extends Window {
 		calculatorAppIcon.setFitHeight(128);
 		calculatorAppIcon.setPickOnBounds(true);
 		StackPane calculatorBox = new StackPane(calculatorAppIcon);
-		calculatorBox.setPrefSize(128, 128);
+		calculatorBox.setMinSize(128, 128);
 
 		PopupHelper.applyInstantInfoPopup(calculatorBox, PopupHelper.buildPopup(new Label("Calculator")).popup);
 		calculatorBox.setOnMouseClicked(event -> {
@@ -88,7 +89,18 @@ public class HomeWindow extends Window {
 			}
 		});
 
-		horizontalScrollBox.getChildren().addAll(calculatorBox);
+		ImageView consoleIcon = new ImageView(
+				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", -1, 128, true, false));
+		consoleIcon.setPreserveRatio(true);
+		consoleIcon.setFitHeight(128);
+		consoleIcon.setPickOnBounds(true);
+		StackPane consoleBox = new StackPane(consoleIcon);
+		consoleBox.setMinSize(128, 128);
+
+		PopupHelper.applyInstantInfoPopup(consoleBox, PopupHelper.buildPopup(new Label("Console")).popup);
+		consoleBox.setOnMouseClicked(event -> Stuff.displayConsole());
+
+		horizontalScrollBox.getChildren().addAll(calculatorBox, consoleBox);
 
 		stage.setScene(new Scene(anchorPane));
 		stage.centerOnScreen();
