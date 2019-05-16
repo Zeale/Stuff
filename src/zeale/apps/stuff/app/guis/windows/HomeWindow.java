@@ -1,6 +1,8 @@
 package zeale.apps.stuff.app.guis.windows;
 
 import javafx.collections.ListChangeListener;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -16,9 +18,12 @@ import javafx.stage.Stage;
 import krow.fx.scene.HorizontalScrollBox;
 import krow.guis.PopupHelper;
 import main.alixia.javalibrary.javafx.tools.FXTools;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
+import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestGUI;
 
 public class HomeWindow extends Window {
 
@@ -69,6 +74,7 @@ public class HomeWindow extends Window {
 
 		// Add items.
 
+		// Calculator
 		ImageView calculatorAppIcon = new ImageView(
 				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/calculator/Calculator.png", -1, 128, true, false));
 
@@ -76,22 +82,49 @@ public class HomeWindow extends Window {
 		calculatorAppIcon.setFitHeight(128);
 		calculatorAppIcon.setPickOnBounds(true);
 		StackPane calculatorBox = new StackPane(calculatorAppIcon);
-		calculatorBox.setPrefSize(128, 128);
+		calculatorBox.setMinSize(128, 128);
 
 		PopupHelper.applyInstantInfoPopup(calculatorBox, PopupHelper.buildPopup(new Label("Calculator")).popup);
 		calculatorBox.setOnMouseClicked(event -> {
 			try {
 				new CalculatorWindow().display(stage);
 			} catch (WindowLoadFailureException e) {
-				// TODO Print to console.
-				e.printStackTrace();
+				Logging.err("Failed to open the Calculator Window...\n");
+				Logging.err(e);
 			}
 		});
 
+		// Web Requests
 		ImageView webRequestAppIcon = new ImageView(
 				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/Browser.png", -1, 128, true, false));
+		StackPane webRequestBox = new StackPane(webRequestAppIcon);
+		webRequestBox.setMinSize(128, 128);
+		webRequestBox.setOnMouseClicked(new EventHandler<Event>() {
 
-		horizontalScrollBox.getChildren().addAll(calculatorBox);
+			@Override
+			public void handle(Event event) {
+				try {
+					new WebrequestGUI().display(stage);
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the Web Request Window...\n");
+					Logging.err(e);
+				}
+			}
+		});
+
+		// Console
+		ImageView consoleIcon = new ImageView(
+				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", -1, 128, true, false));
+		consoleIcon.setPreserveRatio(true);
+		consoleIcon.setFitHeight(128);
+		consoleIcon.setPickOnBounds(true);
+		StackPane consoleBox = new StackPane(consoleIcon);
+		consoleBox.setMinSize(128, 128);
+
+		PopupHelper.applyInstantInfoPopup(consoleBox, PopupHelper.buildPopup(new Label("Console")).popup);
+		consoleBox.setOnMouseClicked(event -> Stuff.displayConsole());
+
+		horizontalScrollBox.getChildren().addAll(calculatorBox, consoleBox, webRequestBox);
 
 		stage.setScene(new Scene(anchorPane));
 		stage.centerOnScreen();

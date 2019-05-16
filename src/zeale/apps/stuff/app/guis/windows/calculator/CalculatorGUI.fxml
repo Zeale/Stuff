@@ -36,7 +36,7 @@
                      <children>
                         <VBox alignment="CENTER" pickOnBounds="false" spacing="20.0">
                            <children>
-                              <TextField fx:id="inputField" maxWidth="800.0" prefHeight="50.0">
+                              <TextField fx:id="inputField" maxWidth="800.0" onKeyPressed="#inputFieldKeyEvent" prefHeight="50.0">
                                  <font>
                                     <Font name="Monospaced Bold" size="16.0" />
                                  </font>
