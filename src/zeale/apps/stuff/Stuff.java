@@ -10,12 +10,17 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.installation.ProgramArguments;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow1;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow2;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.tools.console.std.StandardConsole;
+import zeale.apps.tools.console.std.StandardConsole.StandardConsoleView;
 
 public class Stuff extends Application {
+
+	public static final StandardConsole PROGRAM_CONSOLE = new StandardConsole();
 
 	private static final PhoenixReference<Image> windowIcon = new PhoenixReference<Image>() {
 		@Override
@@ -23,6 +28,21 @@ public class Stuff extends Application {
 			return new Image("zeale/apps/stuff/rsrc/app/guis/appicon.png");
 		}
 	};
+
+	private static final PhoenixReference<StandardConsoleView> PROGRAM_CONSOLE_VIEW = new PhoenixReference<StandardConsoleView>() {
+
+		@Override
+		protected StandardConsoleView generate() {
+			return PROGRAM_CONSOLE.getView(makeStage());
+		}
+
+	};
+
+	public static void displayConsole() {
+		Stage stage = PROGRAM_CONSOLE_VIEW.get().getStage();
+		stage.show();
+		stage.requestFocus();
+	}
 
 	public static Stage makeStage() {
 		Stage stage = new Stage();
@@ -66,11 +86,13 @@ public class Stuff extends Application {
 		Parameters args = getParameters();
 
 		if (args.getNamed().containsKey(ProgramArguments.INSTALLATION_CLEANUP)) {
+			File file = new File(args.getNamed().get(ProgramArguments.INSTALLATION_CLEANUP));
 			try {
-				new File(args.getNamed().get(ProgramArguments.INSTALLATION_CLEANUP)).delete();
+				file.delete();
 			} catch (Exception e) {
-				// TODO: handle exception
 				e.printStackTrace();
+				Logging.wrn("Failed to delete temporary files needed for installation.");
+				Logging.wrn("File location: " + file);
 			}
 		}
 

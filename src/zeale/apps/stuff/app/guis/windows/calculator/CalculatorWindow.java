@@ -20,12 +20,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
+import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.tools.console.std.StandardConsole;
+import zeale.apps.tools.console.std.StandardConsole.StandardConsoleView;
 
 public final class CalculatorWindow extends Window {
 
@@ -34,6 +39,17 @@ public final class CalculatorWindow extends Window {
 
 	private @FXML TextField extendedFunctionalitySearch;
 	private @FXML Pane extendedFunctionalityFlowPane;
+
+	private final StandardConsole errorConsole = new StandardConsole();
+	{
+		errorConsole.clear();
+	}
+	private final PhoenixReference<StandardConsoleView> errorView = new PhoenixReference<StandardConsoleView>() {
+		@Override
+		protected StandardConsoleView generate() {
+			return errorConsole.getView();
+		}
+	};
 
 	private @FXML void initialize() {
 
@@ -89,7 +105,8 @@ public final class CalculatorWindow extends Window {
 		if (source instanceof Button) {
 			inputField.appendText(((Button) source).getText());
 		} else {
-			// TODO Print error to console.
+			Logging.wrn("A button was misconfigured. Please report this error to the author. (Button Error: " + source
+					+ "   " + source.getClass() + ".)");
 		}
 
 		int cp = inputField.getCaretPosition();
@@ -101,8 +118,7 @@ public final class CalculatorWindow extends Window {
 		try {
 			Stuff.displayWindow(new HomeWindow());
 		} catch (WindowLoadFailureException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logging.err(e);
 		}
 	}
 
@@ -111,7 +127,8 @@ public final class CalculatorWindow extends Window {
 		if (source instanceof Button) {
 			inputField.appendText(((Button) source).getText() + "(");
 		} else {
-			// TODO Print error to console.
+			Logging.wrn("A function button was misconfigured. Please report this error to the author. (Button Error: "
+					+ source + "   " + source.getClass() + ".)");
 		}
 	}
 
@@ -134,14 +151,21 @@ public final class CalculatorWindow extends Window {
 		try {
 			inputField.setText(Evaluator.solveToString(inputField.getText()));
 		} catch (Exception e) {
-			inputField.setText("~~" + e.getMessage());
+			errorConsole.println(e.getMessage(), Color.FIREBRICK);
+			showErrorView();
 		}
+	}
+
+	public @FXML void showErrorView() {
+		StandardConsoleView view = errorView.get();
+		view.show();
+		view.getStage().requestFocus();
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-
+		if (errorView.exists())
+			errorView.get().hide();
 	}
 
 	// TODO Add a checked exception for window loading failures.
