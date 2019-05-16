@@ -25,6 +25,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public final class CalculatorWindow extends Window {
@@ -89,7 +90,8 @@ public final class CalculatorWindow extends Window {
 		if (source instanceof Button) {
 			inputField.appendText(((Button) source).getText());
 		} else {
-			// TODO Print error to console.
+			Logging.wrn("A button was misconfigured. Please report this error to the author. (Button Error: " + source
+					+ "   " + source.getClass() + ".)");
 		}
 
 		int cp = inputField.getCaretPosition();
@@ -101,8 +103,7 @@ public final class CalculatorWindow extends Window {
 		try {
 			Stuff.displayWindow(new HomeWindow());
 		} catch (WindowLoadFailureException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logging.err(e);
 		}
 	}
 
@@ -111,7 +112,8 @@ public final class CalculatorWindow extends Window {
 		if (source instanceof Button) {
 			inputField.appendText(((Button) source).getText() + "(");
 		} else {
-			// TODO Print error to console.
+			Logging.wrn("A function button was misconfigured. Please report this error to the author. (Button Error: "
+					+ source + "   " + source.getClass() + ".)");
 		}
 	}
 
@@ -140,7 +142,6 @@ public final class CalculatorWindow extends Window {
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
 
 	}
 
