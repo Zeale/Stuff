@@ -41,6 +41,9 @@ public final class CalculatorWindow extends Window {
 	private @FXML Pane extendedFunctionalityFlowPane;
 
 	private final StandardConsole errorConsole = new StandardConsole();
+	{
+		errorConsole.clear();
+	}
 	private final PhoenixReference<StandardConsoleView> errorView = new PhoenixReference<StandardConsoleView>() {
 		@Override
 		protected StandardConsoleView generate() {
@@ -161,7 +164,8 @@ public final class CalculatorWindow extends Window {
 
 	@Override
 	public void destroy() {
-
+		if (errorView.exists())
+			errorView.get().hide();
 	}
 
 	// TODO Add a checked exception for window loading failures.
