@@ -93,8 +93,9 @@ public class WebrequestGUI extends Window {
 		try {
 			StandardWebRequestMethods method = StandardWebRequestMethods.valueOf(methodPrompt.getText());
 			try {
-				responseBox.setText(method.send(urlPrompt.getText(), userAgentPrompt.getText(), null, bodyBox.getText()));
-				renderView.getEngine().loadContent(responseBox.getText());
+				String result = method.send(urlPrompt.getText(), userAgentPrompt.getText(), null, bodyBox.getText());
+				responseBox.setText(result);
+				renderView.getEngine().loadContent(result.substring(result.indexOf("\r\n\r\n") + 2));
 			} catch (WebRequestException e2) {
 				Logging.err(e2.getMessage());
 			}
