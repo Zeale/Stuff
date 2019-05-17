@@ -30,34 +30,38 @@ public final class Logging {
 
 	public static void std(String text) {
 		standard.log(text);
+		Stuff.displayConsole();
 	}
 
 	public static void err(String text) {
 		error.log(text);
+		Stuff.displayConsole();
 	}
 
 	public static void err(Throwable error) {
-		Logging.err("An error has occurred. The stack trace is as follows...");
 		try (PrintWriter writer = Stuff.PROGRAM_CONSOLE.getWriter(Logging.error.messageColor, FontWeight.NORMAL,
 				FontPosture.REGULAR)) {
 			error.printStackTrace(writer);
 		}
+		Stuff.displayConsole();
 	}
 
 	public static void wrn(String text) {
 		warn.log(text);
+		Stuff.displayConsole();
 	}
 
 	public static void wrn(Throwable error) {
-		wrn("An error has occurred. The stack trace is as follows...");
 		try (PrintWriter writer = Stuff.PROGRAM_CONSOLE.getWriter(Logging.warn.messageColor, FontWeight.NORMAL,
 				FontPosture.REGULAR)) {
 			error.printStackTrace(writer);
 		}
+		Stuff.displayConsole();
 	}
 
 	public static void dbg(String text) {
 		debug.log(text);
+		Stuff.displayConsole();
 	}
 
 }
