@@ -1,9 +1,37 @@
 package zeale.apps.stuff.app.guis.windows.webrequests;
 
-import java.util.Collection;
+import java.util.Map;
 
 interface WebRequestMethod {
-	String preview(String url, String userAgent, Collection<String> params, String body);
 
-	String send(String url, String userAgent, Collection<String> params, String body);
+	class WebRequestException extends Exception {
+
+		/**
+		 * SUID
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public WebRequestException() {
+			super();
+		}
+
+		public WebRequestException(String message, Throwable cause) {
+			super(message, cause);
+		}
+
+		public WebRequestException(String message) {
+			super(message);
+		}
+
+		public WebRequestException(Throwable cause) {
+			super(cause);
+		}
+
+	}
+
+	String preview(String url, String userAgent, Map<String, String> params, String body)
+			throws IllegalArgumentException;
+
+	String send(String url, String userAgent, Map<String, String> params, String body)
+			throws IllegalArgumentException, WebRequestException;
 }

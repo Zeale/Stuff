@@ -106,6 +106,8 @@ public class HomeWindow extends Window {
 			}
 		});
 
+		PopupHelper.applyInstantInfoPopup(webRequestBox, PopupHelper.buildPopup(new Label("Web Requester")).popup);
+
 		// Console
 		ImageView consoleIcon = new ImageView(
 				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", -1, 128, true, false));
