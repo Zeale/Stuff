@@ -29,9 +29,7 @@ interface WebRequestMethod {
 
 	}
 
-	String preview(String url, String userAgent, Map<String, String> params, String body)
-			throws IllegalArgumentException;
+	String preview(String url, String userAgent, Map<String, String> params, String body) throws WebRequestException;
 
-	String send(String url, String userAgent, Map<String, String> params, String body)
-			throws IllegalArgumentException, WebRequestException;
+	String send(String url, String userAgent, Map<String, String> params, String body) throws WebRequestException;
 }

@@ -81,7 +81,7 @@ public class WebrequestGUI extends Window {
 					StandardWebRequestMethods method = StandardWebRequestMethods
 							.valueOf(methodPrompt.getText().toUpperCase());
 					return method.preview(urlPrompt.getText(), userAgentPrompt.getText(), null, bodyBox.getText());
-				} catch (IllegalArgumentException e) {
+				} catch (IllegalArgumentException | WebRequestException e) {
 					return "";
 				}
 			}
@@ -91,14 +91,15 @@ public class WebrequestGUI extends Window {
 
 	private @FXML synchronized void send(ActionEvent e) {
 		try {
-			StandardWebRequestMethods method = StandardWebRequestMethods.valueOf(methodPrompt.getText().toUpperCase());
-			System.out.println(methodPrompt.getText().length());
-			method.send(urlPrompt.getText(), userAgentPrompt.getText(), null, bodyBox.getText());
+			StandardWebRequestMethods method = StandardWebRequestMethods.valueOf(methodPrompt.getText());
+			try {
+				responseBox.setText(method.send(urlPrompt.getText(), userAgentPrompt.getText(), null, bodyBox.getText()));
+				renderView.getEngine().loadContent(responseBox.getText());
+			} catch (WebRequestException e2) {
+				Logging.err(e2.getMessage());
+			}
 		} catch (IllegalArgumentException e1) {
 			Logging.err("Custom methods are not yet supported.");
-		} catch (WebRequestException e1) {
-			Logging.err("Failed to send the web request");
-			Logging.err(e1);
 		}
 	}
 

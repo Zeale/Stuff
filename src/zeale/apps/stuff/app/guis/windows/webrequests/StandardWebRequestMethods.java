@@ -13,23 +13,32 @@ import java.util.Map.Entry;
 public enum StandardWebRequestMethods implements WebRequestMethod {
 	GET {
 		@Override
-		public String preview(String url, String userAgent, Map<String, String> params, String body) {
+		public String preview(String url, String userAgent, Map<String, String> params, String body)
+				throws WebRequestException {
 			URL url0;
 			try {
 				url0 = new URL(url);
 			} catch (MalformedURLException e) {
-				throw new IllegalArgumentException(e);
+				throw new WebRequestException(e);
 			}
 
+			return preview(url0, userAgent, params, body);
+		}
+
+		private String preview(URL url, String userAgent, Map<String, String> params, String body)
+				throws WebRequestException {
 			String result = "GET ";
-			String query = url0.getQuery();
-			result += url0.getPath() + (query == null ? "" : query) + " HTTP/1.1\n";
+			String query = url.getQuery();
+			result += "/" + url.getPath() + (query == null ? "" : query) + " HTTP/1.1\n";
+
+			if (userAgent != null && !userAgent.isEmpty())
+				result += "User-Agent: " + userAgent + "\n";
 
 			if (params != null)
 				for (Entry<String, String> e : params.entrySet())
 					result += e.getKey() + ": " + e.getValue() + "\n";
 
-			result += "\n\n" + body;
+			result += "\n" + body;
 
 			return result;
 		}
@@ -42,19 +51,10 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 			try {
 				url0 = new URL(url);
 			} catch (MalformedURLException e) {
-				throw new IllegalArgumentException(e);
+				throw new WebRequestException(e);
 			}
 
-			String result = "GET ";
-			String query = url0.getQuery();
-			result += url0.getPath() + (query == null ? "" : query) + " HTTP/1.1\n";
-			if (params != null)
-				for (Entry<String, String> e : params.entrySet())
-					result += e.getKey() + ": " + e.getValue() + "\n";
-
-			result += "\n\n" + body;
-
-			return send(url0.getHost(), 80, result);
+			return send(url0.getHost(), 80, preview(url0, userAgent, params, body));
 		}
 	},
 	POST, HEAD, DELETE, PUT, CONNECT, OPTIONS, TRACE, PATCH;
@@ -63,6 +63,7 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 		try (Socket socket = new Socket(address, port)) {
 			PrintWriter output = new PrintWriter(socket.getOutputStream());
 			output.println(text);
+			output.flush();
 
 			InputStream input = socket.getInputStream();
 
@@ -82,7 +83,8 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	}
 
 	@Override
-	public String preview(String url, String userAgent, Map<String, String> params, String body) {
+	public String preview(String url, String userAgent, Map<String, String> params, String body)
+			throws WebRequestException {
 		// TODO Auto-generated method stub
 		return null;
 	}
