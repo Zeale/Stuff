@@ -38,7 +38,8 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 				for (Entry<String, String> e : params.entrySet())
 					result += e.getKey() + ": " + e.getValue() + "\r\n";
 
-			result += "\r\n" + body;
+			if (body != null && !body.isEmpty())
+				result += "\r\n" + body;
 
 			return result;
 		}

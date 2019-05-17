@@ -60,11 +60,13 @@
                                 <rowConstraints>
                                   <RowConstraints vgrow="SOMETIMES" />
                                   <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User Agent" />
-                                    <MenuButton mnemonicParsing="false" styleClass="pop-button" text="Method" GridPane.rowIndex="2">
+                                    <MenuButton mnemonicParsing="false" styleClass="pop-button" text="Method" GridPane.rowIndex="4">
                                       <items>
                                           <MenuItem mnemonicParsing="false" onAction="#selectCustomRequest" text="Custom" />
                                           <SeparatorMenuItem mnemonicParsing="false" />
@@ -80,9 +82,13 @@
                                       </items>
                                     </MenuButton>
                                     <TextField fx:id="userAgentPrompt" GridPane.columnIndex="1" />
-                                    <TextField fx:id="methodPrompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Parameters" GridPane.rowIndex="1" />
-                                    <TextField fx:id="parameterPrompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <TextField fx:id="methodPrompt" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Host" GridPane.rowIndex="1" />
+                                    <TextField fx:id="hostPrompt" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Accept-Language" GridPane.rowIndex="2" />
+                                    <TextField fx:id="acceptLanguagePrompt" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Connection" GridPane.rowIndex="3" />
+                                    <TextField fx:id="connectionPrompt" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                  </children>
                               </GridPane>
                            </children>

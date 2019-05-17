@@ -1,6 +1,8 @@
 package zeale.apps.stuff.app.guis.windows.webrequests;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javafx.beans.binding.Bindings;
@@ -64,7 +66,8 @@ public class WebrequestGUI extends Window {
 
 	private @FXML TextArea finalizedRequestBox, bodyBox, responseBox, errorBox;
 	private @FXML WebView renderView;
-	private @FXML TextField urlPrompt, userAgentPrompt, parameterPrompt, methodPrompt;
+	private @FXML TextField urlPrompt, userAgentPrompt, hostPrompt, acceptLanguagePrompt, connectionPrompt,
+			methodPrompt;
 	private @FXML Button sendButton;
 
 	private final BooleanProperty sendable = new SimpleBooleanProperty();
@@ -80,20 +83,36 @@ public class WebrequestGUI extends Window {
 				try {
 					StandardWebRequestMethods method = StandardWebRequestMethods
 							.valueOf(methodPrompt.getText().toUpperCase());
-					return method.preview(urlPrompt.getText(), userAgentPrompt.getText(), null, bodyBox.getText());
+					Map<String, String> parameters = new HashMap<>();
+					if (!hostPrompt.getText().isEmpty())
+						parameters.put("Host", hostPrompt.getText());
+					if (!acceptLanguagePrompt.getText().isEmpty())
+						parameters.put("Accept-Language", acceptLanguagePrompt.getText());
+					if (!connectionPrompt.getText().isEmpty())
+						parameters.put("Connection", connectionPrompt.getText());
+					return method.preview(urlPrompt.getText(), userAgentPrompt.getText(), parameters,
+							bodyBox.getText());
 				} catch (IllegalArgumentException | WebRequestException e) {
 					return "";
 				}
 			}
-		}, bodyBox.textProperty(), urlPrompt.textProperty(), userAgentPrompt.textProperty(),
-				parameterPrompt.textProperty(), methodPrompt.textProperty()));
+		}, bodyBox.textProperty(), urlPrompt.textProperty(), userAgentPrompt.textProperty(), hostPrompt.textProperty(),
+				methodPrompt.textProperty(), acceptLanguagePrompt.textProperty(), connectionPrompt.textProperty()));
 	}
 
 	private @FXML synchronized void send(ActionEvent e) {
 		try {
 			StandardWebRequestMethods method = StandardWebRequestMethods.valueOf(methodPrompt.getText());
 			try {
-				String result = method.send(urlPrompt.getText(), userAgentPrompt.getText(), null, bodyBox.getText());
+				Map<String, String> parameters = new HashMap<>();
+				if (!hostPrompt.getText().isEmpty())
+					parameters.put("Host", hostPrompt.getText());
+				if (!acceptLanguagePrompt.getText().isEmpty())
+					parameters.put("Accept-Language", acceptLanguagePrompt.getText());
+				if (!connectionPrompt.getText().isEmpty())
+					parameters.put("Connection", connectionPrompt.getText());
+				String result = method.send(urlPrompt.getText(), userAgentPrompt.getText(), parameters,
+						bodyBox.getText());
 				responseBox.setText(result);
 				renderView.getEngine().loadContent(result.substring(result.indexOf("\r\n\r\n") + 2));
 			} catch (WebRequestException e2) {
