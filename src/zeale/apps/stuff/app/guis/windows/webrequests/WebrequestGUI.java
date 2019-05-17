@@ -5,9 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -68,13 +67,11 @@ public class WebrequestGUI extends Window {
 	private @FXML WebView renderView;
 	private @FXML TextField urlPrompt, userAgentPrompt, hostPrompt, acceptLanguagePrompt, connectionPrompt,
 			methodPrompt;
-	private @FXML Button sendButton;
+	private @FXML Button sendButton, stopButton;
 
-	private final BooleanProperty sendable = new SimpleBooleanProperty();
+	private Thread sendThread = new Thread();
 
 	private @FXML void initialize() {
-
-		sendButton.disableProperty().bind(sendable);
 
 		finalizedRequestBox.textProperty().bind(Bindings.createStringBinding(new Callable<String>() {
 
@@ -100,26 +97,55 @@ public class WebrequestGUI extends Window {
 				methodPrompt.textProperty(), acceptLanguagePrompt.textProperty(), connectionPrompt.textProperty()));
 	}
 
+	@SuppressWarnings("deprecation")
+	private @FXML synchronized void stop() {
+		if (sendThread.isAlive())
+			// TODO Use interrupt() and see where bottlenecks are?
+			sendThread.stop();
+	}
+
 	private @FXML synchronized void send(ActionEvent e) {
-		try {
-			StandardWebRequestMethods method = StandardWebRequestMethods.valueOf(methodPrompt.getText());
+		if (sendThread.isAlive())
+			Logging.err("A current request is in progress. Please stop it to attempt to send another request.");
+		else {
+
+			sendButton.setDisable(true);
+			stopButton.setDisable(false);
+
+			Map<String, String> parameters = new HashMap<>();
+			if (!hostPrompt.getText().isEmpty())
+				parameters.put("Host", hostPrompt.getText());
+			if (!acceptLanguagePrompt.getText().isEmpty())
+				parameters.put("Accept-Language", acceptLanguagePrompt.getText());
+			if (!connectionPrompt.getText().isEmpty())
+				parameters.put("Connection", connectionPrompt.getText());
+			StandardWebRequestMethods method;
 			try {
-				Map<String, String> parameters = new HashMap<>();
-				if (!hostPrompt.getText().isEmpty())
-					parameters.put("Host", hostPrompt.getText());
-				if (!acceptLanguagePrompt.getText().isEmpty())
-					parameters.put("Accept-Language", acceptLanguagePrompt.getText());
-				if (!connectionPrompt.getText().isEmpty())
-					parameters.put("Connection", connectionPrompt.getText());
-				String result = method.send(urlPrompt.getText(), userAgentPrompt.getText(), parameters,
-						bodyBox.getText());
-				responseBox.setText(result);
-				renderView.getEngine().loadContent(result.substring(result.indexOf("\r\n\r\n") + 2));
-			} catch (WebRequestException e2) {
-				Logging.err(e2.getMessage());
+				method = StandardWebRequestMethods.valueOf(methodPrompt.getText());
+			} catch (IllegalArgumentException e1) {
+				Logging.err("Custom methods are not yet supported.");
+				sendButton.setDisable(false);
+				stopButton.setDisable(true);
+				return;
 			}
-		} catch (IllegalArgumentException e1) {
-			Logging.err("Custom methods are not yet supported.");
+
+			sendThread = new Thread(() -> {
+				try {
+					String result = method.send(urlPrompt.getText(), userAgentPrompt.getText(), parameters,
+							bodyBox.getText());
+					Platform.runLater(() -> {
+						responseBox.setText(result);
+						renderView.getEngine().loadContent(result.substring(result.indexOf("\r\n\r\n") + 2));
+					});
+				} catch (WebRequestException e1) {
+					Logging.err(e1.getMessage());
+				} finally {// When interrupted, an exception is thrown.
+					sendButton.setDisable(false);
+					stopButton.setDisable(true);
+				}
+			});
+			sendThread.setDaemon(true);
+			sendThread.start();
 		}
 	}
 

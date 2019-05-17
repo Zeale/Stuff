@@ -118,7 +118,7 @@
                         </StackPane>
                      </content>
                   </Tab>
-                  <Tab text="Errors">
+                  <Tab disable="true" text="Errors">
                      <content>
                         <VBox alignment="CENTER" spacing="15.0">
                            <children>
@@ -167,6 +167,14 @@
                <padding>
                   <Insets bottom="30.0" left="54.7058824" right="54.7058824" top="30.0" />
                </padding>
+            </Button>
+            <Button fx:id="stopButton" disable="true" mnemonicParsing="false" onAction="#stop" styleClass="pop-button" text="Stop" visible="false" StackPane.alignment="CENTER_RIGHT">
+               <StackPane.margin>
+                  <Insets right="20.0" />
+               </StackPane.margin>
+               <tooltip>
+                  <Tooltip text="Force stopping feature not available yet..." />
+               </tooltip>
             </Button>
          </children></StackPane>
    </bottom>
