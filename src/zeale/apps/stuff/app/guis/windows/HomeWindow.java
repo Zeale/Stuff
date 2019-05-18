@@ -117,7 +117,9 @@ public class HomeWindow extends Window {
 		StackPane consoleBox = new StackPane(consoleIcon);
 		consoleBox.setMinSize(128, 128);
 
-		PopupHelper.applyInstantInfoPopup(consoleBox, PopupHelper.buildPopup(new Label("Console")).popup);
+		Label consoleLabel = new Label("Console");
+		consoleLabel.setTextFill(Color.RED);
+		PopupHelper.applyInstantInfoPopup(consoleBox, PopupHelper.buildPopup(consoleLabel).popup);
 		consoleBox.setOnMouseClicked(event -> Stuff.displayConsole());
 
 		horizontalScrollBox.getChildren().addAll(calculatorBox, consoleBox, webRequestBox);
