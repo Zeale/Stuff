@@ -21,6 +21,7 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
+import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestGUI;
 
 public class HomeWindow extends Window {
 
@@ -71,6 +72,7 @@ public class HomeWindow extends Window {
 
 		// Add items.
 
+		// Calculator
 		ImageView calculatorAppIcon = new ImageView(
 				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/calculator/Calculator.png", -1, 128, true, false));
 
@@ -90,6 +92,23 @@ public class HomeWindow extends Window {
 			}
 		});
 
+		// Web Requests
+		ImageView webRequestAppIcon = new ImageView(
+				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/WorldWeb.png", -1, 128, true, false));
+		StackPane webRequestBox = new StackPane(webRequestAppIcon);
+		webRequestBox.setMinSize(128, 128);
+		webRequestBox.setOnMouseClicked(event -> {
+			try {
+				new WebrequestGUI().display(stage);
+			} catch (WindowLoadFailureException e) {
+				Logging.err("Failed to open the Web Request Window...\n");
+				Logging.err(e);
+			}
+		});
+
+		PopupHelper.applyInstantInfoPopup(webRequestBox, PopupHelper.buildPopup(new Label("Web Requester")).popup);
+
+		// Console
 		ImageView consoleIcon = new ImageView(
 				new Image("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", -1, 128, true, false));
 		consoleIcon.setPreserveRatio(true);
@@ -101,7 +120,7 @@ public class HomeWindow extends Window {
 		PopupHelper.applyInstantInfoPopup(consoleBox, PopupHelper.buildPopup(new Label("Console")).popup);
 		consoleBox.setOnMouseClicked(event -> Stuff.displayConsole());
 
-		horizontalScrollBox.getChildren().addAll(calculatorBox, consoleBox);
+		horizontalScrollBox.getChildren().addAll(calculatorBox, consoleBox, webRequestBox);
 
 		stage.setScene(new Scene(anchorPane));
 		stage.centerOnScreen();

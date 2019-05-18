@@ -29,6 +29,10 @@ public class Stuff extends Application {
 		}
 	};
 
+	/**
+	 * The program's default view for its console. This should be accessed on the
+	 * JavaFX Application thread in case a new view needs to be made.
+	 */
 	private static final PhoenixReference<StandardConsoleView> PROGRAM_CONSOLE_VIEW = new PhoenixReference<StandardConsoleView>() {
 
 		@Override
@@ -39,11 +43,23 @@ public class Stuff extends Application {
 	};
 
 	public static void displayConsole() {
-		Stage stage = PROGRAM_CONSOLE_VIEW.get().getStage();
-		stage.show();
-		stage.requestFocus();
+		if (!Platform.isFxApplicationThread())
+			Platform.runLater(Stuff::displayConsole);
+		else {
+			Stage stage = PROGRAM_CONSOLE_VIEW.get().getStage();
+			stage.show();
+			stage.requestFocus();
+		}
 	}
 
+	/**
+	 * Creates a new {@link Stage} and styles it to fit with the application. This
+	 * function must be called on the application thread.
+	 * 
+	 * @return The newly created {@link Stage}.
+	 * @throws InterruptedException In case the thread is interrupted while the FX
+	 *                              Application thread makes the stage.
+	 */
 	public static Stage makeStage() {
 		Stage stage = new Stage();
 		stage.getIcons().add(windowIcon.get());
