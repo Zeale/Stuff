@@ -1,9 +1,26 @@
 package zeale.apps.stuff.app.guis.windows.webrequests;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -132,12 +149,45 @@ public class WebrequestGUI extends Window {
 			sendThread = new Thread(() -> {
 				try {
 					String result = method.send(urlPrompt.getText(), userAgentPrompt.getText(), parameters,
-							bodyBox.getText());
+							bodyBox.getText()), body = result.substring(result.indexOf("\r\n\r\n") + 2);
+
+					// Code for adding <base> element.
+					URL url = new URL(urlPrompt.getText());
+					String baseURL = url.getProtocol() + "://" + url.getHost()
+							+ (url.getPath().isEmpty() ? "/" : url.getPath());
+					try {
+						Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+								.parse(new InputSource(new StringReader(body)));
+						Element baseElement = doc.createElement("base");
+
+						baseElement.setAttribute("href", baseURL);
+
+						Node firstNode = doc.getDocumentElement().getFirstChild();
+						if (firstNode == null)
+							doc.getDocumentElement().appendChild(baseElement);
+						else
+							doc.getDocumentElement().insertBefore(baseElement, firstNode);
+
+						Transformer transformer = TransformerFactory.newInstance().newTransformer();
+						StreamResult res = new StreamResult(new StringWriter());
+						DOMSource source = new DOMSource(doc);
+						transformer.transform(source, res);
+						body = res.getWriter().toString();
+					} catch (Exception e0) {
+						Matcher matcher = Pattern.compile("<\\s*head\\s*>").matcher(body);
+						String baseString = "<base href=\"" + baseURL + "\">";
+						body = matcher.find()
+								? body.substring(0, matcher.end() + 1) + baseString + body.substring(matcher.end() + 1)
+								: baseString + body;
+					}
+
+					// Code for showing response.
+					final String body1 = body;
 					Platform.runLater(() -> {
 						responseBox.setText(result);
-						renderView.getEngine().loadContent(result.substring(result.indexOf("\r\n\r\n") + 2));
+						renderView.getEngine().loadContent(body1);
 					});
-				} catch (WebRequestException e1) {
+				} catch (WebRequestException | MalformedURLException e1) {
 					Logging.err(e1.getMessage());
 				} finally {// When interrupted, an exception is thrown.
 					sendButton.setDisable(false);
