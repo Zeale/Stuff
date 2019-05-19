@@ -1,7 +1,5 @@
 /bin/
-/bld/**/*.exe
-/bld/**/*.jar
-/bld/**/*.ico
+/bld/
 *.sed
 /libs/**/*.jar
 TEMP~*.fxml
