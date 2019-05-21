@@ -1,0 +1,7 @@
+#SearchButton {
+	-fx-background-color: transparent;
+	-fx-background-radius: 0;
+}
+#SearchButton:hover {
+	-fx-background-color: -stuff-dark;
+}
