@@ -122,8 +122,7 @@ public class Menu extends Window {
 	}
 
 	@Override
-	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-
+	protected void show(Stage stage, ApplicationProperties properties) {
 		stage.setScene(new Scene(anchorPane));
 		stage.centerOnScreen();
 	}
