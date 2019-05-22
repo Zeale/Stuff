@@ -12,8 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane minHeight="200.0" minWidth="400.0" prefHeight="600.0" prefWidth="900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
+<AnchorPane minHeight="200.0" minWidth="400.0" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <stylesheets>
       <URL value="@../stylesheets/Pop%20Button.css" />
       <URL value="@../stylesheets/BasicStyles.css" />
@@ -45,10 +44,12 @@
                         <TextField minWidth="300.0" />
                      </children>
                   </HBox>
+                  <Button mnemonicParsing="false" styleClass="pop-button" text="Login" />
                </children>
             </VBox>
          </center>
       </BorderPane>
+      <Button mnemonicParsing="false" onAction="#registerPage" styleClass="pop-button" text="Register" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
       <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goHome" styleClass="pop-button" text="&lt;--" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
    </children>
 </AnchorPane>
