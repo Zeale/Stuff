@@ -8,7 +8,7 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
 import zeale.apps.stuff.app.guis.windows.experimentation.ExperimentalFeaturesMenu;
-import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestGUI;
+import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestWindow;
 
 public class HomeWindow extends Menu {
 
@@ -25,7 +25,7 @@ public class HomeWindow extends Menu {
 				"Calculator");
 
 		// Web Requests
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/WorldWeb.png", () -> new WebrequestGUI(),
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/WorldWeb.png", () -> new WebrequestWindow(),
 				"Web Requests");
 
 		// Console

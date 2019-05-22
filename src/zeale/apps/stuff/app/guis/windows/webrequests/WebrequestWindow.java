@@ -41,7 +41,7 @@ import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.webrequests.WebRequestMethod.WebRequestException;
 
-public class WebrequestGUI extends Window {
+public class WebrequestWindow extends Window {
 
 	@Override
 	public void destroy() {
