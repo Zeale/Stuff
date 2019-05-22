@@ -8,6 +8,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
+import zeale.apps.stuff.app.guis.windows.chatroom.ChatroomWindow;
 import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestGUI;
 
 public class HomeWindow extends Menu {
@@ -33,6 +34,10 @@ public class HomeWindow extends Menu {
 		consoleLabel.setTextFill(Color.RED);
 		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", (a) -> Stuff.displayConsole(),
 				consoleLabel);
+
+		// Chatroom
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/chatroom/Chatroom.png", () -> new ChatroomWindow(),
+				"Chat Room");
 	}
 
 }
