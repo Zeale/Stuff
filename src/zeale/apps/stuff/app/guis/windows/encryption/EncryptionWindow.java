@@ -4,7 +4,7 @@ import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 
-public class EncryptionGUI extends Window {
+public class EncryptionWindow extends Window {
 
 	@Override
 	public void destroy() {
