@@ -36,7 +36,7 @@ public class HomeWindow extends Menu {
 
 		// Experimental Features
 		Label experimentalFeaturesLabel = new Label("Experimental Features");
-		experimentalFeaturesLabel.setTextFill(Color.RED);
+		experimentalFeaturesLabel.setTextFill(Color.FIREBRICK);
 		addImageNode("zeale/apps/stuff/rsrc/app/guis/windows/experimentation/Experimentation.png",
 				() -> new ExperimentalFeaturesMenu(), experimentalFeaturesLabel);
 	}
