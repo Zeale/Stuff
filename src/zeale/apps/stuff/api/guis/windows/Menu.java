@@ -51,19 +51,18 @@ public class Menu extends Window {
 	}
 
 	public StackPane addImageNode(String imageURL, EventHandler<? super MouseEvent> onClick, Label popup) {
-		ImageView icon = new ImageView(new Image(imageURL, -1, 128, true, false));
-		icon.setPreserveRatio(true);
-		icon.setFitHeight(128);
-		icon.setPickOnBounds(true);
-		StackPane box = new StackPane(icon);
-		box.setMinSize(128, 128);
+		return addImageNode(new Image(imageURL, -1, 128, true, false), onClick, popup);
+	}
 
-		box.setOnMouseClicked(onClick);
+	public StackPane addImageNode(Image image, Runnable onClick, Label popup) {
+		return addImageNode(image, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				onClick.run();
+		}, popup);
+	}
 
-		PopupHelper.applyInstantInfoPopup(box, PopupHelper.buildPopup(popup).popup);
-
-		scrollBox.getChildren().add(box);
-		return box;
+	public StackPane addImageNode(Image image, Runnable onClick, String popup) {
+		return addImageNode(image, onClick, new Label(popup));
 	}
 
 	public StackPane addImageNode(String imageURL, Runnable onClick, Label popup) {
@@ -78,7 +77,7 @@ public class Menu extends Window {
 	}
 
 	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, Label popup) {
-		return addImageNode(imageURL, (a) -> {
+		return addImageNode(imageURL, a -> {
 			if (a.getButton() == MouseButton.PRIMARY)
 				try {
 					Stuff.displayWindow(windowSupplier.get());
@@ -91,6 +90,42 @@ public class Menu extends Window {
 
 	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, String popup) {
 		return addImageNode(imageURL, windowSupplier, new Label(popup));
+	}
+
+	public StackPane addImageNode(Image image, EventHandler<? super MouseEvent> onClick, Label popup) {
+		ImageView icon = new ImageView(image);
+		icon.setPreserveRatio(true);
+		icon.setFitHeight(128);
+		icon.setPickOnBounds(true);
+		StackPane box = new StackPane(icon);
+		box.setMinSize(128, 128);
+
+		box.setOnMouseClicked(onClick);
+
+		PopupHelper.applyInstantInfoPopup(box, PopupHelper.buildPopup(popup).popup);
+
+		scrollBox.getChildren().add(box);
+		return box;
+	}
+
+	public StackPane addImageNode(Image image, Supplier<? extends Window> windowSupplier, String popup) {
+		return addImageNode(image, windowSupplier, new Label(popup));
+	}
+
+	public StackPane addImageNode(Image image, Supplier<? extends Window> windowSupplier, Label popup) {
+		return addImageNode(image, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				try {
+					Stuff.displayWindow(windowSupplier.get());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
+		}, popup);
+	}
+
+	public static Image loadFormatted(String url, double size) {
+		return new Image(url, -1, size, true, false);
 	}
 
 	protected final HorizontalScrollBox scrollBox = new HorizontalScrollBox();
