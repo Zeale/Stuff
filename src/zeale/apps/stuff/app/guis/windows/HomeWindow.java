@@ -1,6 +1,5 @@
 package zeale.apps.stuff.app.guis.windows;
 
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -30,7 +29,7 @@ public class HomeWindow extends Menu {
 
 		// Console
 		Label consoleLabel = new Label("Console");
-		consoleLabel.setTextFill(Color.RED);
+		consoleLabel.setTextFill(Color.FIREBRICK);
 		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", (a) -> Stuff.displayConsole(),
 				consoleLabel);
 	}
