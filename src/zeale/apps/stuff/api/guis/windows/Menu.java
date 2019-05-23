@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -65,14 +66,26 @@ public class Menu extends Window {
 		return box;
 	}
 
+	public StackPane addImageNode(String imageURL, Runnable onClick, Label popup) {
+		return addImageNode(imageURL, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				onClick.run();
+		}, popup);
+	}
+
+	public StackPane addImageNode(String imageURL, Runnable onClick, String popup) {
+		return addImageNode(imageURL, onClick, new Label(popup));
+	}
+
 	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, Label popup) {
 		return addImageNode(imageURL, (a) -> {
-			try {
-				Stuff.displayWindow(windowSupplier.get());
-			} catch (WindowLoadFailureException e) {
-				Logging.err("Failed to open the window...\n");
-				Logging.err(e);
-			}
+			if (a.getButton() == MouseButton.PRIMARY)
+				try {
+					Stuff.displayWindow(windowSupplier.get());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
 		}, popup);
 	}
 

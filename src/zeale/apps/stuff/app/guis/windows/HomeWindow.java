@@ -30,8 +30,7 @@ public class HomeWindow extends Menu {
 		// Console
 		Label consoleLabel = new Label("Console");
 		consoleLabel.setTextFill(Color.FIREBRICK);
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", (a) -> Stuff.displayConsole(),
-				consoleLabel);
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", Stuff::displayConsole, consoleLabel);
 	}
 
 }
