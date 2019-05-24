@@ -1,5 +1,7 @@
 package zeale.apps.stuff.app.guis.windows.stringtools;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
@@ -14,8 +16,13 @@ public class StringtoolsWindow extends Window {
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		// TODO Auto-generated method stub
-
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("StringtoolsGUI.fxml"));
+		loader.setController(this);
+		try {
+			stage.setScene(new Scene(loader.load()));
+		} catch (Exception e) {
+			throw new WindowLoadFailureException("Failed to load and display the Text Tools window.", e);
+		}
 	}
 
 }
