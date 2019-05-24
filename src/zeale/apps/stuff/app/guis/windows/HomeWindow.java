@@ -1,6 +1,10 @@
 package zeale.apps.stuff.app.guis.windows;
 
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -29,11 +33,33 @@ public class HomeWindow extends Menu {
 				"Web Requests");
 
 		// Console
-		Label consoleLabel = new Label("Console");
-		consoleLabel.setTextFill(Color.FIREBRICK);
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", (a) -> Stuff.displayConsole(),
-				consoleLabel);
+		{
+			Label consoleLabel = new Label("Console");
+			consoleLabel.setTextFill(Color.FIREBRICK);
 
+			Image consoleIconRaw = loadFormatted("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", 128);
+			WritableImage consoleIcon = new WritableImage(consoleIconRaw.getPixelReader(),
+					(int) consoleIconRaw.getWidth(), (int) consoleIconRaw.getHeight());
+
+			PixelWriter writer = consoleIcon.getPixelWriter();
+			PixelReader reader = consoleIcon.getPixelReader();
+
+			Color primary = Color.hsb(Math.random() * 360, 1, 1),
+					secondary = Color.hsb(primary.getHue() + 180 % 360, 1, 1);
+
+			for (int i = 0; i < consoleIcon.getWidth(); i++)
+				for (int j = 0; j < consoleIcon.getHeight(); j++)
+					switch (reader.getArgb(i, j)) {
+					case -16711423:
+						writer.setColor(i, j, primary);
+						break;
+					case -16645630:
+						writer.setColor(i, j, secondary);
+					}
+
+			addImageNode(consoleIcon, Stuff::displayConsole, consoleLabel);
+		}
+		
 		// Experimental Features
 		Label experimentalFeaturesLabel = new Label("Experimental Features");
 		experimentalFeaturesLabel.setTextFill(Color.FIREBRICK);
