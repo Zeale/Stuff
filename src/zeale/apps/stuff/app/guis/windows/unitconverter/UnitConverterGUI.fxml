@@ -1,8 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
+   <stylesheets>
+      <URL value="@../stylesheets/Pop%20Button.css" />
+      <URL value="@../stylesheets/BasicStyles.css" />
+   </stylesheets>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <right>
+      <Accordion BorderPane.alignment="CENTER">
+        <panes>
+          <TitledPane text="Categories">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0" />
+               </content>
+          </TitledPane>
+        </panes>
+      </Accordion>
+   </right>
+   <center>
+      <BorderPane minHeight="400.0" minWidth="400.0" prefHeight="800.0" BorderPane.alignment="CENTER">
+         <center>
+            <StackPane prefWidth="450.0" style="-fx-border-width: 0 1 0 0; -fx-border-color: -stuff-dark;" BorderPane.alignment="CENTER" />
+         </center>
+         <left>
+            <VBox minWidth="200.0" prefWidth="250.0" BorderPane.alignment="CENTER">
+               <children>
+                  <StackPane style="-fx-border-width: 0 1 1 0; -fx-border-color: -stuff-dark;" VBox.vgrow="SOMETIMES" />
+                  <StackPane style="-fx-border-width: 0 1 0 0; -fx-border-color: -stuff-dark;" VBox.vgrow="SOMETIMES" />
+               </children>
+            </VBox>
+         </left>
+      </BorderPane>
+   </center>
 </BorderPane>
-
