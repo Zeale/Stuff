@@ -1,8 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
-</BorderPane>
 
+<VBox spacing="1.0" style="-fx-background-color: -stuff-dark;" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <stylesheets>
+      <URL value="@../stylesheets/Pop%20Button.css" />
+      <URL value="@../stylesheets/BasicStyles.css" />
+   </stylesheets>
+   <children>
+      <HBox spacing="1.0">
+         <children>
+            <TabPane minHeight="300.0" minWidth="300.0" prefHeight="400.0" prefWidth="500.0" style="-fx-border-width: 0; -fx-background-color: -stuff-light;" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Input" />
+                <Tab text="Options" />
+              </tabs>
+            </TabPane>
+            <TabPane minHeight="300.0" minWidth="300.0" prefHeight="400.0" prefWidth="500.0" style="-fx-border-width: 0; -fx-background-color: -stuff-light;" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Output" />
+              </tabs>
+            </TabPane>
+         </children>
+      </HBox>
+      <HBox prefHeight="100.0" spacing="1.0">
+         <children>
+            <StackPane style="-fx-background-color: -stuff-light;" HBox.hgrow="SOMETIMES" />
+            <StackPane style="-fx-background-color: -stuff-light;" HBox.hgrow="SOMETIMES" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
