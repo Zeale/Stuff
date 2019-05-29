@@ -28,6 +28,7 @@
                               <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
                            </padding>
                            <children>
+                              <TextArea fx:id="inputField" />
                            </children>
                         </StackPane>
                      </content>
@@ -44,6 +45,7 @@
                               <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
                            </padding>
                            <children>
+                              <TextArea fx:id="outputField" />
                            </children>
                         </StackPane>
                      </content>
@@ -61,7 +63,7 @@
             </StackPane>
             <StackPane prefWidth="100.0" style="-fx-background-color: -stuff-light;" HBox.hgrow="ALWAYS">
                <children>
-                  <Button mnemonicParsing="false" onAction="#decryptOutpu" styleClass="pop-button" text="Decrypt" />
+                  <Button mnemonicParsing="false" onAction="#decryptOutput" styleClass="pop-button" text="Decrypt" />
                </children>
             </StackPane>
          </children>
