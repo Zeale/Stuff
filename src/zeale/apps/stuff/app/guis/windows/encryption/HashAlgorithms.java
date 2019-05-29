@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 enum HashAlgorithms implements HashAlgorithm {
-	MD5("MD5"), SHA_1("SHA-1"), SHA_256("SHA-256");
+	MD5("MD5"), SHA_1("SHA-1"), SHA_256("SHA-256"), SHA_384("SHA-384"), SHA_512("SHA-512");
 
 	private final String name;
 
@@ -42,11 +42,6 @@ enum HashAlgorithms implements HashAlgorithm {
 		} catch (NoSuchAlgorithmException e) {
 			throw new UnsupportedOperationException("The " + name + " hashing algorithm is not available.");
 		}
-	}
-
-	public static void main(String[] args) {
-		String text = "";
-		System.out.println(SHA_1.hexHash(text));
 	}
 
 	@Override
