@@ -1,8 +1,11 @@
 package zeale.apps.stuff.app.guis.windows.encryption;
 
+import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -19,8 +22,13 @@ public class EncryptionWindow extends Window {
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		// TODO Auto-generated method stub
-
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("EncryptionGUI.fxml"));
+		loader.setController(this);
+		try {
+			stage.setScene(new Scene(loader.load()));
+		} catch (IOException e) {
+			throw new WindowLoadFailureException("Failed to load the UI for the Encryption Window.", e);
+		}
 	}
 
 	private @FXML TextArea inputField, outputField;
