@@ -10,23 +10,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import zeale.apps.stuff.app.guis.windows.webrequests.WebRequestMethod.WebRequestException;
+
 public enum StandardWebRequestMethods implements WebRequestMethod {
 	GET {
-		@Override
-		public String preview(String url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
-			URL url0;
-			try {
-				url0 = new URL(url);
-			} catch (MalformedURLException e) {
-				throw new WebRequestException(e);
-			}
 
-			return preview(url0, userAgent, params, body);
-		}
-
-		private String preview(URL url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
+		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
 			String result = "GET ";
 			String query = url.getQuery();
 			result += "/" + url.getPath() + (query == null ? "" : query) + " HTTP/1.1\r\n";
@@ -44,35 +33,10 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 			return result;
 		}
 
-		@Override
-		public String send(String url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
-
-			URL url0;
-			try {
-				url0 = new URL(url);
-			} catch (MalformedURLException e) {
-				throw new WebRequestException(e);
-			}
-
-			return send(url0.getHost(), 80, preview(url0, userAgent, params, body));
-		}
 	},
 	POST {
-		@Override
-		public String preview(String url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
-			URL url0;
-			try {
-				url0 = new URL(url);
-			} catch (MalformedURLException e) {
-				throw new WebRequestException(e);
-			}
-			return preview(url0, userAgent, params, body);
-		}
 
-		private String preview(URL url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
+		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
 			String result = "POST /" + url.getPath() + " HTTP/1.1\r\n";
 
 			if (userAgent != null && !userAgent.isEmpty())
@@ -89,16 +53,6 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 
 		}
 
-		@Override
-		public String send(String url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
-			try {
-				URL url0 = new URL(url);
-				return send(url0.getHost(), 80, preview(url0, userAgent, params, body));
-			} catch (MalformedURLException e) {
-				throw new WebRequestException(e);
-			}
-		}
 	},
 	HEAD, DELETE, PUT, CONNECT, OPTIONS, TRACE, PATCH;
 
@@ -125,18 +79,29 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 		}
 	}
 
+	String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
+		return null;
+	}
+
+	private static URL url(String url) throws WebRequestException {
+		try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			throw new WebRequestException(e);
+		}
+	}
+
 	@Override
 	public String preview(String url, String userAgent, Map<String, String> params, String body)
 			throws WebRequestException {
-		// TODO Auto-generated method stub
-		return null;
+		return preview(url(url), userAgent, params, body);
 	}
 
 	@Override
 	public String send(String url, String userAgent, Map<String, String> params, String body)
 			throws WebRequestException {
-		// TODO Auto-generated method stub
-		return null;
+		URL url0 = url(url);
+		return send(url0.getHost(), 80, preview(url0, userAgent, params, body));
 	}
 
 }
