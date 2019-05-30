@@ -2,13 +2,16 @@ package zeale.apps.stuff.app.guis.windows.encryption;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
 
+import javax.activity.InvalidActivityException;
 import javax.crypto.BadPaddingException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -43,34 +46,59 @@ public class EncryptionWindow extends Window {
 	private @FXML TilePane algorithmSelectionPane;
 	private final ToggleGroup algorithmSelectionToggleGroup = new ToggleGroup();
 
+	private final static Object RADIO_BUTTON_ALGORITHM_MAP_KEY = new Object();
+
+	private EncryptionAlgorithm getAlgorithm(Toggle toggle) {
+		return (EncryptionAlgorithm) toggle.getProperties().get(RADIO_BUTTON_ALGORITHM_MAP_KEY);
+	}
+
 	private @FXML void initialize() {
-		for (Node n : algorithmSelectionPane.getChildren())
-			if (n instanceof Toggle)
-				algorithmSelectionToggleGroup.getToggles().add((Toggle) n);
+		for (EncryptionAlgorithms ea : EncryptionAlgorithms.values()) {
+			RadioButton button = new RadioButton(ea.algorithmName());
+			button.getProperties().put(RADIO_BUTTON_ALGORITHM_MAP_KEY, ea);
+			algorithmSelectionToggleGroup.getToggles().add(button);
+			algorithmSelectionPane.getChildren().add(button);
+		}
 		algorithmSelectionToggleGroup.selectToggle(algorithmSelectionToggleGroup.getToggles().get(0));
 	}
 
 	private @FXML void encryptInput() {
-		EncryptionAlgorithms algorithm = EncryptionAlgorithms
-				.valueOf(((RadioButton) algorithmSelectionToggleGroup.getSelectedToggle()).getText());
+		Toggle selectedToggle = algorithmSelectionToggleGroup.getSelectedToggle();
+		EncryptionAlgorithm algorithm = getAlgorithm(selectedToggle);
 		try {
 			outputField.setText(algorithm.hexEncrypt(keyField.getText(), inputField.getText()));
+		} catch (InvalidKeyException e) {
+			Logging.err("The currently selected encryption algorithm can't be used with your Java installation.");
 		} catch (GeneralSecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logging.err(e);
+		} catch (UnsupportedOperationException e) {
+			Logging.err(selectedToggle instanceof Labeled
+					? "The " + ((RadioButton) selectedToggle).getText()
+							+ " algorithm is not available with your Java installation."
+					: algorithm instanceof EncryptionAlgorithms
+							? "The " + ((EncryptionAlgorithms) algorithm).algorithmName()
+									+ " algorithm is not available with your Java installation."
+							: "The currently selected algorithm is not available with your Java installation.");
 		}
 	}
 
 	private @FXML void decryptOutput() {
-		EncryptionAlgorithms algorithm = EncryptionAlgorithms
-				.valueOf(((RadioButton) algorithmSelectionToggleGroup.getSelectedToggle()).getText());
+		Toggle selectedToggle = algorithmSelectionToggleGroup.getSelectedToggle();
+		EncryptionAlgorithm algorithm = getAlgorithm(selectedToggle);
 		try {
 			inputField.setText(algorithm.hexDecrypt(keyField.getText(), outputField.getText()));
 		} catch (BadPaddingException e) {
-			Logging.wrn("The key you gave is invalid.");
+			Logging.err("The key you gave is invalid.");
 		} catch (GeneralSecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logging.err(e);
+		} catch (UnsupportedOperationException e) {
+			Logging.err(selectedToggle instanceof Labeled
+					? "The " + ((RadioButton) selectedToggle).getText()
+							+ " algorithm is not available with your Java installation."
+					: algorithm instanceof EncryptionAlgorithms
+							? "The " + ((EncryptionAlgorithms) algorithm).algorithmName()
+									+ " algorithm is not available with your Java installation."
+							: "The currently selected algorithm is not available with your Java installation.");
 		}
 	}
 
