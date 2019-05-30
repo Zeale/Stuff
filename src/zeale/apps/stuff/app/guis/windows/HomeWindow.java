@@ -14,6 +14,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
+import zeale.apps.stuff.app.guis.windows.encryption.EncryptionWindow;
 import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestWindow;
 
 public class HomeWindow extends Menu {
@@ -61,6 +62,10 @@ public class HomeWindow extends Menu {
 
 			addImageNode(consoleIcon, Stuff::displayConsole, consoleLabel);
 		}
+
+		// Encryption
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/encryption/Key.png", () -> new EncryptionWindow(),
+				"Encryption");
 	}
 
 }
