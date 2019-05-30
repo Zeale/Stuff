@@ -82,7 +82,6 @@
                                           <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="HEAD" />
                                           <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="DELETE" />
                                         <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="PUT" />
-                                          <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="OPTIONS" />
                                           <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="TRACE" />
                                           <MenuItem mnemonicParsing="false" onAction="#selectRequest" text="PATCH" />
                                       </items>
