@@ -14,15 +14,8 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	GET {
 
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-			String query = url.getQuery(), path = url.getPath(),
-					result = "GET " + (path.isEmpty() ? "/" : path) + (query == null ? "" : query) + " HTTP/1.1\r\n";
-
-			if (userAgent != null && !userAgent.isEmpty())
-				result += "User-Agent: " + userAgent + "\r\n";
-
-			if (params != null)
-				for (Entry<String, String> e : params.entrySet())
-					result += e.getKey() + ": " + e.getValue() + "\r\n";
+			String query = url.getQuery(), path = url.getPath(), result = "GET " + (path.isEmpty() ? "/" : path)
+					+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
 
 			if (body != null && !body.isEmpty())
 				result += "\r\n" + body;
@@ -34,13 +27,8 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	POST {
 
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-			String path = url.getPath(), result = "POST " + (path.isEmpty() ? "/" : path) + " HTTP/1.1\r\n";
-
-			if (userAgent != null && !userAgent.isEmpty())
-				result += "User-Agent: " + userAgent + "\r\n";
-			if (params != null)
-				for (Entry<String, String> e : params.entrySet())
-					result += e.getKey() + ": " + e.getValue() + "\r\n";
+			String path = url.getPath(),
+					result = "POST " + (path.isEmpty() ? "/" : path) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
 			result += "\r\n";
 			String query = url.getQuery();
 			if (query != null)
@@ -54,15 +42,8 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	HEAD {
 		@Override
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-			String query = url.getQuery(), path = url.getPath(),
-					result = "HEAD " + (path.isEmpty() ? "/" : path) + (query == null ? "" : query) + " HTTP/1.1\r\n";
-
-			if (userAgent != null && !userAgent.isEmpty())
-				result += "User-Agent: " + userAgent + "\r\n";
-
-			if (params != null)
-				for (Entry<String, String> e : params.entrySet())
-					result += e.getKey() + ": " + e.getValue() + "\r\n";
+			String query = url.getQuery(), path = url.getPath(), result = "HEAD " + (path.isEmpty() ? "/" : path)
+					+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
 
 			if (body != null && !body.isEmpty())
 				result += "\r\n" + body;
@@ -71,17 +52,14 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 		}
 
 	},
-	DELETE, PUT {
+	DELETE {
+
+	},
+	PUT {
 		@Override
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-			String query = url.getQuery(), path = url.getPath(),
-					result = "PUT " + (path.isEmpty() ? "/" : path) + (query == null ? "" : query) + " HTTP/1.1\r\n";
-			if (userAgent != null && !userAgent.isEmpty())
-				result += "User-Agent: " + userAgent + "\r\n";
-
-			if (params != null)
-				for (Entry<String, String> e : params.entrySet())
-					result += e.getKey() + ": " + e.getValue() + "\r\n";
+			String query = url.getQuery(), path = url.getPath(), result = "PUT " + (path.isEmpty() ? "/" : path)
+					+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
 
 			if (body != null && !body.isEmpty())
 				result += "\r\n" + body;
@@ -111,6 +89,16 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 		} catch (Exception e) {
 			throw new WebRequestException(e);
 		}
+	}
+
+	private static String addExtras(String userAgent, Map<String, String> params) throws WebRequestException {
+		String result = "";
+		if (userAgent != null && !userAgent.isEmpty())
+			result += "User-Agent: " + userAgent + "\r\n";
+		if (params != null)
+			for (Entry<String, String> e : params.entrySet())
+				result += e.getKey() + ": " + e.getValue() + "\r\n";
+		return result;
 	}
 
 	String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
