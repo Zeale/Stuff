@@ -1,7 +1,7 @@
 package zeale.apps.stuff.app.guis.windows.encryption;
 
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
@@ -9,8 +9,8 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-public enum EncryptionAlgorithms {
-	AES("AES");
+public enum EncryptionAlgorithms implements EncryptionAlgorithm {
+	AES("AES"), RSA("RSA");
 	private final String name;
 
 	private EncryptionAlgorithms(String name) {
@@ -38,35 +38,19 @@ public enum EncryptionAlgorithms {
 		}
 	}
 
-	public byte[] encrypt(byte[] processedKeyBytes, byte... input) throws GeneralSecurityException {
-		return encrypt(new SecretKeySpec(processedKeyBytes, algorithmName()), input);
-	}
-
-	public byte[] encryptRaw(byte[] unprocessedKeyBytes, byte... input) throws GeneralSecurityException {
-		int len = Cipher.getMaxAllowedKeyLength(name);
-		byte[] processedKeyBytes = processKeyBytes(unprocessedKeyBytes);
-		if (processedKeyBytes.length > len)
-			processedKeyBytes = Arrays.copyOf(processedKeyBytes, len);
-		return encrypt(processedKeyBytes, input);
-	}
-
-	public byte[] encrypt(String key, String input) throws GeneralSecurityException {
-		return encryptRaw(key.getBytes(StandardCharsets.UTF_8), input.getBytes(StandardCharsets.UTF_8));
-	}
-
-	public String hexEncrypt(String key, String input) throws GeneralSecurityException {
-		return HashAlgorithm.bytesToHex(encrypt(key, input));
-	}
-
-	public byte[] processKeyBytes(byte... keyBytes) {
-		return HashAlgorithms.SHA_256.hash(keyBytes);
-	}
-
 	public byte[] encrypt(SecretKey key, byte... input) throws GeneralSecurityException {
 		Cipher cipher = getCipher();
 		cipher.init(Cipher.ENCRYPT_MODE, key);
 
 		return cipher.doFinal(input);
+	}
+
+	public byte[] encryptRaw(byte[] unprocessedKeyBytes, byte... input) throws GeneralSecurityException {
+		int len = Cipher.getMaxAllowedKeyLength(algorithmName());
+		byte[] processedKeyBytes = EncryptionAlgorithm.processKeyBytes(unprocessedKeyBytes);
+		if (processedKeyBytes.length > len)
+			processedKeyBytes = Arrays.copyOf(processedKeyBytes, len);
+		return encrypt(processedKeyBytes, input);
 	}
 
 	/**
@@ -79,9 +63,39 @@ public enum EncryptionAlgorithms {
 	 * @throws GeneralSecurityException If a security exception is raised.
 	 */
 	public byte[] encrypt(byte... input) throws GeneralSecurityException {
-		KeyGenerator gen = KeyGenerator.getInstance(algorithmName());
+		KeyGenerator gen = getKeyGenerator();
 		gen.init(128);
 		return encrypt(gen.generateKey(), input);
+	}
+
+	public KeyGenerator getKeyGenerator() throws NoSuchAlgorithmException {
+		return KeyGenerator.getInstance(algorithmName());
+	}
+
+	public byte[] encrypt(byte[] processedKeyBytes, byte... input) throws GeneralSecurityException {
+		return encrypt(new SecretKeySpec(processedKeyBytes, algorithmName()), input);
+	}
+
+	@Override
+	public byte[] decrypt(SecretKey key, byte... encryptedInput) throws GeneralSecurityException {
+		Cipher cipher = getCipher();
+		cipher.init(Cipher.DECRYPT_MODE, key);
+
+		return cipher.doFinal(encryptedInput);
+	}
+
+	@Override
+	public byte[] decrypt(byte[] processedKeyBytes, byte... encryptedInput) throws GeneralSecurityException {
+		return decrypt(new SecretKeySpec(processedKeyBytes, algorithmName()), encryptedInput);
+	}
+
+	@Override
+	public byte[] decryptRaw(byte[] unprocessedKeyBytes, byte... encryptedInput) throws GeneralSecurityException {
+		int len = Cipher.getMaxAllowedKeyLength(algorithmName());
+		byte[] processedKeyBytes = EncryptionAlgorithm.processKeyBytes(unprocessedKeyBytes);
+		if (processedKeyBytes.length > len)
+			processedKeyBytes = Arrays.copyOf(processedKeyBytes, len);
+		return decrypt(processedKeyBytes, encryptedInput);
 	}
 
 }
