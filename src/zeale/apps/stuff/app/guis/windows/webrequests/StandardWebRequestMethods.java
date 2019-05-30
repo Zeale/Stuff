@@ -11,20 +11,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public enum StandardWebRequestMethods implements WebRequestMethod {
-	GET {
-
-		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-			String query = url.getQuery(), path = url.getPath(), result = "GET " + (path.isEmpty() ? "/" : path)
-					+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
-
-			if (body != null && !body.isEmpty())
-				result += "\r\n" + body;
-
-			return result;
-		}
-
-	},
-	POST {
+	GET, POST {
 
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
 			String path = url.getPath(),
@@ -39,23 +26,7 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 		}
 
 	},
-	HEAD {
-		@Override
-		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-			String query = url.getQuery(), path = url.getPath(), result = "HEAD " + (path.isEmpty() ? "/" : path)
-					+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
-
-			if (body != null && !body.isEmpty())
-				result += "\r\n" + body;
-
-			return result;
-		}
-
-	},
-	DELETE {
-
-	},
-	PUT {
+	HEAD, DELETE, PUT {
 		@Override
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
 			String query = url.getQuery(), path = url.getPath(), result = "PUT " + (path.isEmpty() ? "/" : path)
@@ -66,7 +37,18 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 			return result;
 		}
 	},
-	CONNECT, OPTIONS, TRACE, PATCH;
+	TRACE {
+		@Override
+		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
+			String query = url.getQuery(), path = url.getPath(), result = "PUT " + (path.isEmpty() ? "/" : path)
+					+ (query == null ? "" : query) + "\r\n" + addExtras(userAgent, params);
+
+			if (body != null && !body.isEmpty())
+				result += "\r\n" + body;
+			return result;
+		}
+	},
+	PATCH;
 
 	static String send(String address, int port, String text) throws WebRequestException {
 		try (Socket socket = new Socket(address, port)) {
@@ -102,7 +84,13 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	}
 
 	String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-		return null;
+		String query = url.getQuery(), path = url.getPath(), result = name() + " " + (path.isEmpty() ? "/" : path)
+				+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
+
+		if (body != null && !body.isEmpty())
+			result += "\r\n" + body;
+
+		return result;
 	}
 
 	private static URL url(String url) throws WebRequestException {
