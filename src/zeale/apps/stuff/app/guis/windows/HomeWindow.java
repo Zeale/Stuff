@@ -1,8 +1,5 @@
 package zeale.apps.stuff.app.guis.windows;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
