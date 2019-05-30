@@ -10,15 +10,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import zeale.apps.stuff.app.guis.windows.webrequests.WebRequestMethod.WebRequestException;
-
 public enum StandardWebRequestMethods implements WebRequestMethod {
 	GET {
 
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-			String result = "GET ";
-			String query = url.getQuery();
-			result += "/" + url.getPath() + (query == null ? "" : query) + " HTTP/1.1\r\n";
+			String query = url.getQuery(), path = url.getPath(),
+					result = "GET " + (path.isEmpty() ? "/" : path) + (query == null ? "" : query) + " HTTP/1.1\r\n";
 
 			if (userAgent != null && !userAgent.isEmpty())
 				result += "User-Agent: " + userAgent + "\r\n";
@@ -37,7 +34,7 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	POST {
 
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-			String result = "POST /" + url.getPath() + " HTTP/1.1\r\n";
+			String path = url.getPath(), result = "POST " + (path.isEmpty() ? "/" : path) + " HTTP/1.1\r\n";
 
 			if (userAgent != null && !userAgent.isEmpty())
 				result += "User-Agent: " + userAgent + "\r\n";
@@ -54,7 +51,27 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 		}
 
 	},
-	HEAD, DELETE, PUT, CONNECT, OPTIONS, TRACE, PATCH;
+	HEAD {
+		@Override
+		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
+			String query = url.getQuery(), path = url.getPath(),
+					result = "HEAD " + (path.isEmpty() ? "/" : path) + (query == null ? "" : query) + " HTTP/1.1\r\n";
+
+			if (userAgent != null && !userAgent.isEmpty())
+				result += "User-Agent: " + userAgent + "\r\n";
+
+			if (params != null)
+				for (Entry<String, String> e : params.entrySet())
+					result += e.getKey() + ": " + e.getValue() + "\r\n";
+
+			if (body != null && !body.isEmpty())
+				result += "\r\n" + body;
+
+			return result;
+		}
+
+	},
+	DELETE, PUT, CONNECT, OPTIONS, TRACE, PATCH;
 
 	static String send(String address, int port, String text) throws WebRequestException {
 		try (Socket socket = new Socket(address, port)) {
