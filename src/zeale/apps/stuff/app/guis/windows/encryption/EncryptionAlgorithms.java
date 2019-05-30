@@ -10,7 +10,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public enum EncryptionAlgorithms implements EncryptionAlgorithm {
-	AES("AES"), RSA("RSA");
+	AES("AES"), RSA("RSA"), DES("DES"), RC2("RC2"), RC4("RC4"), RC5("RC5"), IDEA("IDEA");
 	private final String name;
 
 	private EncryptionAlgorithms(String name) {
