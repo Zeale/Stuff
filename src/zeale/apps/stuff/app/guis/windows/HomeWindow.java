@@ -1,7 +1,10 @@
 package zeale.apps.stuff.app.guis.windows;
 
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -9,7 +12,8 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
 import zeale.apps.stuff.app.guis.windows.chatroom.ChatroomWindow;
-import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestGUI;
+import zeale.apps.stuff.app.guis.windows.encryption.EncryptionWindow;
+import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestWindow;
 
 public class HomeWindow extends Menu {
 
@@ -26,18 +30,44 @@ public class HomeWindow extends Menu {
 				"Calculator");
 
 		// Web Requests
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/WorldWeb.png", () -> new WebrequestGUI(),
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/WorldWeb.png", () -> new WebrequestWindow(),
 				"Web Requests");
-
-		// Console
-		Label consoleLabel = new Label("Console");
-		consoleLabel.setTextFill(Color.RED);
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", (a) -> Stuff.displayConsole(),
-				consoleLabel);
 
 		// Chatroom
 		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/chatroom/Chatroom.png", () -> new ChatroomWindow(),
 				"Chat Room");
+		
+		// Console
+		{
+			Label consoleLabel = new Label("Console");
+			consoleLabel.setTextFill(Color.FIREBRICK);
+
+			Image consoleIconRaw = loadFormatted("/zeale/apps/stuff/rsrc/app/guis/windows/console/Icon.png", 128);
+			WritableImage consoleIcon = new WritableImage(consoleIconRaw.getPixelReader(),
+					(int) consoleIconRaw.getWidth(), (int) consoleIconRaw.getHeight());
+
+			PixelWriter writer = consoleIcon.getPixelWriter();
+			PixelReader reader = consoleIcon.getPixelReader();
+
+			Color primary = Color.hsb(Math.random() * 360, 1, 1),
+					secondary = Color.hsb(primary.getHue() + 180 % 360, 1, 1);
+
+			for (int i = 0; i < consoleIcon.getWidth(); i++)
+				for (int j = 0; j < consoleIcon.getHeight(); j++)
+					switch (reader.getArgb(i, j)) {
+					case -16711423:
+						writer.setColor(i, j, primary);
+						break;
+					case -16645630:
+						writer.setColor(i, j, secondary);
+					}
+
+			addImageNode(consoleIcon, Stuff::displayConsole, consoleLabel);
+		}
+
+		// Encryption
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/encryption/Key.png", () -> new EncryptionWindow(),
+				"Encryption");
 	}
 
 }

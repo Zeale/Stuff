@@ -12,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -50,7 +51,49 @@ public class Menu extends Window {
 	}
 
 	public StackPane addImageNode(String imageURL, EventHandler<? super MouseEvent> onClick, Label popup) {
-		ImageView icon = new ImageView(new Image(imageURL, -1, 128, true, false));
+		return addImageNode(new Image(imageURL, -1, 128, true, false), onClick, popup);
+	}
+
+	public StackPane addImageNode(Image image, Runnable onClick, Label popup) {
+		return addImageNode(image, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				onClick.run();
+		}, popup);
+	}
+
+	public StackPane addImageNode(Image image, Runnable onClick, String popup) {
+		return addImageNode(image, onClick, new Label(popup));
+	}
+
+	public StackPane addImageNode(String imageURL, Runnable onClick, Label popup) {
+		return addImageNode(imageURL, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				onClick.run();
+		}, popup);
+	}
+
+	public StackPane addImageNode(String imageURL, Runnable onClick, String popup) {
+		return addImageNode(imageURL, onClick, new Label(popup));
+	}
+
+	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, Label popup) {
+		return addImageNode(imageURL, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				try {
+					Stuff.displayWindow(windowSupplier.get());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
+		}, popup);
+	}
+
+	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, String popup) {
+		return addImageNode(imageURL, windowSupplier, new Label(popup));
+	}
+
+	public StackPane addImageNode(Image image, EventHandler<? super MouseEvent> onClick, Label popup) {
+		ImageView icon = new ImageView(image);
 		icon.setPreserveRatio(true);
 		icon.setFitHeight(128);
 		icon.setPickOnBounds(true);
@@ -65,19 +108,24 @@ public class Menu extends Window {
 		return box;
 	}
 
-	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, Label popup) {
-		return addImageNode(imageURL, (a) -> {
-			try {
-				Stuff.displayWindow(windowSupplier.get());
-			} catch (WindowLoadFailureException e) {
-				Logging.err("Failed to open the window...\n");
-				Logging.err(e);
-			}
+	public StackPane addImageNode(Image image, Supplier<? extends Window> windowSupplier, String popup) {
+		return addImageNode(image, windowSupplier, new Label(popup));
+	}
+
+	public StackPane addImageNode(Image image, Supplier<? extends Window> windowSupplier, Label popup) {
+		return addImageNode(image, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				try {
+					Stuff.displayWindow(windowSupplier.get());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
 		}, popup);
 	}
 
-	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, String popup) {
-		return addImageNode(imageURL, windowSupplier, new Label(popup));
+	public static Image loadFormatted(String url, double size) {
+		return new Image(url, -1, size, true, false);
 	}
 
 	protected final HorizontalScrollBox scrollBox = new HorizontalScrollBox();

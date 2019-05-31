@@ -39,6 +39,7 @@ public final class Logging {
 	}
 
 	public static void err(Throwable error) {
+		error.printStackTrace();
 		try (PrintWriter writer = Stuff.PROGRAM_CONSOLE.getWriter(Logging.error.messageColor, FontWeight.NORMAL,
 				FontPosture.REGULAR)) {
 			error.printStackTrace(writer);
@@ -52,6 +53,7 @@ public final class Logging {
 	}
 
 	public static void wrn(Throwable error) {
+		error.printStackTrace(System.out);
 		try (PrintWriter writer = Stuff.PROGRAM_CONSOLE.getWriter(Logging.warn.messageColor, FontWeight.NORMAL,
 				FontPosture.REGULAR)) {
 			error.printStackTrace(writer);
