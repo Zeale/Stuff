@@ -13,6 +13,10 @@
 	-pop-button--clicked-text-color: -stuff-text-fill;
 }
 
+.radio-button .radio {
+	-fx-focus-color: transparent;
+}
+
 .pop-button:hover.button, .pop-button:hover.menu-button > .label {
 	-fx-text-fill: -stuff-hover-fill;
 }
