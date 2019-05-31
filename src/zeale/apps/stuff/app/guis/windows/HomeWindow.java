@@ -34,9 +34,9 @@ public class HomeWindow extends Menu {
 				"Web Requests");
 
 		// Chatroom
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/chatroom/Chatroom.png", () -> new ChatroomWindow(),
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/chatroom/Chatroom.png", ChatroomWindow::launch,
 				"Chat Room");
-		
+
 		// Console
 		{
 			Label consoleLabel = new Label("Console");

@@ -34,17 +34,17 @@
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password" GridPane.rowIndex="1" />
-                        <TextField GridPane.columnIndex="1" />
-                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField onAction="#login" GridPane.columnIndex="1" />
+                        <TextField onAction="#login" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
                   <HBox alignment="CENTER" fillHeight="false" spacing="30.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Room Server" />
-                        <TextField minWidth="300.0" />
+                        <TextField minWidth="300.0" onAction="#login" text="dusttoash.org" />
                      </children>
                   </HBox>
-                  <Button mnemonicParsing="false" styleClass="pop-button" text="Login" />
+                  <Button mnemonicParsing="false" onAction="#login" styleClass="pop-button" text="Login" />
                </children>
             </VBox>
          </center>

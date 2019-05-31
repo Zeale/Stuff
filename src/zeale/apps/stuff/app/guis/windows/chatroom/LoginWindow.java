@@ -1,11 +1,11 @@
 package zeale.apps.stuff.app.guis.windows.chatroom;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
-import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 
 class LoginWindow extends Window {
 
@@ -13,6 +13,10 @@ class LoginWindow extends Window {
 	public void destroy() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	private @FXML void login() {
+		
 	}
 
 	@Override

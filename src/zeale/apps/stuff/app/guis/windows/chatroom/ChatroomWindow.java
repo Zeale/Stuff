@@ -13,6 +13,10 @@ import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class ChatroomWindow extends Window {
+	
+	public static void launch() {
+		
+	}
 
 	@Override
 	public void destroy() {
