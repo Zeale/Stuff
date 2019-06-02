@@ -68,7 +68,10 @@ public class EncryptionWindow extends Window {
 		try {
 			outputField.setText(algorithm.hexEncrypt(keyField.getText(), inputField.getText()));
 		} catch (InvalidKeyException e) {
-			Logging.err("The currently selected encryption algorithm can't be used with your Java installation.");
+			Logging.err("The " + (selectedToggle instanceof Labeled
+					? (algorithm instanceof EncryptionAlgorithms ? ((EncryptionAlgorithms) algorithm).algorithmName()
+							: ((Labeled) selectedToggle).getText())
+					: "currently selected encryption") + " algorithm can't be used with your Java installation.");
 		} catch (GeneralSecurityException e) {
 			Logging.err(e);
 		} catch (UnsupportedOperationException e) {
@@ -93,7 +96,7 @@ public class EncryptionWindow extends Window {
 			Logging.err(e);
 		} catch (UnsupportedOperationException e) {
 			Logging.err(selectedToggle instanceof Labeled
-					? "The " + ((RadioButton) selectedToggle).getText()
+					? "The " + ((Labeled) selectedToggle).getText()
 							+ " algorithm is not available with your Java installation."
 					: algorithm instanceof EncryptionAlgorithms
 							? "The " + ((EncryptionAlgorithms) algorithm).algorithmName()

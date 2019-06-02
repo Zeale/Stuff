@@ -187,6 +187,7 @@
                                                          <children>
                                                             <TaggedCalculatorButton onAction="#functionPushed" tag="Ceiling/Round Up" text="ceil" />
                                                             <TaggedCalculatorButton onAction="#functionPushed" tag="Floor/Round Down" text="floor" />
+                                                            <TaggedCalculatorButton onAction="#functionPushed" tag="Floor/Round Down" text="round" />
                                                          </children>
                                                       </FlowPane>
                                                    </children>
