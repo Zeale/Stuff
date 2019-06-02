@@ -28,6 +28,8 @@ import zeale.apps.stuff.api.logging.Logging;
 
 public class Menu extends Window {
 
+	public static final Color DEFAULT_BACKGROUND_COLOR = new Color(0.22, 0.22, 0.22, 1);
+
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
@@ -136,7 +138,7 @@ public class Menu extends Window {
 		centerer.setFillWidth(true);
 		centerer.setAlignment(Pos.CENTER);
 
-		anchorPane.setBackground(FXTools.getBackgroundFromColor(new Color(0.22, 0.22, 0.22, 1)));
+		anchorPane.setBackground(FXTools.getBackgroundFromColor(DEFAULT_BACKGROUND_COLOR));
 		anchorPane.setPrefSize(1760, 860);
 
 		scrollBox.getChildren().addListener((ListChangeListener<Node>) c -> {
