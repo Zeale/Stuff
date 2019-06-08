@@ -4,25 +4,25 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 
-import javax.activity.InvalidActivityException;
 import javax.crypto.BadPaddingException;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputControl;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class EncryptionWindow extends Window {
 
@@ -38,6 +38,14 @@ public class EncryptionWindow extends Window {
 			stage.setScene(new Scene(loader.load()));
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the UI for the Encryption Window.", e);
+		}
+	}
+
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
 		}
 	}
 
