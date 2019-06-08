@@ -1,0 +1,11 @@
+#AlgorithmSelectionPane .radio-button {
+	-fx-text-fill: -stuff-text-fill;
+}
+
+#AlgorithmSelectionPane .radio-button:hover {
+	-fx-text-fill: -stuff-hover-fill;
+}
+
+#AlgorithmSelectionPane .radio-button:selected {
+	-fx-font-weight: bold;
+}
