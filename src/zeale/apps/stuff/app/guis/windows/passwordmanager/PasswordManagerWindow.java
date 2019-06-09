@@ -8,6 +8,10 @@ import javafx.animation.SequentialTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -17,6 +21,7 @@ import zeale.apps.stuff.api.guis.windows.Window;
 
 public class PasswordManagerWindow extends Window {
 
+	private static final ColorAdjust CHEVRON_HOVER_COLOR_SHIFT = new ColorAdjust(-0.3, 0, 0, 0);
 	private static final Duration ACCOUNT_COUNT_COLOR_ANIMATION_DURATION = Duration.seconds(1.4);
 	private @FXML Text accountCount, accountText;
 
@@ -41,6 +46,23 @@ public class PasswordManagerWindow extends Window {
 		accountTextAnimation.setCycleCount(Animation.INDEFINITE);
 		accountCountAnimation.play();
 		accountTextAnimation.play();
+	}
+
+	private final static Image SOLID_WIDE_CHEVRON_ICON = new Image(
+			"zeale/apps/stuff/rsrc/app/guis/windows/passwordmanager/SolidWideChevron.png"),
+			HOLLOW_WIDE_CHEVRON_ICON = new Image(
+					"zeale/apps/stuff/rsrc/app/guis/windows/passwordmanager/HollowWideChevron.png");
+
+	private @FXML void chevronHoverEntered(MouseEvent event) {
+		ImageView chevron = (ImageView) event.getSource();
+		chevron.setImage(SOLID_WIDE_CHEVRON_ICON);
+		chevron.setEffect(CHEVRON_HOVER_COLOR_SHIFT);
+	}
+
+	private @FXML void chevronHoverExited(MouseEvent event) {
+		ImageView chevron = (ImageView) event.getSource();
+		chevron.setImage(HOLLOW_WIDE_CHEVRON_ICON);
+		chevron.setEffect(null);
 	}
 
 	@Override
