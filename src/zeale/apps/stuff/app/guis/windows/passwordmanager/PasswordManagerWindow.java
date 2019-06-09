@@ -48,23 +48,6 @@ public class PasswordManagerWindow extends Window {
 		accountTextAnimation.play();
 	}
 
-	private final static Image SOLID_WIDE_CHEVRON_ICON = new Image(
-			"zeale/apps/stuff/rsrc/app/guis/windows/passwordmanager/SolidWideChevron.png"),
-			HOLLOW_WIDE_CHEVRON_ICON = new Image(
-					"zeale/apps/stuff/rsrc/app/guis/windows/passwordmanager/HollowWideChevron.png");
-
-	private @FXML void chevronHoverEntered(MouseEvent event) {
-		ImageView chevron = (ImageView) event.getSource();
-		chevron.setImage(SOLID_WIDE_CHEVRON_ICON);
-		chevron.setEffect(CHEVRON_HOVER_COLOR_SHIFT);
-	}
-
-	private @FXML void chevronHoverExited(MouseEvent event) {
-		ImageView chevron = (ImageView) event.getSource();
-		chevron.setImage(HOLLOW_WIDE_CHEVRON_ICON);
-		chevron.setEffect(null);
-	}
-
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("PasswordManagerGUI.fxml"));
