@@ -5,13 +5,12 @@ import java.io.IOException;
 import javafx.animation.Animation;
 import javafx.animation.FillTransition;
 import javafx.animation.SequentialTransition;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.chart.PieChart;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -21,9 +20,11 @@ import zeale.apps.stuff.api.guis.windows.Window;
 
 public class PasswordManagerWindow extends Window {
 
-	private static final ColorAdjust CHEVRON_HOVER_COLOR_SHIFT = new ColorAdjust(-0.3, 0, 0, 0);
 	private static final Duration ACCOUNT_COUNT_COLOR_ANIMATION_DURATION = Duration.seconds(1.4);
 	private @FXML Text accountCount, accountText;
+	private @FXML PieChart securityChart;
+	private PieChart.Data secureSlice = new PieChart.Data("Secure", 0.8),
+			insecureSlice = new PieChart.Data("Insecure", 0.1), repeatedSlice = new PieChart.Data("Repeated", 0.1);
 
 	@Override
 	public void destroy() {
@@ -46,6 +47,19 @@ public class PasswordManagerWindow extends Window {
 		accountTextAnimation.setCycleCount(Animation.INDEFINITE);
 		accountCountAnimation.play();
 		accountTextAnimation.play();
+
+		ObservableList<PieChart.Data> slices = FXCollections.observableArrayList(secureSlice, insecureSlice,
+				repeatedSlice);
+		securityChart.setData(slices);
+		securityChart.setLegendVisible(false);
+		updatePieChart();
+
+	}
+
+	private void updatePieChart() {
+		secureSlice.getNode().setStyle("-fx-pie-color:green;");
+		insecureSlice.getNode().setStyle("-fx-pie-color:red;");
+		repeatedSlice.getNode().setStyle("-fx-pie-color:gold;");
 	}
 
 	@Override
