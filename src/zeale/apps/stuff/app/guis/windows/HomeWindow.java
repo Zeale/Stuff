@@ -1,6 +1,8 @@
 package zeale.apps.stuff.app.guis.windows;
 
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -12,6 +14,7 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
 import zeale.apps.stuff.app.guis.windows.encryption.EncryptionWindow;
+import zeale.apps.stuff.app.guis.windows.passwordmanager.PasswordManagerWindow;
 import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestWindow;
 
 public class HomeWindow extends Menu {
@@ -63,6 +66,12 @@ public class HomeWindow extends Menu {
 		// Encryption
 		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/encryption/Key.png", () -> new EncryptionWindow(),
 				"Encryption");
+
+		// Password Manager
+		Glow glow = new Glow(1);
+		glow.setInput(new ColorAdjust(-0.2, 0, 0, 0));
+		setCustomEffect(addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/passwordmanager/Icon.png",
+				() -> new PasswordManagerWindow(), "Password Manager"), glow);
 	}
 
 }
