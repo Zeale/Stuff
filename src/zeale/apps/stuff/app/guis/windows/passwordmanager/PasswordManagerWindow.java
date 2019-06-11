@@ -1,12 +1,14 @@
 package zeale.apps.stuff.app.guis.windows.passwordmanager;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import javafx.animation.Animation;
 import javafx.animation.FillTransition;
 import javafx.animation.SequentialTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,8 +17,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
+import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
+import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
 
 public class PasswordManagerWindow extends Window {
 
@@ -70,6 +77,37 @@ public class PasswordManagerWindow extends Window {
 			stage.setScene(new Scene(loader.load()));
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the UI for the Password Manager window.", e);
+		}
+	}
+
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
+		}
+	}
+
+	private final PhoenixReference<Window> createAccountWindowHandle = PhoenixReference.create(true,
+			CreateAccountWindow::new),
+			viewAccountsWindowHandle = PhoenixReference.create(true, ViewAccountsWindow::new);
+
+	private final PhoenixReference<Stage> createAccountWindow = PhoenixReference.create(true, Stuff::makeStage),
+			viewAccountsWindow = PhoenixReference.create(true, Stuff::makeStage);
+
+	private @FXML void createAccount(ActionEvent event) {
+		try {
+			createAccountWindowHandle.get().display(createAccountWindow.get());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
+		}
+	}
+
+	private @FXML void viewAccounts(ActionEvent event) {
+		try {
+			viewAccountsWindowHandle.get().display(viewAccountsWindow.get());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
 		}
 	}
 
