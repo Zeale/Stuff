@@ -22,8 +22,8 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
-import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
+import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference.RegenerationException;
 
 public class PasswordManagerWindow extends Window {
 
@@ -88,26 +88,30 @@ public class PasswordManagerWindow extends Window {
 		}
 	}
 
-	private final PhoenixReference<Window> createAccountWindowHandle = PhoenixReference.create(true,
-			CreateAccountWindow::new),
-			viewAccountsWindowHandle = PhoenixReference.create(true, ViewAccountsWindow::new);
-
-	private final PhoenixReference<Stage> createAccountWindow = PhoenixReference.create(true, Stuff::makeStage),
-			viewAccountsWindow = PhoenixReference.create(true, Stuff::makeStage);
+	private final SporadicPhoenixReference<Stage> createAccountWindow = SporadicPhoenixReference.create(true,
+			(Callable<Stage>) () -> {
+				Stage stage = Stuff.makeStage();
+				new CreateAccountWindow().display(stage);
+				return stage;
+			}), viewAccountsWindow = SporadicPhoenixReference.create(true, (Callable<Stage>) () -> {
+				Stage stage = Stuff.makeStage();
+				new ViewAccountsWindow().display(stage);
+				return stage;
+			});
 
 	private @FXML void createAccount(ActionEvent event) {
 		try {
-			createAccountWindowHandle.get().display(createAccountWindow.get());
-		} catch (WindowLoadFailureException e) {
-			Logging.err(e);
+			createAccountWindow.get().show();
+		} catch (RegenerationException e) {
+			Logging.err(e.getCause());
 		}
 	}
 
 	private @FXML void viewAccounts(ActionEvent event) {
 		try {
-			viewAccountsWindowHandle.get().display(viewAccountsWindow.get());
-		} catch (WindowLoadFailureException e) {
-			Logging.err(e);
+			viewAccountsWindow.get().show();
+		} catch (RegenerationException e) {
+			Logging.err(e.getCause());
 		}
 	}
 
