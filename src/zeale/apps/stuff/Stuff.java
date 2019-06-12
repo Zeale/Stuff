@@ -87,7 +87,8 @@ public class Stuff extends Application {
 	 * need to be made later.
 	 */
 	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
-			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat");
+			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
+			APP_DATA_DIRECTORY = new File(INSTALLATION_DIRECTORY, "App Data");
 
 	private static Stage stage;
 
@@ -100,7 +101,6 @@ public class Stuff extends Application {
 	}
 
 	public static void main(String[] args) {
-		Platform.setImplicitExit(false);
 		launch(Stuff.class, args);
 	}
 
