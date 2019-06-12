@@ -2,13 +2,20 @@ package zeale.apps.stuff.app.guis.windows.passwordmanager;
 
 import java.io.IOException;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TreeTableView;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 
 public class ViewAccountsWindow extends Window {
+
+	private @FXML TreeTableView<Account> table;
+	private @FXML void initialize() {
+		
+	}
 
 	@Override
 	public void destroy() {

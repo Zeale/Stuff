@@ -47,7 +47,7 @@
             <VBox minWidth="200.0" prefWidth="200.0" HBox.hgrow="SOMETIMES" />
             <StackPane HBox.hgrow="SOMETIMES">
                <children>
-                  <TreeTableView minWidth="400.0">
+                  <TreeTableView fx:id="table" minWidth="400.0">
                     <columns>
                       <TreeTableColumn prefWidth="75.0" text="C1" />
                       <TreeTableColumn prefWidth="75.0" text="C2" />
