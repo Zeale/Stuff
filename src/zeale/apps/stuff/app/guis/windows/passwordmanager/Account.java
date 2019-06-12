@@ -50,7 +50,7 @@ class Account {
 	}
 
 	private final StringProperty username = property("username"), email = property("email"),
-			password = property("password");
+			password = property("password"), website = property("website");
 
 	public final StringProperty usernameProperty() {
 		return this.username;
@@ -86,6 +86,18 @@ class Account {
 
 	public final void setPassword(final String password) {
 		this.passwordProperty().set(password);
+	}
+
+	public final StringProperty websiteProperty() {
+		return this.website;
+	}
+
+	public final String getWebsite() {
+		return this.websiteProperty().get();
+	}
+
+	public final void setWebsite(final String website) {
+		this.websiteProperty().set(website);
 	}
 
 }

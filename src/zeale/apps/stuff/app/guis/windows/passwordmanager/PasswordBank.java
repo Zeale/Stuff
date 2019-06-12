@@ -10,7 +10,25 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
 
-public class PasswordBank {
+/**
+ * A {@link PasswordBank} is the interface that allows saving and reading
+ * {@link Account} objects from the hard drive. It stores a {@link File} object
+ * that represents the directory in which all of the {@link Account} objects
+ * belonging to this bank are stored, and provides an methods that allow reading
+ * and saving {@link Account} objects.
+ * 
+ * The {@link PasswordBank} abstraction is meant only to allow interfacing with
+ * requested files. It transforms data between {@link Account} objects and files
+ * on the hard drive. Because its purpose is limited to that, the bank pays no
+ * attention to the validity of the accounts it allows access to, or of the file
+ * that it stores which is meant to contain account data. Methods in this class
+ * will throw exceptions when attempts to retrieve an {@link Account} off of a
+ * file or vice versa, fail.
+ * 
+ * @author Zeale
+ *
+ */
+public abstract class PasswordBank {
 
 	private boolean valid = true;
 
@@ -92,6 +110,12 @@ public class PasswordBank {
 		File bankFile = getFile(name);
 		FileTools.deltree(bankFile);
 	}
+
+	public abstract void saveAccount();
+
+	public abstract Account loadAccount();
+
+	public abstract void deleteAccount();
 
 	/**
 	 * Returns the {@link File} that a bank with the specified name will use.
