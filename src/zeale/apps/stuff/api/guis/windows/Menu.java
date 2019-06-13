@@ -91,8 +91,8 @@ public class Menu extends Window {
 				try {
 					windowSupplier.get().display(Stuff.makeStage());
 				} catch (WindowLoadFailureException e) {
-					Logging.err(e);
 					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
 				}
 		}, popup);
 	}
@@ -134,8 +134,8 @@ public class Menu extends Window {
 				try {
 					windowSupplier.get().display(Stuff.makeStage());
 				} catch (WindowLoadFailureException e) {
-					Logging.err(e);
 					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
 				}
 		}, popup);
 	}
