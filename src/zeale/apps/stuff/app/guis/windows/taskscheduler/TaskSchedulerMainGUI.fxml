@@ -2,6 +2,7 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -15,7 +16,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
 	<top>
@@ -67,9 +70,9 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TextField fx:id="nameEditTextField" layoutX="150.0" layoutY="74.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="74.0" />
-                                          <TextArea fx:id="descriptionEditTextField" layoutX="124.0" layoutY="185.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="185.0" />
-                                          <CheckBox layoutX="388.0" layoutY="14.0" mnemonicParsing="false" text="Sync" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+                                          <TextField fx:id="editName" layoutX="150.0" layoutY="74.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="74.0" />
+                                          <TextArea fx:id="editDescription" layoutX="124.0" layoutY="185.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="185.0" />
+                                          <CheckBox fx:id="editSync1" layoutX="388.0" layoutY="14.0" mnemonicParsing="false" text="Sync" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
                                        </children></AnchorPane>
                               </content>
                             </Tab>
@@ -77,15 +80,16 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TilePane alignment="TOP_CENTER" hgap="30.0" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" style="-fx-font-size: 1.6em;" tileAlignment="TOP_RIGHT" vgap="30.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                          <TilePane alignment="TOP_CENTER" hgap="20.0" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" style="-fx-font-size: 1.6em;" tileAlignment="TOP_RIGHT" vgap="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                              <children>
-                                                <CheckBox fx:id="completeEditCheckBox" mnemonicParsing="false" text="Complete" />
-                                                <CheckBox fx:id="urgentEditCheckBox" mnemonicParsing="false" text="Urgent" />
+                                                <CheckBox fx:id="editComplete" mnemonicParsing="false" text="Complete" />
+                                                <CheckBox fx:id="editUrgent" mnemonicParsing="false" text="Urgent" />
                                              </children>
                                              <padding>
                                                 <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
                                              </padding>
                                           </TilePane>
+                                          <CheckBox fx:id="editSync2" layoutX="398.0" layoutY="24.0" mnemonicParsing="false" text="Sync" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
                                        </children></AnchorPane>
                               </content>
                             </Tab>
@@ -100,7 +104,29 @@
           </Tab>
           <Tab text="Create">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  <VBox alignment="CENTER" spacing="20.0">
+                     <children>
+                        <TextField fx:id="createName" promptText="Name" />
+                        <HBox spacing="20.0" VBox.vgrow="SOMETIMES">
+                           <children>
+                              <TextArea fx:id="createDescription" minHeight="200.0" minWidth="200.0" prefWidth="300.0" promptText="Description" HBox.hgrow="ALWAYS" />
+                              <TilePane hgap="20.0" minHeight="50.0" minWidth="200.0" prefWidth="350.0" style="-fx-font-size: 1.6em; -fx-border-color: -stuff-dark;" vgap="20.0" HBox.hgrow="SOMETIMES">
+                                 <padding>
+                                    <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                                 </padding>
+                                 <children>
+                                    <CheckBox fx:id="createComplete" mnemonicParsing="false" text="Complete" />
+                                    <CheckBox fx:id="createUrgent" mnemonicParsing="false" text="Urgent" />
+                                 </children>
+                              </TilePane>
+                           </children>
+                        </HBox>
+                        <Button mnemonicParsing="false" styleClass="pop-button" text="Button" />
+                     </children>
+                     <padding>
+                        <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+                     </padding>
+                  </VBox>
             </content>
           </Tab>
         </tabs>
