@@ -81,6 +81,41 @@ class Task {
 		return data;
 	}
 
+	/**
+	 * Clears this {@link Task}'s data and then calls {@link #update()}. This
+	 * effectively discards any data in this {@link Task} and then loads in any data
+	 * from the file.
+	 * 
+	 * @throws FileNotFoundException In case {@link #update()} throws a
+	 *                               {@link FileNotFoundException}.
+	 */
+	public void reload() throws FileNotFoundException {
+		datamap.clear();
+		update();
+	}
+
+	/**
+	 * Loads any new key-value pairs of data in this {@link Task}'s
+	 * {@link #getData() Data object} but not contained by this {@link Task}'s
+	 * {@link #datamap} already, into this {@link Task}'s {@link #datamap}.
+	 * 
+	 * @throws FileNotFoundException In case reading from the {@link #getData()
+	 *                               data} object fails.
+	 */
+	public void update() throws FileNotFoundException {
+		datamap.update(new FileInputStream(data.getFile()));
+	}
+
+	/**
+	 * Writes this {@link Task} out to its {@link Data} file.
+	 * 
+	 * @throws FileNotFoundException In case the {@link Data} for this {@link Task}
+	 *                               could not be written to.
+	 */
+	public void flush() throws FileNotFoundException {
+		Datamap.save(datamap, new FileOutputStream(data.getFile()));
+	}
+
 	Task(Data data) {
 		this(new Datamap(), data);
 	}
