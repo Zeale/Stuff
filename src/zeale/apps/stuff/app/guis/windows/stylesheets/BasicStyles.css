@@ -149,3 +149,18 @@ Text {
 .menu-bar .container .menu:showing .menu-item:focused .label {
 	-fx-text-fill: -stuff-dark;
 }
+
+/* SplitPanes */
+.split-pane {
+	-fx-background-color: transparent;
+}
+
+.split-pane .split-pane-divider {
+	-fx-background-color: transparent;
+}
+.split-pane .split-pane-divider:hover {
+	-fx-background-color: -stuff-text-fill;
+}
+.split-pane .split-pane-divider:pressed {
+	-fx-background-color: -stuff-hover-fill;
+}
