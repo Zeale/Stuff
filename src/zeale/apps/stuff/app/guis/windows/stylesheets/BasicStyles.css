@@ -44,10 +44,10 @@ Text {
 /* Text Areas */
 .text-area, .text-area .scroll-pane .viewport .content {
 	-fx-background-color: -stuff-dark;
-	-fx-border-radius: 0;
+	-fx-border-radius: 0.0;
 	-fx-text-fill: -stuff-text-fill;
 	-fx-font-family: Consolas;
-	-fx-font-size: 12px;
+	-fx-font-size: 12.0px;
 }
 
 /* Accordions */
@@ -163,4 +163,31 @@ Text {
 }
 .split-pane .split-pane-divider:pressed {
 	-fx-background-color: -stuff-hover-fill;
+}
+
+/* TableView */
+.table-view {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-style: solid;
+}
+
+.table-view .placeholder {
+	-fx-background-color: #77000018;
+}
+.table-view .placeholder .label {
+	-fx-text-fill: firebrick;
+	-fx-font-size: 1.2em;
+}
+
+.table-view .column-header-background, .table-view .column-header-background .nested-column-header .table-column {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-width: 0.0 1.0 0.0 0.0;
+}
+.table-view .column-header-background, .table-view .column-header-background .nested-column-header TableColumnHeader /* When using the ".table-column" selector, (instead of "TableColumnHeader"), borders appear "wrong." */ {
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+}
+.table-view .column-header-background .nested-column-header .table-column .label {
+	-fx-text-fill: -stuff-text-fill;
 }
