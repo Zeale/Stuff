@@ -87,6 +87,13 @@ public class Menu extends Window {
 					Logging.err("Failed to open the window...\n");
 					Logging.err(e);
 				}
+			else if (a.getButton() == MouseButton.MIDDLE)
+				try {
+					windowSupplier.get().display(Stuff.makeStage());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
 		}, popup);
 	}
 
@@ -119,6 +126,13 @@ public class Menu extends Window {
 			if (a.getButton() == MouseButton.PRIMARY)
 				try {
 					Stuff.displayWindow(windowSupplier.get());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
+			else if (a.getButton() == MouseButton.MIDDLE)
+				try {
+					windowSupplier.get().display(Stuff.makeStage());
 				} catch (WindowLoadFailureException e) {
 					Logging.err("Failed to open the window...\n");
 					Logging.err(e);
