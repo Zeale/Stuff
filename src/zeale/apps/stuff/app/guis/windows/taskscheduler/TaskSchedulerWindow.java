@@ -41,6 +41,7 @@ public class TaskSchedulerWindow extends Window {
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
 		FXMLLoader loader = new FXMLLoader(TaskSchedulerWindow.class.getResource("TaskSchedulerMainGUI.fxml"));
+		loader.setController(this);
 		try {
 			stage.setScene(new Scene(loader.load()));
 		} catch (IOException e) {
