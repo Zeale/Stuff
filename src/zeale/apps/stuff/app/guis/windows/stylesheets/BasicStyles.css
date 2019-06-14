@@ -191,3 +191,17 @@ Text {
 .table-view .column-header-background .nested-column-header .table-column .label {
 	-fx-text-fill: -stuff-text-fill;
 }
+
+/* CheckBoxes */
+.check-box .text {
+	-fx-fill: -stuff-text-fill;
+}
+.check-box:selected .text {
+	-fx-font-weight: bold;
+}
+.check-box .box {
+	-fx-background-color: -stuff-dark;
+}
+.check-box:selected .box .mark {
+	-fx-background-color: -stuff-text-fill;
+}
