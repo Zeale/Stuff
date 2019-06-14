@@ -119,4 +119,53 @@ class Task {
 	Task(Data data) {
 		this(new Datamap(), data);
 	}
+
+	public final StringProperty nameProperty() {
+		return this.name;
+	}
+
+	public final String getName() {
+		return this.nameProperty().get();
+	}
+
+	public final void setName(final String name) {
+		this.nameProperty().set(name);
+	}
+
+	public final StringProperty descriptionProperty() {
+		return this.description;
+	}
+
+	public final String getDescription() {
+		return this.descriptionProperty().get();
+	}
+
+	public final void setDescription(final String description) {
+		this.descriptionProperty().set(description);
+	}
+
+	public final BooleanProperty completedProperty() {
+		return this.completed;
+	}
+
+	public final boolean isCompleted() {
+		return this.completedProperty().get();
+	}
+
+	public final void setCompleted(final boolean completed) {
+		this.completedProperty().set(completed);
+	}
+
+	public final BooleanProperty urgentProperty() {
+		return this.urgent;
+	}
+
+	public final boolean isUrgent() {
+		return this.urgentProperty().get();
+	}
+
+	public final void setUrgent(final boolean urgent) {
+		this.urgentProperty().set(urgent);
+	}
+
 }
