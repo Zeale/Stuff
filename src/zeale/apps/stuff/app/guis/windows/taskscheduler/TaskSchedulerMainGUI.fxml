@@ -15,6 +15,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.TilePane?>
 
 <BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
 	<top>
@@ -66,15 +67,26 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TextField layoutX="150.0" layoutY="74.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="74.0" />
-                                          <TextArea layoutX="124.0" layoutY="185.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="185.0" />
+                                          <TextField fx:id="nameEditTextField" layoutX="150.0" layoutY="74.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="74.0" />
+                                          <TextArea fx:id="descriptionEditTextField" layoutX="124.0" layoutY="185.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="185.0" />
                                           <CheckBox layoutX="388.0" layoutY="14.0" mnemonicParsing="false" text="Sync" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
                                        </children></AnchorPane>
                               </content>
                             </Tab>
-                            <Tab text="Description">
+                            <Tab text="Other">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TilePane alignment="TOP_CENTER" hgap="30.0" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" style="-fx-font-size: 1.6em;" tileAlignment="TOP_RIGHT" vgap="30.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                             <children>
+                                                <CheckBox fx:id="completeEditCheckBox" mnemonicParsing="false" text="Complete" />
+                                                <CheckBox fx:id="urgentEditCheckBox" mnemonicParsing="false" text="Urgent" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                                             </padding>
+                                          </TilePane>
+                                       </children></AnchorPane>
                               </content>
                             </Tab>
                           </tabs>
