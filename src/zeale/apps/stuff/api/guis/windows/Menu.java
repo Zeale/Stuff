@@ -89,7 +89,9 @@ public class Menu extends Window {
 				}
 			else if (a.getButton() == MouseButton.MIDDLE)
 				try {
-					windowSupplier.get().display(Stuff.makeStage());
+					Stage stage = Stuff.makeStage();
+					windowSupplier.get().display(stage);
+					stage.show();
 				} catch (WindowLoadFailureException e) {
 					Logging.err("Failed to open the window...\n");
 					Logging.err(e);
@@ -132,7 +134,9 @@ public class Menu extends Window {
 				}
 			else if (a.getButton() == MouseButton.MIDDLE)
 				try {
-					windowSupplier.get().display(Stuff.makeStage());
+					Stage stage = Stuff.makeStage();
+					windowSupplier.get().display(stage);
+					stage.show();
 				} catch (WindowLoadFailureException e) {
 					Logging.err("Failed to open the window...\n");
 					Logging.err(e);
