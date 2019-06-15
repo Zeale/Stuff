@@ -53,7 +53,7 @@
             <content>
                   <SplitPane dividerPositions="0.8">
                      <items>
-                        <TableView minWidth="400.0" prefWidth="500.0">
+                        <TableView fx:id="taskView" minWidth="400.0" prefWidth="500.0">
                           <columns>
                             <TableColumn editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Name" />
                             <TableColumn maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="548.0" text="Description" />
