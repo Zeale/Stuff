@@ -205,3 +205,19 @@ Text {
 .check-box:selected .box .mark {
 	-fx-background-color: -stuff-text-fill;
 }
+
+/* DatePickers */
+.date-picker {
+	-fx-background-color: -stuff-dark;
+	-fx-background-radius: 0;
+}
+.date-picker .date-picker-display-node {
+	-fx-text-fill: -stuff-text-fill;
+}
+.date-picker .arrow-button {
+	-fx-background-color: black;
+	-fx-background-radius: 0;
+}
+.date-picker .arrow-button .arrow {
+	-fx-background-color: -stuff-text-fill;
+}
