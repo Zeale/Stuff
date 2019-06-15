@@ -1,5 +1,6 @@
 package zeale.apps.stuff.app.guis.windows.taskscheduler;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -65,12 +66,12 @@ class Task {
 		return bprop(name, BOOLEAN_STRING_GATEWAY);
 	}
 
-	public static Task load(Data file) throws FileNotFoundException {
-		return new Task(Datamap.read(new FileInputStream(file.getFile())), file);
+	public static Task load(File file) throws FileNotFoundException {
+		return new Task(Datamap.readLax(new FileInputStream(file)), file);
 	}
 
 	public static void save(Task task) throws FileNotFoundException {
-		Datamap.save(task.datamap, new FileOutputStream(task.data.getFile()));
+		Datamap.save(task.datamap, new FileOutputStream(task.data));
 	}
 
 	private final StringProperty name, description;
@@ -85,7 +86,7 @@ class Task {
 		datamap.put(key, value);
 	}
 
-	private Task(Datamap datamap, Data data) {
+	private Task(Datamap datamap, File data) {
 		this.datamap = datamap;
 		this.data = data;
 		name = property("name");
@@ -95,9 +96,9 @@ class Task {
 		dueDate = oprop("due-date", (StringGateway<Instant>) Instant::parse);
 	}
 
-	private final Data data;
+	private final File data;
 
-	public Data getData() {
+	public File getData() {
 		return data;
 	}
 
@@ -123,7 +124,7 @@ class Task {
 	 *                               data} object fails.
 	 */
 	public void update() throws FileNotFoundException {
-		datamap.update(new FileInputStream(data.getFile()));
+		datamap.update(new FileInputStream(data));
 	}
 
 	/**
@@ -133,10 +134,10 @@ class Task {
 	 *                               could not be written to.
 	 */
 	public void flush() throws FileNotFoundException {
-		Datamap.save(datamap, new FileOutputStream(data.getFile()));
+		Datamap.save(datamap, new FileOutputStream(data));
 	}
 
-	Task(Data data) {
+	Task(File data) {
 		this(new Datamap(), data);
 	}
 
