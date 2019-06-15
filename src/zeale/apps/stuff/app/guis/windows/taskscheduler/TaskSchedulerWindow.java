@@ -3,10 +3,13 @@ package zeale.apps.stuff.app.guis.windows.taskscheduler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.function.Supplier;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -22,13 +25,32 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
-import zeale.apps.tools.api.data.files.filesystem.storage.FileStorage;
 
 public class TaskSchedulerWindow extends Window {
 
-	private final static PhoenixReference<FileStorage> TASK_DATA_DIR = PhoenixReference.create(
-			() -> new FileStorage(new File(new File(Stuff.INSTALLATION_DIRECTORY, "App Data"), "Task Scheduler"))
-					.createChild("Tasks"));
+	private final static PhoenixReference<File> TASK_DATA_DIR = PhoenixReference
+			.create((Supplier<File>) () -> new File(Stuff.INSTALLATION_DIRECTORY, "App Data/Task Scheduler/Tasks"));
+
+	private final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>() {
+
+		@Override
+		protected ObservableList<Task> generate() {
+			ObservableList<Task> list = FXCollections.observableArrayList();
+			File[] listFiles = TASK_DATA_DIR.get().listFiles();
+			if (listFiles == null)
+				Logging.err("Failed to load the Tasks from the disk; the task storage directory is not a directory: "
+						+ TASK_DATA_DIR.get().getAbsolutePath());
+			else
+				for (File f : listFiles) {
+					try {
+						list.add(Task.load(f));
+					} catch (Exception e) {
+						Logging.err("Failed to load a Task from the file: " + f.getAbsolutePath());
+					}
+				}
+			return list;
+		}
+	};
 
 	private @FXML TextField createName, editName;
 	private @FXML TextArea createDescription, editDescription;
@@ -113,18 +135,33 @@ public class TaskSchedulerWindow extends Window {
 		editDescription.focusedProperty().addListener(listener);
 		editUrgent.focusedProperty().addListener(listener);
 		editComplete.focusedProperty().addListener(listener);
+
 	}
 
 	private @FXML void reload() {
-		/* TODO */
+		TASK_LIST.regenerate();
 	}
 
 	private @FXML void update() {
-		/* TODO */
+		if (TASK_LIST.exists())
+			for (Task t : TASK_LIST.get())
+				try {
+					t.update();
+				} catch (FileNotFoundException e) {
+					Logging.err(
+							"Failed to update the task, \"" + t.getName() + "\" from it's file: " + t.getData() + ".");
+					Logging.err(e);
+				}
 	}
 
 	private @FXML void flush() {
-		/* TODO */
+		if (TASK_LIST.exists())
+			for (Task t : TASK_LIST.get())
+				try {
+					t.flush();
+				} catch (FileNotFoundException e) {
+					Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
+				}
 	}
 
 	@Override
