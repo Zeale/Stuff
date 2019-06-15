@@ -71,8 +71,9 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
                                           <TextField fx:id="editName" layoutX="150.0" layoutY="74.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="74.0" />
-                                          <TextArea fx:id="editDescription" layoutX="124.0" layoutY="185.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="185.0" />
+                                          <TextArea fx:id="editDescription" layoutX="124.0" layoutY="185.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="185.0" />
                                           <CheckBox fx:id="editSync1" layoutX="388.0" layoutY="14.0" mnemonicParsing="false" text="Sync" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+                                          <Button fx:id="editFlush" layoutX="158.0" layoutY="434.0" mnemonicParsing="false" styleClass="pop-button" text="Sync Changes" />
                                        </children></AnchorPane>
                               </content>
                             </Tab>
