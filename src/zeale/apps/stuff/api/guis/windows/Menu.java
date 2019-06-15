@@ -88,6 +88,15 @@ public class Menu extends Window {
 					Logging.err("Failed to open the window...\n");
 					Logging.err(e);
 				}
+			else if (a.getButton() == MouseButton.MIDDLE)
+				try {
+					Stage stage = Stuff.makeStage();
+					windowSupplier.get().display(stage);
+					stage.show();
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
 		}, popup);
 	}
 
@@ -124,6 +133,15 @@ public class Menu extends Window {
 					Logging.err("Failed to open the window...\n");
 					Logging.err(e);
 				}
+			else if (a.getButton() == MouseButton.MIDDLE)
+				try {
+					Stage stage = Stuff.makeStage();
+					windowSupplier.get().display(stage);
+					stage.show();
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
 		}, popup);
 	}
 
@@ -135,17 +153,17 @@ public class Menu extends Window {
 	protected static final Glow hoverGlow = new Glow(1);
 	protected final VBox centerer = new VBox();
 	protected final AnchorPane anchorPane = new AnchorPane(centerer);
-	
+
 	private static final Object CUSTOM_EFFECT_KEY = new Object();
-	
-	protected static Effect getCustomEffect(Node node){
+
+	protected static Effect getCustomEffect(Node node) {
 		return (Effect) node.getProperties().getOrDefault(CUSTOM_EFFECT_KEY, hoverGlow);
 	}
-	
-	protected static final void setCustomEffect(Node node, Effect effect){
+
+	protected static final void setCustomEffect(Node node, Effect effect) {
 		node.getProperties().put(CUSTOM_EFFECT_KEY, effect);
 	}
-	
+
 	{
 		centerer.setFillWidth(true);
 		centerer.setAlignment(Pos.CENTER);
