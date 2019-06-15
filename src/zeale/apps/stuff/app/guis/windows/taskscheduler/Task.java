@@ -3,18 +3,23 @@ package zeale.apps.stuff.app.guis.windows.taskscheduler;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.time.Instant;
 
+import org.alixia.javalibrary.util.Gateway;
 import org.alixia.javalibrary.util.StringGateway;
 
 import branch.alixia.unnamed.Datamap;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import zeale.apps.tools.api.data.files.filesystem.storage.FileStorage.Data;
 
 class Task {
+	private static final StringGateway<Boolean> BOOLEAN_STRING_GATEWAY = Boolean::valueOf;
 	private final Datamap datamap;
 
 	private StringProperty property(String name) {
@@ -30,7 +35,7 @@ class Task {
 		return prop;
 	}
 
-	private BooleanProperty bprop(String name, StringGateway<Boolean> gateway) {
+	private BooleanProperty bprop(String name, Gateway<String, Boolean> gateway) {
 		BooleanProperty prop = new SimpleBooleanProperty(this, name);
 		prop.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue == null)
@@ -43,8 +48,21 @@ class Task {
 		return prop;
 	}
 
+	private <T> ObjectProperty<T> oprop(String name, Gateway<String, T> gateway) {
+		ObjectProperty<T> prop = new SimpleObjectProperty<>(this, name);
+		prop.addListener((ChangeListener<T>) (observable, oldValue, newValue) -> {
+			if (newValue == null)
+				rem(name);
+			else
+				put(name, gateway.to(newValue));
+		});
+		if (datamap.containsKey(name))
+			prop.set(gateway.from(datamap.get(name)));
+		return prop;
+	}
+
 	private BooleanProperty bprop(String name) {
-		return bprop(name, Boolean::valueOf);
+		return bprop(name, BOOLEAN_STRING_GATEWAY);
 	}
 
 	public static Task load(Data file) throws FileNotFoundException {
@@ -57,6 +75,7 @@ class Task {
 
 	private final StringProperty name, description;
 	private final BooleanProperty completed, urgent;
+	private final ObjectProperty<Instant> dueDate;
 
 	private void rem(String key) {
 		datamap.remove(key);
@@ -73,6 +92,7 @@ class Task {
 		description = property("description");
 		completed = bprop("completed");
 		urgent = bprop("urgent");
+		dueDate = oprop("due-date", (StringGateway<Instant>) Instant::parse);
 	}
 
 	private final Data data;
@@ -166,6 +186,18 @@ class Task {
 
 	public final void setUrgent(final boolean urgent) {
 		this.urgentProperty().set(urgent);
+	}
+
+	public final ObjectProperty<Instant> dueDateProperty() {
+		return this.dueDate;
+	}
+
+	public final Instant getDueDate() {
+		return this.dueDateProperty().get();
+	}
+
+	public final void setDueDate(final Instant dueDate) {
+		this.dueDateProperty().set(dueDate);
 	}
 
 }
