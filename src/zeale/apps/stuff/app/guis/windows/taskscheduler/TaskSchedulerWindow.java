@@ -46,7 +46,7 @@ public class TaskSchedulerWindow extends Window {
 				AnchorPane.setBottomAnchor(editDescription, 50d);
 				editFlush.setVisible(false);
 				Task task = selectedTask.get();
-				if (task != null) {
+				if (task != null) {/* ~PROPERTIES */
 					task.completedProperty().bind(editComplete.selectedProperty());
 					task.urgentProperty().bind(editUrgent.selectedProperty());
 					task.nameProperty().bind(editName.textProperty());
@@ -56,7 +56,7 @@ public class TaskSchedulerWindow extends Window {
 				AnchorPane.setBottomAnchor(editDescription, 200d);
 				editFlush.setVisible(true);
 				Task task = selectedTask.get();
-				if (task != null) {
+				if (task != null) {/* ~PROPERTIES */
 					task.completedProperty().unbind();
 					task.urgentProperty().unbind();
 					task.nameProperty().unbind();
@@ -68,13 +68,13 @@ public class TaskSchedulerWindow extends Window {
 		selectedTask.addListener((ChangeListener<Task>) (observable, oldValue, newValue) -> {
 			if (!editSync1.isSelected())
 				return;
-			if (oldValue != null) {
+			if (oldValue != null) {/* ~PROPERTIES */
 				oldValue.completedProperty().unbind();
 				oldValue.urgentProperty().unbind();
 				oldValue.nameProperty().unbind();
 				oldValue.descriptionProperty().unbind();
 			}
-			if (newValue != null) {
+			if (newValue != null) {/* ~PROPERTIES */
 				newValue.completedProperty().bind(editComplete.selectedProperty());
 				newValue.urgentProperty().bind(editUrgent.selectedProperty());
 				newValue.nameProperty().bind(editName.textProperty());
@@ -84,7 +84,7 @@ public class TaskSchedulerWindow extends Window {
 
 		editFlush.setOnAction(event -> {
 			Task task = selectedTask.get();
-			if (task != null) {
+			if (task != null) {/* ~PROPERTIES */
 				task.setName(editName.getText());
 				task.setDescription(editDescription.getText());
 				task.setUrgent(editUrgent.isSelected());
@@ -97,6 +97,22 @@ public class TaskSchedulerWindow extends Window {
 				Logging.err(e);
 			}
 		});
+
+		ChangeListener<Boolean> listener = (ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+			if (editSync1.isSelected() && !newValue && selectedTask.get() != null) {
+				try {
+					selectedTask.get().flush();
+				} catch (FileNotFoundException e) {
+					Logging.err("Failed to save the task, \"" + selectedTask.get().getName() + "\" to the file.");
+					Logging.err(e);
+				}
+			}
+		};
+		/* ~PROPERTIES */
+		editName.focusedProperty().addListener(listener);
+		editDescription.focusedProperty().addListener(listener);
+		editUrgent.focusedProperty().addListener(listener);
+		editComplete.focusedProperty().addListener(listener);
 	}
 
 	private @FXML void reload() {
