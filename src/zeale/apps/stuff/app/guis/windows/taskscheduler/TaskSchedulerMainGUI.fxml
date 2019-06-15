@@ -70,11 +70,11 @@
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
-                                          <TextField fx:id="editName" layoutX="150.0" layoutY="74.0" promptText="Task Name" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="75.0" />
-                                          <TextArea fx:id="editDescription" layoutX="50.0" layoutY="204.0" wrapText="true" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="200.0" />
+                                          <TextField fx:id="editName" layoutX="150.0" layoutY="74.0" promptText="Name" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="75.0" />
+                                          <TextArea fx:id="editDescription" layoutX="50.0" layoutY="204.0" promptText="Description" wrapText="true" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="200.0" />
                                           <CheckBox fx:id="editSync1" layoutX="388.0" layoutY="14.0" mnemonicParsing="false" text="Sync" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
                                           <Button fx:id="editFlush" layoutX="158.0" layoutY="434.0" mnemonicParsing="false" styleClass="pop-button" text="Sync Changes" />
-                                          <DatePicker fx:id="editDueDate" layoutX="137.0" layoutY="131.0" promptText="Task Due Date" AnchorPane.leftAnchor="137.0" AnchorPane.rightAnchor="137.0" />
+                                          <DatePicker fx:id="editDueDate" layoutX="137.0" layoutY="131.0" promptText="Due Date" AnchorPane.leftAnchor="137.0" AnchorPane.rightAnchor="137.0" />
                                        </children></AnchorPane>
                               </content>
                             </Tab>
