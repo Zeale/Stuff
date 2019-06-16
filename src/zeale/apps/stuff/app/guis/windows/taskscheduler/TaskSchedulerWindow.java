@@ -8,9 +8,8 @@ import java.util.function.Supplier;
 
 import org.alixia.javalibrary.javafx.bindings.BindingTools;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -30,6 +29,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -75,12 +76,16 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML TableColumn<Task, String> nameColumn, descriptionColumn;
 	private @FXML TableColumn<Task, Boolean> urgentColumn, completeColumn;
 
-	private ObjectProperty<Task> selectedTask = new SimpleObjectProperty<>();
+	private ReadOnlyObjectProperty<Task> selectedTask;
 
 	private @FXML void initialize() {
 
+		selectedTask = taskView.getSelectionModel().selectedItemProperty();
+
 		taskView.setRowFactory(param -> new TableRow<Task>() {
 			{
+				setOnMouseEntered(event -> setTextFill(Color.RED));
+				setOnMouseExited(event -> setTextFill(Color.GOLD));
 				setOnMouseClicked(event -> {
 					if (event.getButton() == MouseButton.PRIMARY) {
 						taskView.getSelectionModel().clearSelection();
@@ -88,6 +93,7 @@ public class TaskSchedulerWindow extends Window {
 							taskView.getSelectionModel().select(getIndex());
 					}
 				});
+				setTextFill(Color.GOLD);
 			}
 		});
 
@@ -117,19 +123,25 @@ public class TaskSchedulerWindow extends Window {
 		});
 
 		selectedTask.addListener((ChangeListener<Task>) (observable, oldValue, newValue) -> {
+			if (newValue != null) {/* ~PROPERTIES */
+				editComplete.setSelected(newValue.isCompleted());
+				editUrgent.setSelected(newValue.isUrgent());
+				editName.setText(newValue.getName());
+				editDescription.setText(newValue.getDescription());
+			}
 			if (!editSync1.isSelected())
 				return;
 			if (oldValue != null) {/* ~PROPERTIES */
-				oldValue.completedProperty().unbind();
-				oldValue.urgentProperty().unbind();
-				oldValue.nameProperty().unbind();
-				oldValue.descriptionProperty().unbind();
+				oldValue.completedProperty().unbindBidirectional(editComplete.selectedProperty());
+				oldValue.urgentProperty().unbindBidirectional(editUrgent.selectedProperty());
+				oldValue.nameProperty().unbindBidirectional(editName.textProperty());
+				oldValue.descriptionProperty().unbindBidirectional(editDescription.textProperty());
 			}
 			if (newValue != null) {/* ~PROPERTIES */
-				newValue.completedProperty().bind(editComplete.selectedProperty());
-				newValue.urgentProperty().bind(editUrgent.selectedProperty());
-				newValue.nameProperty().bind(editName.textProperty());
-				newValue.descriptionProperty().bind(editDescription.textProperty());
+				newValue.completedProperty().bindBidirectional(editComplete.selectedProperty());
+				newValue.urgentProperty().bindBidirectional(editUrgent.selectedProperty());
+				newValue.nameProperty().bindBidirectional(editName.textProperty());
+				newValue.descriptionProperty().bindBidirectional(editDescription.textProperty());
 			}
 		});
 
@@ -165,27 +177,33 @@ public class TaskSchedulerWindow extends Window {
 		editUrgent.focusedProperty().addListener(listener);
 		editComplete.focusedProperty().addListener(listener);
 
+		/* ~PROPERTIES */
 		nameColumn.setCellValueFactory(t -> t.getValue().nameProperty());
 		descriptionColumn.setCellValueFactory(t -> t.getValue().descriptionProperty());
 		urgentColumn.setCellValueFactory(t -> t.getValue().urgentProperty());
 		completeColumn.setCellValueFactory(t -> t.getValue().completedProperty());
 
+		/* ~PROPERTIES */
 		nameColumn.setCellFactory(__ -> new BasicCell<>());
 		descriptionColumn.setCellFactory(__ -> new BasicCell<>());
 		urgentColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.urgentProperty()));
 		completeColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.completedProperty()));
 
 		taskView.setItems(TASK_LIST.get());
+
 	}
 
 	@SuppressWarnings("rawtypes")
 	private static void prepareCell(TableCell<?, ?> cell) {
 		cell.tableRowProperty().addListener((ChangeListener<TableRow>) (observable, oldValue, newValue) -> {
-			if (oldValue != null)
+			if (oldValue != null) {
 				cell.textFillProperty().unbind();
+				cell.fontProperty().unbind();
+			}
 			if (newValue != null) {
-				BindingTools.bind(newValue.selectedProperty(), a -> a == null || !a ? Color.GOLD : Color.RED,
-						cell.textFillProperty());
+				BindingTools.bind(newValue.selectedProperty(),
+						a -> Font.font(null, a == null || !a ? null : FontWeight.BOLD, -1), cell.fontProperty());
+				cell.textFillProperty().bind(newValue.textFillProperty());
 			}
 		});
 		cell.setAlignment(Pos.CENTER);
