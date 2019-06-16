@@ -8,8 +8,9 @@ import java.util.function.Supplier;
 
 import org.alixia.javalibrary.javafx.bindings.BindingTools;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
-import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -26,6 +27,7 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
@@ -73,10 +75,22 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML TableColumn<Task, String> nameColumn, descriptionColumn;
 	private @FXML TableColumn<Task, Boolean> urgentColumn, completeColumn;
 
-	private ReadOnlyObjectProperty<Task> selectedTask;
+	private ObjectProperty<Task> selectedTask = new SimpleObjectProperty<>();
 
 	private @FXML void initialize() {
-		selectedTask = taskView.getSelectionModel().selectedItemProperty();
+
+		taskView.setRowFactory(param -> new TableRow<Task>() {
+			{
+				setOnMouseClicked(event -> {
+					if (event.getButton() == MouseButton.PRIMARY) {
+						taskView.getSelectionModel().clearSelection();
+						if (!isEmpty())
+							taskView.getSelectionModel().select(getIndex());
+					}
+				});
+			}
+		});
+
 		editSync1.selectedProperty().bindBidirectional(editSync2.selectedProperty());
 		editSync1.selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue) {
@@ -164,9 +178,16 @@ public class TaskSchedulerWindow extends Window {
 		taskView.setItems(TASK_LIST.get());
 	}
 
+	@SuppressWarnings("rawtypes")
 	private static void prepareCell(TableCell<?, ?> cell) {
-		BindingTools.bind(cell.selectedProperty(), t -> t == null || !t ? Color.GOLD : Color.RED,
-				cell.textFillProperty());
+		cell.tableRowProperty().addListener((ChangeListener<TableRow>) (observable, oldValue, newValue) -> {
+			if (oldValue != null)
+				cell.textFillProperty().unbind();
+			if (newValue != null) {
+				BindingTools.bind(newValue.selectedProperty(), a -> a == null || !a ? Color.GOLD : Color.RED,
+						cell.textFillProperty());
+			}
+		});
 		cell.setAlignment(Pos.CENTER);
 		cell.setTextAlignment(TextAlignment.CENTER);
 	}
