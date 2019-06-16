@@ -5,8 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.function.Supplier;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,6 +34,7 @@ public class TaskSchedulerWindow extends Window {
 
 		@Override
 		protected ObservableList<Task> generate() {
+			TASK_DATA_DIR.get().mkdirs();
 			ObservableList<Task> list = FXCollections.observableArrayList();
 			File[] listFiles = TASK_DATA_DIR.get().listFiles();
 			if (listFiles == null)
@@ -59,9 +59,10 @@ public class TaskSchedulerWindow extends Window {
 
 	private @FXML TableView<Task> taskView;
 
-	private ObjectProperty<Task> selectedTask = new SimpleObjectProperty<>();
+	private ReadOnlyObjectProperty<Task> selectedTask;
 
 	private @FXML void initialize() {
+		selectedTask = taskView.getSelectionModel().selectedItemProperty();
 		editSync1.selectedProperty().bindBidirectional(editSync2.selectedProperty());
 		editSync1.selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue) {
@@ -111,12 +112,12 @@ public class TaskSchedulerWindow extends Window {
 				task.setDescription(editDescription.getText());
 				task.setUrgent(editUrgent.isSelected());
 				task.setCompleted(editComplete.isSelected());
-			}
-			try {
-				task.flush();
-			} catch (FileNotFoundException e) {
-				Logging.err("Failed to save the task, \"" + task.getName() + "\" to the file.");
-				Logging.err(e);
+				try {
+					task.flush();
+				} catch (FileNotFoundException e) {
+					Logging.err("Failed to save the task, \"" + task.getName() + "\" to the file.");
+					Logging.err(e);
+				}
 			}
 		});
 
@@ -135,6 +136,8 @@ public class TaskSchedulerWindow extends Window {
 		editDescription.focusedProperty().addListener(listener);
 		editUrgent.focusedProperty().addListener(listener);
 		editComplete.focusedProperty().addListener(listener);
+
+		taskView.setItems(TASK_LIST.get());
 
 	}
 
