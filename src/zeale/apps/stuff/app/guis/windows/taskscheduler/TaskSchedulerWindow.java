@@ -104,20 +104,20 @@ public class TaskSchedulerWindow extends Window {
 				editFlush.setVisible(false);
 				Task task = selectedTask.get();
 				if (task != null) {/* ~PROPERTIES */
-					task.completedProperty().bind(editComplete.selectedProperty());
-					task.urgentProperty().bind(editUrgent.selectedProperty());
-					task.nameProperty().bind(editName.textProperty());
-					task.descriptionProperty().bind(editDescription.textProperty());
+					task.completedProperty().bindBidirectional(editComplete.selectedProperty());
+					task.urgentProperty().bindBidirectional(editUrgent.selectedProperty());
+					task.nameProperty().bindBidirectional(editName.textProperty());
+					task.descriptionProperty().bindBidirectional(editDescription.textProperty());
 				}
 			} else {
 				AnchorPane.setBottomAnchor(editDescription, 200d);
 				editFlush.setVisible(true);
 				Task task = selectedTask.get();
 				if (task != null) {/* ~PROPERTIES */
-					task.completedProperty().unbind();
-					task.urgentProperty().unbind();
-					task.nameProperty().unbind();
-					task.descriptionProperty().unbind();
+					task.completedProperty().unbindBidirectional(editComplete.selectedProperty());
+					task.urgentProperty().unbindBidirectional(editUrgent.selectedProperty());
+					task.nameProperty().unbindBidirectional(editName.textProperty());
+					task.descriptionProperty().unbindBidirectional(editDescription.textProperty());
 				}
 			}
 		});
