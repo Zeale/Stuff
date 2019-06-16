@@ -180,6 +180,10 @@ Text {
 	-fx-font-size: 1.2em;
 }
 
+.table-view .column-header-background .filler {
+	-fx-background-color: transparent;
+}
+
 .table-view .column-header-background, .table-view .column-header-background .nested-column-header .table-column {
 	-fx-background-color: transparent;
 	-fx-border-color: -stuff-dark;
@@ -190,6 +194,25 @@ Text {
 }
 .table-view .column-header-background .nested-column-header .table-column .label {
 	-fx-text-fill: -stuff-text-fill;
+}
+
+.table-view .virtual-flow {
+	-fx-background-color: -stuff-dark;
+}
+.table-view .virtual-flow .table-row-cell:odd {
+	-fx-background-color: -stuff-light;
+}
+.table-view .virtual-flow .table-row-cell:even {
+	-fx-background-color: derive(-stuff-light, 20%);
+}
+
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column {
+	-fx-border-width: 0 1 0 0;
+	-fx-border-color: -stuff-dark;
+}
+
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column:last-visible {
+	-fx-border-color: transparent;
 }
 
 /* CheckBoxes */
