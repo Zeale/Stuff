@@ -155,7 +155,8 @@ public class TaskSchedulerWindow extends Window {
 				try {
 					task.flush();
 				} catch (FileNotFoundException e) {
-					Logging.err("Failed to save the task, \"" + task.getName() + "\" to the file.");
+					Logging.err("Failed to save the task, \"" + task.getName() + "\" to the file:"
+							+ selectedTask.get().getData().getAbsolutePath());
 					Logging.err(e);
 				}
 			}
@@ -166,7 +167,8 @@ public class TaskSchedulerWindow extends Window {
 				try {
 					selectedTask.get().flush();
 				} catch (FileNotFoundException e) {
-					Logging.err("Failed to save the task, \"" + selectedTask.get().getName() + "\" to the file.");
+					Logging.err("Failed to save the task, \"" + selectedTask.get().getName() + "\" to the file: "
+							+ selectedTask.get().getData().getAbsolutePath());
 					Logging.err(e);
 				}
 			}
