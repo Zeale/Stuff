@@ -55,10 +55,10 @@
                      <items>
                         <TableView fx:id="taskView" minWidth="400.0" prefWidth="500.0">
                           <columns>
-                            <TableColumn editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Name" />
-                            <TableColumn maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="548.0" text="Description" />
-                              <TableColumn maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Urgent" />
-                              <TableColumn maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Complete" />
+                            <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Name" />
+                            <TableColumn fx:id="descriptionColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="548.0" text="Description" />
+                              <TableColumn fx:id="urgentColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Urgent" />
+                              <TableColumn fx:id="completeColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Complete" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

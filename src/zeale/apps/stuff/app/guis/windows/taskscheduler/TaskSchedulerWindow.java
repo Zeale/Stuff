@@ -3,21 +3,32 @@ package zeale.apps.stuff.app.guis.windows.taskscheduler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.alixia.javalibrary.javafx.bindings.BindingTools;
+
+import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
@@ -58,6 +69,9 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML Button editFlush;
 
 	private @FXML TableView<Task> taskView;
+
+	private @FXML TableColumn<Task, String> nameColumn, descriptionColumn;
+	private @FXML TableColumn<Task, Boolean> urgentColumn, completeColumn;
 
 	private ReadOnlyObjectProperty<Task> selectedTask;
 
@@ -137,7 +151,140 @@ public class TaskSchedulerWindow extends Window {
 		editUrgent.focusedProperty().addListener(listener);
 		editComplete.focusedProperty().addListener(listener);
 
+		nameColumn.setCellValueFactory(t -> t.getValue().nameProperty());
+		descriptionColumn.setCellValueFactory(t -> t.getValue().descriptionProperty());
+		urgentColumn.setCellValueFactory(t -> t.getValue().urgentProperty());
+		completeColumn.setCellValueFactory(t -> t.getValue().completedProperty());
+
+		nameColumn.setCellFactory(__ -> new BasicCell<>());
+		descriptionColumn.setCellFactory(__ -> new BasicCell<>());
+		urgentColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.urgentProperty()));
+		completeColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.completedProperty()));
+
 		taskView.setItems(TASK_LIST.get());
+	}
+
+	private static void prepareCell(TableCell<?, ?> cell) {
+		BindingTools.bind(cell.selectedProperty(), t -> t == null || !t ? Color.GOLD : Color.RED,
+				cell.textFillProperty());
+		cell.setAlignment(Pos.CENTER);
+		cell.setTextAlignment(TextAlignment.CENTER);
+	}
+
+	private static class BasicCheckboxCell<T> extends BasicCell<T> {
+
+		protected final CheckBox checkBox = new CheckBox();
+		protected final Function<T, Boolean> converter;
+
+		public BasicCheckboxCell(Function<T, Boolean> converter) {
+			this.converter = converter;
+		}
+
+		protected void update(T item) {
+			checkBox.setSelected(converter.apply(item));
+		}
+
+		protected void emptied() {
+			setGraphic(null);
+		}
+
+		protected void populated() {
+			setGraphic(checkBox);
+		}
+
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static class BooleanCheckBoxCell extends BasicCheckboxCell<Boolean> {
+
+		protected final Function<Task, Property<Boolean>> propertyRetriever;
+
+		public BooleanCheckBoxCell(Function<Task, Property<Boolean>> propertyRetriever) {
+			super(null);
+			this.propertyRetriever = propertyRetriever;
+		}
+
+		{
+
+			tableRowProperty().addListener(new ChangeListener<TableRow>() {
+
+				ChangeListener<Object> taskListener = new ChangeListener<Object>() {
+					@Override
+					public void changed(ObservableValue<? extends Object> observable1, Object oldValue1,
+							Object newValue1) {
+						if (oldValue1 != null)
+							checkBox.selectedProperty().unbindBidirectional(propertyRetriever.apply((Task) oldValue1));
+						if (newValue1 != null)
+							checkBox.selectedProperty().bindBidirectional(propertyRetriever.apply((Task) newValue1));
+					}
+				};
+
+				@Override
+				public void changed(ObservableValue<? extends TableRow> observable, TableRow oldValue,
+						TableRow newValue) {
+					if (oldValue != null)
+						oldValue.itemProperty().removeListener(taskListener);
+					if (newValue != null) {
+						newValue.itemProperty().addListener(taskListener);
+						taskListener.changed(newValue.itemProperty(), oldValue == null ? null : oldValue.getItem(),
+								newValue.getItem());
+					}
+				}
+			});
+
+		}
+
+		protected void update(Boolean item) {
+		}
+	}
+
+	private static class BasicCell<T> extends TableCell<Task, T> {
+
+		{
+			prepareCell(this);
+		}
+
+		@Override
+		protected void updateItem(T item, boolean empty) {
+			if (empty && isEmpty() || item == getItem())
+				return;
+			if (item != null && item.equals(getItem()))
+				return;
+			if (!isEmpty() && getItem() != null && (empty || item == null))
+				emptied();
+			else {
+				if (!(empty || item == null)) {
+					if (isEmpty() || getItem() == null)
+						populated();
+					update(item);
+				}
+			}
+			super.updateItem(item, empty);
+		}
+
+		/**
+		 * Called when an {@link #updateItem(Object, boolean)} call changed this cell
+		 * from being empty to having a value. Being "empty" is defined as this cell
+		 * having a {@link #getItem() value} of <code>null</code>, or as this cell being
+		 * {@link #isEmpty() empty}. This method is actually called before
+		 * {@link #update(Object)} is.
+		 */
+		protected void populated() {
+
+		}
+
+		protected void emptied() {
+			setText(null);
+			setGraphic(null);
+		}
+
+		protected void update(T item) {
+			setText(text(item));
+		}
+
+		protected String text(T item) {
+			return item.toString();
+		}
 
 	}
 
