@@ -48,9 +48,9 @@
 		<URL value="@../stylesheets/BasicStyles.css" />
 	</stylesheets>
    <center>
-      <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="layoutTabPane" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab text="View">
+          <Tab fx:id="viewTasksTab" text="View">
             <content>
                   <SplitPane dividerPositions="0.8">
                      <items>
@@ -130,7 +130,7 @@
                               </TilePane>
                            </items>
                         </SplitPane>
-                        <Button fx:id="createButton" mnemonicParsing="false" styleClass="pop-button" text="Create" />
+                        <Button mnemonicParsing="false" onAction="#createNewTab" styleClass="pop-button" text="Create" />
                      </children>
                      <padding>
                         <Insets bottom="50.0" left="50.0" right="50.0" top="100.0" />
