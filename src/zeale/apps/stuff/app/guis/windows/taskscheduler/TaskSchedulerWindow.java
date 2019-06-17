@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -78,7 +78,7 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML TextArea createDescription, editDescription;
 	private @FXML DatePicker createDueDate, editDueDate;
 	private @FXML CheckBox createComplete, editComplete, createUrgent, editUrgent, editSync1, editSync2;
-	private @FXML Button editFlush;
+	private @FXML Button editFlush, createButton;
 
 	private @FXML TableView<Task> taskView;
 
@@ -231,6 +231,29 @@ public class TaskSchedulerWindow extends Window {
 		dueDateColumn.setCellFactory(__ -> new BasicCell<>());
 
 		taskView.setItems(TASK_LIST.get());
+
+		createButton.setOnAction(event -> {
+			Instant instant;
+			try {
+				instant = INSTANT_TO_LOCALDATE_GATEWAY.to(createDueDate.getValue());
+			} catch (Exception e) {
+				Logging.err("Could not convert " + createDueDate.getValue() + " to a time stamp.");
+				return;
+			}
+			String uuid = UUID.randomUUID().toString();
+			File file = new File(TASK_DATA_DIR.get(), uuid);
+			int val = 0;
+			if (file.exists()) {
+				while ((file = new File(TASK_DATA_DIR.get(), uuid + "-" + val++ + ".tsk")).exists())
+					;
+				Task task = new Task(file);
+				task.setCompleted(createComplete.isSelected());
+				task.setUrgent(createUrgent.isSelected());
+				task.setDescription(createDescription.getText());
+				task.setName(createName.getText());
+				task.setDueDate(instant);
+			}
+		});
 
 	}
 

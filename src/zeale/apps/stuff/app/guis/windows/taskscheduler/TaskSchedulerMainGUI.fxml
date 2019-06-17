@@ -130,7 +130,7 @@
                               </TilePane>
                            </items>
                         </SplitPane>
-                        <Button mnemonicParsing="false" styleClass="pop-button" text="Create" />
+                        <Button fx:id="createButton" mnemonicParsing="false" styleClass="pop-button" text="Create" />
                      </children>
                      <padding>
                         <Insets bottom="50.0" left="50.0" right="50.0" top="100.0" />
