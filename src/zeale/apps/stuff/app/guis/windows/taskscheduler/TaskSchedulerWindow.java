@@ -275,6 +275,12 @@ public class TaskSchedulerWindow extends Window {
 		task.setName(createName.getText());
 		task.setDueDate(instant);
 
+		createComplete.setSelected(false);
+		createUrgent.setSelected(false);
+		createDescription.setText(null);
+		createName.setText(null);
+		createDueDate.setValue(null);
+
 		try {
 			task.flush();
 			TASK_LIST.get().add(task);
