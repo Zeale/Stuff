@@ -3,10 +3,17 @@ package zeale.apps.stuff.app.guis.windows.taskscheduler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.alixia.javalibrary.javafx.bindings.BindingTools;
+import org.alixia.javalibrary.javafx.bindings.BindingTools.PipewayBinding;
+import org.alixia.javalibrary.util.Box;
+import org.alixia.javalibrary.util.Gateway;
 
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -20,6 +27,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -68,6 +76,7 @@ public class TaskSchedulerWindow extends Window {
 
 	private @FXML TextField createName, editName;
 	private @FXML TextArea createDescription, editDescription;
+	private @FXML DatePicker createDueDate, editDueDate;
 	private @FXML CheckBox createComplete, editComplete, createUrgent, editUrgent, editSync1, editSync2;
 	private @FXML Button editFlush;
 
@@ -75,8 +84,22 @@ public class TaskSchedulerWindow extends Window {
 
 	private @FXML TableColumn<Task, String> nameColumn, descriptionColumn;
 	private @FXML TableColumn<Task, Boolean> urgentColumn, completeColumn;
+	private @FXML TableColumn<Task, LocalDate> dueDateColumn;
 
 	private ReadOnlyObjectProperty<Task> selectedTask;
+
+	private static final Gateway<Instant, LocalDate> INSTANT_TO_LOCALDATE_GATEWAY = new Gateway<Instant, LocalDate>() {
+
+		@Override
+		public LocalDate from(Instant value) {
+			return value == null ? null : value.atZone(ZoneId.systemDefault()).toLocalDate();
+		}
+
+		@Override
+		public Instant to(LocalDate value) {
+			return value == null ? null : value.atStartOfDay(ZoneId.systemDefault()).toInstant();
+		}
+	};
 
 	private @FXML void initialize() {
 
@@ -97,6 +120,8 @@ public class TaskSchedulerWindow extends Window {
 			}
 		});
 
+		final Box<PipewayBinding<?, ?, ?, ?>> binding = new Box<>();
+
 		editSync1.selectedProperty().bindBidirectional(editSync2.selectedProperty());
 		editSync1.selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue) {
@@ -108,6 +133,8 @@ public class TaskSchedulerWindow extends Window {
 					task.urgentProperty().bindBidirectional(editUrgent.selectedProperty());
 					task.nameProperty().bindBidirectional(editName.textProperty());
 					task.descriptionProperty().bindBidirectional(editDescription.textProperty());
+					binding.value = BindingTools.bibindDbg(task.dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY,
+							editDueDate.valueProperty());
 				}
 			} else {
 				AnchorPane.setBottomAnchor(editDescription, 200d);
@@ -118,6 +145,8 @@ public class TaskSchedulerWindow extends Window {
 					task.urgentProperty().unbindBidirectional(editUrgent.selectedProperty());
 					task.nameProperty().unbindBidirectional(editName.textProperty());
 					task.descriptionProperty().unbindBidirectional(editDescription.textProperty());
+					if (binding.value != null)
+						binding.value.unbind();
 				}
 			}
 		});
@@ -128,6 +157,7 @@ public class TaskSchedulerWindow extends Window {
 				editUrgent.setSelected(newValue.isUrgent());
 				editName.setText(newValue.getName());
 				editDescription.setText(newValue.getDescription());
+				editDueDate.setValue(INSTANT_TO_LOCALDATE_GATEWAY.from(newValue.getDueDate()));
 			}
 			if (!editSync1.isSelected())
 				return;
@@ -136,12 +166,16 @@ public class TaskSchedulerWindow extends Window {
 				oldValue.urgentProperty().unbindBidirectional(editUrgent.selectedProperty());
 				oldValue.nameProperty().unbindBidirectional(editName.textProperty());
 				oldValue.descriptionProperty().unbindBidirectional(editDescription.textProperty());
+				if (binding.value != null)
+					binding.value.unbind();
 			}
 			if (newValue != null) {/* ~PROPERTIES */
 				newValue.completedProperty().bindBidirectional(editComplete.selectedProperty());
 				newValue.urgentProperty().bindBidirectional(editUrgent.selectedProperty());
 				newValue.nameProperty().bindBidirectional(editName.textProperty());
 				newValue.descriptionProperty().bindBidirectional(editDescription.textProperty());
+				binding.value = BindingTools.bibindDbg(newValue.dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY,
+						editDueDate.valueProperty());
 			}
 		});
 
@@ -152,6 +186,7 @@ public class TaskSchedulerWindow extends Window {
 				task.setDescription(editDescription.getText());
 				task.setUrgent(editUrgent.isSelected());
 				task.setCompleted(editComplete.isSelected());
+				task.setDueDate(INSTANT_TO_LOCALDATE_GATEWAY.to(editDueDate.getValue()));
 				try {
 					task.flush();
 				} catch (FileNotFoundException e) {
@@ -178,18 +213,22 @@ public class TaskSchedulerWindow extends Window {
 		editDescription.focusedProperty().addListener(listener);
 		editUrgent.focusedProperty().addListener(listener);
 		editComplete.focusedProperty().addListener(listener);
+		editDueDate.focusedProperty().addListener(listener);
 
 		/* ~PROPERTIES */
 		nameColumn.setCellValueFactory(t -> t.getValue().nameProperty());
 		descriptionColumn.setCellValueFactory(t -> t.getValue().descriptionProperty());
 		urgentColumn.setCellValueFactory(t -> t.getValue().urgentProperty());
 		completeColumn.setCellValueFactory(t -> t.getValue().completedProperty());
+		dueDateColumn.setCellValueFactory(
+				t -> BindingTools.mask(t.getValue().dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY::from));
 
 		/* ~PROPERTIES */
 		nameColumn.setCellFactory(__ -> new BasicCell<>());
 		descriptionColumn.setCellFactory(__ -> new BasicCell<>());
 		urgentColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.urgentProperty()));
 		completeColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.completedProperty()));
+		dueDateColumn.setCellFactory(__ -> new BasicCell<>());
 
 		taskView.setItems(TASK_LIST.get());
 
