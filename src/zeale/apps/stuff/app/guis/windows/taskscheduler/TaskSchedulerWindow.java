@@ -27,7 +27,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
@@ -112,13 +114,26 @@ public class TaskSchedulerWindow extends Window {
 
 		taskView.setRowFactory(param -> new TableRow<Task>() {
 			{
+
+				ContextMenu rightClickMenu = new ContextMenu();
+				MenuItem item = new MenuItem();
+				item.setText("Delete");
+				item.setOnAction(event -> {
+					Task tsk = getItem();
+					if (tsk == null)
+						return;
+
+					tsk.getData().delete();
+					TASK_LIST.get().remove(tsk);
+				});
+				rightClickMenu.getItems().add(item);
+
 				setOnMouseEntered(event -> setTextFill(Color.RED));
 				setOnMouseExited(event -> setTextFill(Color.GOLD));
 				setOnMouseClicked(event -> {
-					if (event.getButton() == MouseButton.PRIMARY) {
-						taskView.getSelectionModel().clearSelection();
-						if (!isEmpty())
-							taskView.getSelectionModel().select(getIndex());
+					if (event.getButton() == MouseButton.SECONDARY && !(isEmpty() || getItem() == null)) {
+						rightClickMenu.show(this, event.getScreenX(), event.getScreenY());
+						event.consume();
 					}
 				});
 				setTextFill(Color.GOLD);
