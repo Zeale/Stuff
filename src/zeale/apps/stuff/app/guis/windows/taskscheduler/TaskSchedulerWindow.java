@@ -23,6 +23,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -53,6 +54,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class TaskSchedulerWindow extends Window {
@@ -141,6 +143,15 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML TabPane layoutTabPane;
 
 	private ReadOnlyObjectProperty<Task> selectedTask;
+
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Encountered an error while attempting to display the home window.");
+			Logging.err(e);
+		}
+	}
 
 	private static final Gateway<Instant, LocalDate> INSTANT_TO_LOCALDATE_GATEWAY = new Gateway<Instant, LocalDate>() {
 
