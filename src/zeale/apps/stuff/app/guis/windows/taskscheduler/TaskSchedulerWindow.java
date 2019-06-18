@@ -40,11 +40,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import zeale.applicationss.notesss.utilities.Utilities;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
@@ -77,6 +79,9 @@ public class TaskSchedulerWindow extends Window {
 			return list;
 		}
 	};
+
+	private static final Border SELECTED_ROW_DEFAULT_BORDER = Utilities.getBorderFromColor(Color.GOLD, 1),
+			SELECTED_ROW_HOVER_BORDER = Utilities.getBorderFromColor(Color.RED, 1);
 
 	private @FXML TextField createName, editName;
 	private @FXML TextArea createDescription, editDescription;
@@ -114,6 +119,13 @@ public class TaskSchedulerWindow extends Window {
 
 		taskView.setRowFactory(param -> new TableRow<Task>() {
 			{
+				hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+					if (isSelected())
+						setBorder(newValue ? SELECTED_ROW_HOVER_BORDER : SELECTED_ROW_DEFAULT_BORDER);
+				});
+
+				selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> setBorder(
+						newValue ? isHover() ? SELECTED_ROW_HOVER_BORDER : SELECTED_ROW_DEFAULT_BORDER : null));
 
 				ContextMenu rightClickMenu = new ContextMenu();
 				MenuItem item = new MenuItem();
@@ -131,7 +143,10 @@ public class TaskSchedulerWindow extends Window {
 				setOnMouseEntered(event -> setTextFill(Color.RED));
 				setOnMouseExited(event -> setTextFill(Color.GOLD));
 				setOnMouseClicked(event -> {
-					if (event.getButton() == MouseButton.SECONDARY && !(isEmpty() || getItem() == null)) {
+					if ((isEmpty() || getItem() == null)) {
+						if (event.getButton() == MouseButton.PRIMARY)
+							taskView.getSelectionModel().clearSelection();
+					} else if (event.getButton() == MouseButton.SECONDARY) {
 						rightClickMenu.show(this, event.getScreenX(), event.getScreenY());
 						event.consume();
 					}
