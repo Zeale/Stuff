@@ -44,10 +44,10 @@ Text {
 /* Text Areas */
 .text-area, .text-area .scroll-pane .viewport .content {
 	-fx-background-color: -stuff-dark;
-	-fx-border-radius: 0;
+	-fx-border-radius: 0.0;
 	-fx-text-fill: -stuff-text-fill;
 	-fx-font-family: Consolas;
-	-fx-font-size: 12px;
+	-fx-font-size: 12.0px;
 }
 
 /* Accordions */
@@ -148,4 +148,99 @@ Text {
 .menu-bar .container .menu:showing .menu-item:showing .label,
 .menu-bar .container .menu:showing .menu-item:focused .label {
 	-fx-text-fill: -stuff-dark;
+}
+
+/* SplitPanes */
+.split-pane {
+	-fx-background-color: transparent;
+}
+
+.split-pane .split-pane-divider {
+	-fx-background-color: transparent;
+}
+.split-pane .split-pane-divider:hover {
+	-fx-background-color: -stuff-text-fill;
+}
+.split-pane .split-pane-divider:pressed {
+	-fx-background-color: -stuff-hover-fill;
+}
+
+/* TableView */
+.table-view {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-style: solid;
+}
+
+.table-view .placeholder {
+	-fx-background-color: #77000018;
+}
+.table-view .placeholder .label {
+	-fx-text-fill: firebrick;
+	-fx-font-size: 1.2em;
+}
+
+.table-view .column-header-background .filler {
+	-fx-background-color: transparent;
+}
+
+.table-view .column-header-background, .table-view .column-header-background .nested-column-header .table-column {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-width: 0.0 1.0 0.0 0.0;
+}
+.table-view .column-header-background, .table-view .column-header-background .nested-column-header TableColumnHeader /* When using the ".table-column" selector, (instead of "TableColumnHeader"), borders appear "wrong." */ {
+	-fx-border-width: 0.0 0.0 1.0 0.0;
+}
+.table-view .column-header-background .nested-column-header .table-column .label {
+	-fx-text-fill: -stuff-text-fill;
+}
+
+.table-view .virtual-flow {
+	-fx-background-color: -stuff-dark;
+}
+.table-view .virtual-flow .table-row-cell:odd {
+	-fx-background-color: -stuff-light;
+}
+.table-view .virtual-flow .table-row-cell:even {
+	-fx-background-color: derive(-stuff-light, 20%);
+}
+
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column {
+	-fx-border-width: 0 1 0 0;
+	-fx-border-color: -stuff-dark;
+}
+
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column:last-visible {
+	-fx-border-color: transparent;
+}
+
+/* CheckBoxes */
+.check-box .text {
+	-fx-fill: -stuff-text-fill;
+}
+.check-box:selected .text {
+	-fx-font-weight: bold;
+}
+.check-box .box {
+	-fx-background-color: -stuff-dark;
+}
+.check-box:selected .box .mark {
+	-fx-background-color: -stuff-text-fill;
+}
+
+/* DatePickers */
+.date-picker {
+	-fx-background-color: -stuff-dark;
+	-fx-background-radius: 0;
+}
+.date-picker .date-picker-display-node {
+	-fx-text-fill: -stuff-text-fill;
+}
+.date-picker .arrow-button {
+	-fx-background-color: black;
+	-fx-background-radius: 0;
+}
+.date-picker .arrow-button .arrow {
+	-fx-background-color: -stuff-text-fill;
 }
