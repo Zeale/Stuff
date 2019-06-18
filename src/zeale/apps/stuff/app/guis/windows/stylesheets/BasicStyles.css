@@ -124,7 +124,7 @@ Text {
 	-fx-spacing: 0.0;
 }
 
-.menu .label {
+.menu > .label .text {
 	-fx-text-fill: -stuff-text-fill;
 }
 .menu:hover > .label .text,
@@ -132,14 +132,13 @@ Text {
 .menu:showing > .label .text {
 	-fx-fill: -stuff-hover-fill;
 }
-
 .menu:hover,
 .menu:focused,
 .menu:showing {
 	-fx-background-color: -stuff-light;
 }
 
-.menu .context-menu {
+.context-menu {
 	-fx-background-color: -stuff-dark;
 }
 
@@ -148,20 +147,20 @@ Text {
 	-fx-background-color: -stuff-hover-fill;
 }
 
-.menu .menu-item:showing {
+.menu-item:showing {
 	-fx-background-color: -stuff-dark;
 }
-.menu .menu-item:hover,
-.menu .menu-item:focused {
+.menu-item:hover,
+.menu-item:focused {
 	/* :focused is needed bc if the cursor is moved outside of the menu, items which do not have submenus will have the default blue effect. The top level menu items don't suffer from this effect. /shrug */
 	-fx-background-color: -stuff-light;
 }
 
-.menu .menu-item .label {
+.menu-item .label {
 	-fx-text-fill: -stuff-text-fill;
 }
-.menu .menu-item:hover .label,
-.menu .menu-item:focused .label {
+.menu-item:hover .label,
+.menu-item:focused .label {
 	-fx-text-fill: -stuff-hover-fill;
 }
 
