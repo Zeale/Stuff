@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -15,6 +16,7 @@ import org.alixia.javalibrary.javafx.bindings.BindingTools.PipewayBinding;
 import org.alixia.javalibrary.util.Box;
 import org.alixia.javalibrary.util.Gateway;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -58,7 +60,32 @@ public class TaskSchedulerWindow extends Window {
 	private final static PhoenixReference<File> TASK_DATA_DIR = PhoenixReference
 			.create((Supplier<File>) () -> new File(Stuff.INSTALLATION_DIRECTORY, "App Data/Task Scheduler/Tasks"));
 
-	private final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>() {
+	private static final PhoenixReference<ArrayList<Task>> DIRTY_TASKS = new PhoenixReference<ArrayList<Task>>(true) {
+
+		@Override
+		protected ArrayList<Task> generate() {
+			return new ArrayList<Task>() {
+
+				/**
+				 * SUID
+				 */
+				private static final long serialVersionUID = 1L;
+
+				protected void finalize() {
+					for (Task t : this) {
+						try {
+							t.flush();
+						} catch (FileNotFoundException e) {
+							Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
+						}
+					}
+				}
+			};
+		}
+	};
+
+	private final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(
+			true) {
 
 		@Override
 		protected ObservableList<Task> generate() {
@@ -70,11 +97,26 @@ public class TaskSchedulerWindow extends Window {
 						+ TASK_DATA_DIR.get().getAbsolutePath());
 			else
 				for (File f : listFiles) {
+					Task task;
 					try {
-						list.add(Task.load(f));
+						task = Task.load(f);
 					} catch (Exception e) {
 						Logging.err("Failed to load a Task from the file: " + f.getAbsolutePath());
+						continue;
 					}
+					InvalidationListener invalidationListener = __ -> {
+						if (!DIRTY_TASKS.get().contains(task))
+							DIRTY_TASKS.get().add(task);
+					};
+
+					/* ~PROPERTIES */
+					task.completedProperty().addListener(invalidationListener);
+					task.urgentProperty().addListener(invalidationListener);
+					task.nameProperty().addListener(invalidationListener);
+					task.descriptionProperty().addListener(invalidationListener);
+					task.dueDateProperty().addListener(invalidationListener);
+
+					list.add(task);
 				}
 			return list;
 		}
@@ -224,6 +266,8 @@ public class TaskSchedulerWindow extends Window {
 				task.setDueDate(INSTANT_TO_LOCALDATE_GATEWAY.to(editDueDate.getValue()));
 				try {
 					task.flush();
+					if (DIRTY_TASKS.exists())
+						DIRTY_TASKS.get().remove(task);
 				} catch (FileNotFoundException e) {
 					Logging.err("Failed to save the task, \"" + task.getName() + "\" to the file:"
 							+ selectedTask.get().getData().getAbsolutePath());
@@ -236,6 +280,8 @@ public class TaskSchedulerWindow extends Window {
 			if (editSync1.isSelected() && !newValue && selectedTask.get() != null) {
 				try {
 					selectedTask.get().flush();
+					if (DIRTY_TASKS.exists())
+						DIRTY_TASKS.get().remove(selectedTask.get());
 				} catch (FileNotFoundException e) {
 					Logging.err("Failed to save the task, \"" + selectedTask.get().getName() + "\" to the file: "
 							+ selectedTask.get().getData().getAbsolutePath());
@@ -443,6 +489,8 @@ public class TaskSchedulerWindow extends Window {
 
 	private @FXML void reload() {
 		TASK_LIST.regenerate();
+		if (DIRTY_TASKS.exists())
+			DIRTY_TASKS.get().clear();
 	}
 
 	private @FXML void update() {
@@ -455,6 +503,8 @@ public class TaskSchedulerWindow extends Window {
 							"Failed to update the task, \"" + t.getName() + "\" from it's file: " + t.getData() + ".");
 					Logging.err(e);
 				}
+		if (DIRTY_TASKS.exists())
+			DIRTY_TASKS.get().clear();
 	}
 
 	private @FXML void flush() {
@@ -465,12 +515,30 @@ public class TaskSchedulerWindow extends Window {
 				} catch (FileNotFoundException e) {
 					Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
 				}
+		if (DIRTY_TASKS.exists())
+			DIRTY_TASKS.get().clear();
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-
+		if (selectedTask.get() != null && editSync1.isSelected()) {
+			try {
+				selectedTask.get().flush();
+				if (DIRTY_TASKS.exists())
+					DIRTY_TASKS.get().remove(selectedTask.get());
+			} catch (FileNotFoundException e) {
+				Logging.err("Failed to write the task: \"" + selectedTask.get().getName() + "\" to the file: "
+						+ selectedTask.get().getData().getAbsolutePath());
+				Logging.err(e);
+			}
+		}
+		if (DIRTY_TASKS.exists())
+			for (Task t : DIRTY_TASKS.get())
+				try {
+					t.flush();
+				} catch (FileNotFoundException e) {
+					Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
+				}
 	}
 
 	@Override
