@@ -168,7 +168,7 @@ public class Menu extends Window {
 		centerer.setFillWidth(true);
 		centerer.setAlignment(Pos.CENTER);
 
-		anchorPane.setBackground(FXTools.getBackgroundFromColor(DEFAULT_BACKGROUND_COLOR));
+		anchorPane.setBackground(null);
 		anchorPane.setPrefSize(1760, 860);
 
 		scrollBox.getChildren().addListener((ListChangeListener<Node>) c -> {
@@ -209,7 +209,7 @@ public class Menu extends Window {
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) {
-		scene = new Scene(anchorPane);
+		scene = new Scene(anchorPane, DEFAULT_BACKGROUND_COLOR);
 		stage.setScene(scene);
 		stage.centerOnScreen();
 	}
