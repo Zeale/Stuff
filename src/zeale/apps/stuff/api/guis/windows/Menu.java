@@ -201,9 +201,16 @@ public class Menu extends Window {
 		FXTools.setAllAnchors(0d, centerer);
 	}
 
+	private Scene scene;
+
+	protected final Scene getScene() {
+		return scene;
+	}
+
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) {
-		stage.setScene(new Scene(anchorPane));
+		scene = new Scene(anchorPane);
+		stage.setScene(scene);
 		stage.centerOnScreen();
 	}
 
