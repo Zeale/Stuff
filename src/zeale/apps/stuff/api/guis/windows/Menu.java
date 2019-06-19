@@ -9,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.effect.Effect;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -87,6 +88,15 @@ public class Menu extends Window {
 					Logging.err("Failed to open the window...\n");
 					Logging.err(e);
 				}
+			else if (a.getButton() == MouseButton.MIDDLE)
+				try {
+					Stage stage = Stuff.makeStage();
+					windowSupplier.get().display(stage);
+					stage.show();
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
 		}, popup);
 	}
 
@@ -123,6 +133,15 @@ public class Menu extends Window {
 					Logging.err("Failed to open the window...\n");
 					Logging.err(e);
 				}
+			else if (a.getButton() == MouseButton.MIDDLE)
+				try {
+					Stage stage = Stuff.makeStage();
+					windowSupplier.get().display(stage);
+					stage.show();
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
 		}, popup);
 	}
 
@@ -131,9 +150,20 @@ public class Menu extends Window {
 	}
 
 	protected final HorizontalScrollBox scrollBox = new HorizontalScrollBox();
-	protected final Glow hoverGlow = new Glow(1);
+	protected static final Glow hoverGlow = new Glow(1);
 	protected final VBox centerer = new VBox();
 	protected final AnchorPane anchorPane = new AnchorPane(centerer);
+
+	private static final Object CUSTOM_EFFECT_KEY = new Object();
+
+	protected static Effect getCustomEffect(Node node) {
+		return (Effect) node.getProperties().getOrDefault(CUSTOM_EFFECT_KEY, hoverGlow);
+	}
+
+	protected static final void setCustomEffect(Node node, Effect effect) {
+		node.getProperties().put(CUSTOM_EFFECT_KEY, effect);
+	}
+
 	{
 		centerer.setFillWidth(true);
 		centerer.setAlignment(Pos.CENTER);
@@ -146,7 +176,7 @@ public class Menu extends Window {
 				if (c.wasAdded())
 					for (Node n1 : c.getAddedSubList()) {
 						n1.setOnMouseEntered(event1 -> {
-							n1.setEffect(hoverGlow);
+							n1.setEffect(getCustomEffect(n1));
 							n1.setScaleX(1.05);
 							n1.setScaleY(1.05);
 						});
