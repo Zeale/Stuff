@@ -5,12 +5,13 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
@@ -22,11 +23,15 @@
                   <VBox spacing="25.0">
                      <children>
                         <TextField promptText="Search Modules" />
-                        <TilePane hgap="30.0" vgap="30.0" VBox.vgrow="SOMETIMES">
-                           <padding>
-                              <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
-                           </padding>
-                        </TilePane>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="SOMETIMES">
+                           <content>
+                              <FlowPane fx:id="moduleBox" alignment="CENTER" columnHalignment="CENTER" hgap="30.0" style="-fx-font-size: 1.4em;" vgap="30.0">
+                                 <padding>
+                                    <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
+                                 </padding>
+                              </FlowPane>
+                           </content>
+                        </ScrollPane>
                      </children>
                      <padding>
                         <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
