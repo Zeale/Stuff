@@ -20,8 +20,10 @@ import javafx.util.Duration;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
 import zeale.apps.stuff.app.guis.windows.encryption.EncryptionWindow;
+import zeale.apps.stuff.app.guis.windows.modules.ModuleWindow;
 import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow;
 import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestWindow;
 
@@ -81,13 +83,21 @@ public class HomeWindow extends Menu {
 
 			@Override
 			public void handle(DragEvent event) {
-				System.out.println("Drag Dropped");
 
-				if (event.getDragboard().hasFiles()) {
-					boolean hasJars = false;
-					for (File f : event.getDragboard().getFiles()) {
+				CHECK: if (event.getDragboard().hasFiles()) {
+					for (File f : event.getDragboard().getFiles())
+						if (f.getName().endsWith(".jar"))
+							break CHECK;
+					return;
+				}
 
-					}
+				ModuleWindow.loadModules(event.getDragboard().getFiles());
+
+				try {
+					Stuff.displayWindow(new ModuleWindow());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to display the ModuleWindow.");
+					Logging.err(e);
 				}
 			}
 		});
