@@ -16,7 +16,7 @@ class Module {
 			ICON_MANIFEST_KEY = "icon", LAUNCH_CLASS_MANIFEST_KEY = "launch-class", NAME_MANIFEST_KEY = "name";
 	private final Image icon;
 	private final String name;
-	private final Class<? extends zeale.apps.stuff.api.modules.Module> launchClass;
+	private final zeale.apps.stuff.api.modules.Module module;
 	private final File file;
 	private final URLClassLoader loader;
 
@@ -48,7 +48,16 @@ class Module {
 			if (!zeale.apps.stuff.api.modules.Module.class.isAssignableFrom(cls))
 				throw new ModuleLoadException("The loaded launch class for the module: \"" + name
 						+ "\" is not an instance of the Module class.");
-			this.launchClass = (Class<? extends zeale.apps.stuff.api.modules.Module>) cls;
+			Class<? extends zeale.apps.stuff.api.modules.Module> clz = (Class<? extends zeale.apps.stuff.api.modules.Module>) cls;
+
+			try {
+				this.module = clz.newInstance();
+			} catch (InstantiationException e) {
+				throw new ModuleLoadException("Unable to instantiate the module, \"" + name + "\"'s module class.", e);
+			} catch (IllegalAccessException e) {
+				throw new ModuleLoadException("Unable to instantiate the module \"" + name
+						+ "\". The Module Loader has no access to the module's class's constructor.", e);
+			}
 
 			icon = ico.startsWith("internal://") ? new Image(jar.getInputStream(jar.getEntry(ico = ico.substring(11))))
 					: new Image(ico);
@@ -65,8 +74,8 @@ class Module {
 		return icon;
 	}
 
-	public Class<? extends zeale.apps.stuff.api.modules.Module> getLaunchClass() {
-		return launchClass;
+	public zeale.apps.stuff.api.modules.Module getModule() {
+		return module;
 	}
 
 	public String getName() {

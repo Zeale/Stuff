@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -26,6 +27,8 @@ public class ModuleWindow extends Window {
 
 	private final class ModuleItem {
 
+		private final Module module;
+
 		private final VBox box = new VBox();
 		{
 			box.setSpacing(10);
@@ -44,6 +47,7 @@ public class ModuleWindow extends Window {
 			box.getChildren().addAll(icon = new ImageView(module.getIcon()), new Text(module.getName()));
 			icon.setPreserveRatio(true);
 			icon.setFitWidth(128);
+			this.module = module;
 		}
 
 	}
