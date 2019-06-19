@@ -17,7 +17,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import zeale.applicationss.notesss.utilities.Utilities;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
@@ -31,7 +30,7 @@ public class HomeWindow extends Menu {
 	private final Transition blurTransition = new Transition() {
 
 		{
-			setCycleDuration(Duration.millis(300));
+			setCycleDuration(Duration.millis(100));
 			setInterpolator(Interpolator.EASE_IN);
 		}
 
@@ -43,15 +42,12 @@ public class HomeWindow extends Menu {
 
 	{
 		anchorPane.setOnDragOver(event -> {
-			System.out.println("Drag Over");
-
 			if (event.getDragboard().hasFiles())
 				event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
 			event.consume();
 		});
 
 		anchorPane.setOnDragEntered(event -> {
-			System.out.println("Drag Entered");
 
 			blurTransition.stop();
 			blurTransition.setRate(1);
@@ -64,23 +60,21 @@ public class HomeWindow extends Menu {
 					else
 						hasOnlyJars = false;
 				if (hasOnlyJars)
-					anchorPane.setBackground(Utilities.getBackgroundFromColor(Color.GOLD));
+					getScene().setFill(Color.GREEN);
 				else if (hasNoJars)
-					anchorPane.setBackground(Utilities.getBackgroundFromColor(Color.RED));
+					getScene().setFill(Color.RED);
 				else
-					anchorPane.setBackground(Utilities.getBackgroundFromColor(Color.GREEN));
+					getScene().setFill(Color.GOLD);
 			} else
-				anchorPane.setBackground(Utilities.getBackgroundFromColor(Color.FIREBRICK));
+				getScene().setFill(Color.FIREBRICK);
 			event.consume();
 		});
 
 		anchorPane.setOnDragExited(event -> {
-			System.out.println("Drag Exited");
-
 			blurTransition.stop();
 			blurTransition.setRate(-1);
 			blurTransition.play();
-			anchorPane.setBackground(Utilities.getBackgroundFromColor(DEFAULT_BACKGROUND_COLOR));
+			getScene().setFill(DEFAULT_BACKGROUND_COLOR);
 		});
 
 		anchorPane.setOnDragDropped(new EventHandler<DragEvent>() {
