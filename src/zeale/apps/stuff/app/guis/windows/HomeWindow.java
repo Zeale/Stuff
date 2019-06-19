@@ -1,6 +1,8 @@
 package zeale.apps.stuff.app.guis.windows;
 
 import javafx.scene.control.Label;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
@@ -12,6 +14,7 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
 import zeale.apps.stuff.app.guis.windows.encryption.EncryptionWindow;
+import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow;
 import zeale.apps.stuff.app.guis.windows.webrequests.WebrequestWindow;
 
 public class HomeWindow extends Menu {
@@ -63,6 +66,11 @@ public class HomeWindow extends Menu {
 		// Encryption
 		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/encryption/Key.png", () -> new EncryptionWindow(),
 				"Encryption");
+		{
+			ColorAdjust effect = new ColorAdjust(0, 0, -0.2, 0.);
+			setCustomEffect(addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/taskscheduler/TodoList.png",
+					() -> new TaskSchedulerWindow(), "To Do List"), effect);
+		}
 	}
 
 }
