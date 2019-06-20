@@ -92,6 +92,10 @@ public class HomeWindow extends Menu {
 				}
 
 				ModuleWindow.loadModules(event.getDragboard().getFiles());
+				blurTransition.stop();
+				blurTransition.setRate(-1);
+				blurTransition.play();
+				getScene().setFill(DEFAULT_BACKGROUND_COLOR);
 
 				try {
 					Stuff.displayWindow(new ModuleWindow());
