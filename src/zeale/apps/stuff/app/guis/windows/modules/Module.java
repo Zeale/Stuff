@@ -67,8 +67,13 @@ class Module {
 						"Invalid module manifest file. The manifest must denote a launch class for the module.");
 			if (ico == null)
 				throw new ModuleLoadException("Invalid module manifest file. The manfiest must contain an icon.");
-			icon = ico.startsWith("internal://") ? new Image(jar.getInputStream(jar.getEntry(ico = ico.substring(11))))
-					: new Image(ico);
+			if (ico.startsWith("internal://")) {
+				entry = jar.getEntry(ico.substring(11));
+				if (entry == null)
+					throw new ModuleLoadException("The icon for the module, \"" + name + "\", was not found.");
+				icon = new Image(jar.getInputStream(entry));
+			} else
+				icon = new Image(ico);
 
 		} catch (Exception e) {
 			throw new ModuleLoadException("An unexpected error occurred while loading a module.");
