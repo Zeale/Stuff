@@ -22,7 +22,7 @@
               <content>
                   <VBox spacing="25.0">
                      <children>
-                        <TextField promptText="Search Modules" />
+                        <TextField fx:id="searchField" promptText="Search Modules" />
                         <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="SOMETIMES">
                            <content>
                               <FlowPane fx:id="moduleBox" alignment="CENTER" columnHalignment="CENTER" hgap="30.0" style="-fx-font-size: 1.4em;" vgap="30.0">

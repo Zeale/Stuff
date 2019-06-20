@@ -6,21 +6,24 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -39,30 +42,29 @@ public class ModuleWindow extends Window {
 		DEFAULT_MODULE_HOVER_EFFECT.setRadius(35);
 	}
 
-	private final class ModuleItem {
+	private final class ModuleItem extends VBox {
 
 		private final Module module;
 
-		private final VBox box = new VBox();
 		{
-			box.setSpacing(10);
-			box.setAlignment(Pos.CENTER);
-			box.setFillWidth(true);
-			moduleBox.getChildren().add(box);
-			box.setPickOnBounds(true);
-
+			setSpacing(10);
+			setAlignment(Pos.CENTER);
+			setFillWidth(true);
+			setPickOnBounds(true);
 		}
 
 		public void remove() {
-			moduleBox.getChildren().remove(box);
-			moduleViewMapping.remove(module);
+			synchronized (ModuleWindow.this) {
+				moduleBox.getChildren().remove(this);
+				moduleViewMapping.remove(module);
+			}
 		}
 
 		private final ImageView icon;
 
 		public ModuleItem(Module module) {
-			box.getChildren().addAll(icon = new ImageView(module.getIcon()), new Text(module.getName()));
-			box.setOnMouseClicked(event -> {
+			getChildren().addAll(icon = new ImageView(module.getIcon()), new Text(module.getName()));
+			setOnMouseClicked(event -> {
 				try {
 					module.load().launch();
 				} catch (ModuleLoadException e1) {
@@ -74,14 +76,25 @@ public class ModuleWindow extends Window {
 					Logging.err(e2);
 				}
 			});
-			box.setOnMouseEntered(__ -> icon.setEffect(DEFAULT_MODULE_HOVER_EFFECT));
-			box.setOnMouseExited(__ -> icon.setEffect(null));
+			setOnMouseEntered(__ -> icon.setEffect(DEFAULT_MODULE_HOVER_EFFECT));
+			setOnMouseExited(__ -> icon.setEffect(null));
 
 			icon.setPreserveRatio(true);
 			icon.setFitWidth(128);
 			moduleViewMapping.put(this.module = module, this);
+			if (fits(getName(), searchField.getText()))
+				moduleBox.getChildren().add(this);
+
 		}
 
+		public String getName() {
+			return module.getName();
+		}
+
+	}
+
+	private static boolean fits(String name, String query) {
+		return query.isEmpty() || name.toLowerCase().contains(query.toLowerCase());
 	}
 
 	private final static PhoenixReference<File> MODULE_INSTALLATION_DIRECTORY = PhoenixReference
@@ -136,6 +149,7 @@ public class ModuleWindow extends Window {
 	}
 
 	private @FXML FlowPane moduleBox;
+	private @FXML TextField searchField;
 	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();// Strong reference uWu
 
 	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
@@ -153,6 +167,31 @@ public class ModuleWindow extends Window {
 					for (Module m2 : c.getRemoved())
 						moduleViewMapping.get(m2).remove();
 		});
+
+		// This may later need to be optimized by a method involving multiple lists.
+		searchField.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+			synchronized (this) {
+				if (newValue.isEmpty())
+					moduleBox.getChildren().setAll(moduleViewMapping.values());
+				else if (newValue.contains(oldValue))
+					for (Iterator<Node> iterator = moduleBox.getChildren().iterator(); iterator.hasNext();) {
+						Node n = iterator.next();
+						if (n instanceof ModuleItem)
+							if (!fits(((ModuleItem) n).getName(), newValue))
+								iterator.remove();// Don't remove the module permanently, just from the view.
+					}
+				else
+					for (ModuleItem mi : moduleViewMapping.values()) {
+						boolean fits = fits(mi.getName(), newValue);
+						if (!moduleBox.getChildren().contains(mi)) {
+							if (fits)
+								moduleBox.getChildren().add(mi);
+						} else if (!fits)
+							moduleBox.getChildren().remove(mi);
+					}
+			}
+		});
+
 	}
 
 	@Override
