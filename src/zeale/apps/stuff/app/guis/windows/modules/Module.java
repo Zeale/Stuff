@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import branch.alixia.unnamed.Datamap;
@@ -49,7 +50,10 @@ class Module {
 
 	public Module(File file) throws IOException, ModuleLoadException {
 		try (ZipFile jar = new JarFile(this.file = file)) {
-			Datamap datamap = Datamap.read(jar.getInputStream(jar.getEntry(STUFF_MODULE_INTERNAL_MANIFEST_LOCATION)));
+			ZipEntry entry = jar.getEntry(STUFF_MODULE_INTERNAL_MANIFEST_LOCATION);
+			if (entry == null)
+				throw new ModuleLoadException("Invalid module; The manifest file could not be located inside the jar.");
+			Datamap datamap = Datamap.read(jar.getInputStream(entry));
 
 			name = datamap.get(NAME_MANIFEST_KEY);
 			launchClass = datamap.get(LAUNCH_CLASS_MANIFEST_KEY);
@@ -66,6 +70,8 @@ class Module {
 			icon = ico.startsWith("internal://") ? new Image(jar.getInputStream(jar.getEntry(ico = ico.substring(11))))
 					: new Image(ico);
 
+		} catch (Exception e) {
+			throw new ModuleLoadException("An unexpected error occurred while loading a module.");
 		}
 
 	}
