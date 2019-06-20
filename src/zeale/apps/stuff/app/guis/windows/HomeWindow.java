@@ -159,6 +159,8 @@ public class HomeWindow extends Menu {
 			setCustomEffect(addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/taskscheduler/TodoList.png",
 					() -> new TaskSchedulerWindow(), "To Do List"), effect);
 		}
+
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/modules/PCB Module.png", () -> new ModuleWindow(), "Modules");
 	}
 
 }
