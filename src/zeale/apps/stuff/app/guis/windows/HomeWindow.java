@@ -4,7 +4,6 @@ import java.io.File;
 
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.GaussianBlur;
@@ -12,7 +11,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -77,33 +75,31 @@ public class HomeWindow extends Menu {
 			blurTransition.setRate(-1);
 			blurTransition.play();
 			getScene().setFill(DEFAULT_BACKGROUND_COLOR);
+			event.consume();
 		});
 
-		anchorPane.setOnDragDropped(new EventHandler<DragEvent>() {
+		anchorPane.setOnDragDropped(event -> {
 
-			@Override
-			public void handle(DragEvent event) {
-
-				CHECK: if (event.getDragboard().hasFiles()) {
-					for (File f : event.getDragboard().getFiles())
-						if (f.getName().endsWith(".jar"))
-							break CHECK;
-					return;
-				}
-
-				ModuleWindow.loadModules(event.getDragboard().getFiles());
-				blurTransition.stop();
-				blurTransition.setRate(-1);
-				blurTransition.play();
-				getScene().setFill(DEFAULT_BACKGROUND_COLOR);
-
-				try {
-					Stuff.displayWindow(new ModuleWindow());
-				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to display the ModuleWindow.");
-					Logging.err(e);
-				}
+			CHECK: if (event.getDragboard().hasFiles()) {
+				for (File f : event.getDragboard().getFiles())
+					if (f.getName().endsWith(".jar"))
+						break CHECK;
+				return;
 			}
+
+			ModuleWindow.loadModules(event.getDragboard().getFiles());
+			blurTransition.stop();
+			blurTransition.setRate(-1);
+			blurTransition.play();
+			getScene().setFill(DEFAULT_BACKGROUND_COLOR);
+
+			try {
+				Stuff.displayWindow(new ModuleWindow());
+			} catch (WindowLoadFailureException e) {
+				Logging.err("Failed to display the ModuleWindow.");
+				Logging.err(e);
+			}
+			event.consume();
 		});
 	}
 
@@ -160,7 +156,8 @@ public class HomeWindow extends Menu {
 					() -> new TaskSchedulerWindow(), "To Do List"), effect);
 		}
 
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/modules/PCB Module.png", () -> new ModuleWindow(), "Modules");
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/modules/PCB Module.png", () -> new ModuleWindow(),
+				"Modules");
 	}
 
 }

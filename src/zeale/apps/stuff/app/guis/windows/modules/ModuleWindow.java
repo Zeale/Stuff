@@ -3,7 +3,6 @@ package zeale.apps.stuff.app.guis.windows.modules;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -22,10 +21,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import zeale.applicationss.notesss.utilities.Utilities;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
@@ -150,6 +153,8 @@ public class ModuleWindow extends Window {
 
 	private @FXML FlowPane moduleBox;
 	private @FXML TextField searchField;
+	private @FXML Text dragInfoText;
+	private @FXML StackPane dragBox;
 	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();// Strong reference uWu
 
 	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
@@ -190,6 +195,48 @@ public class ModuleWindow extends Window {
 							moduleBox.getChildren().remove(mi);
 					}
 			}
+		});
+
+		dragInfoText.setFill(Color.DARKGRAY);
+		dragBox.setOnDragOver(event -> {
+			if (event.getDragboard().hasFiles())
+				event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+			event.consume();
+		});
+		dragBox.setOnDragEntered(event -> {
+			if (event.getDragboard().hasFiles()) {
+				boolean hasOnlyJars = true, hasNoJars = true;
+				for (File f : event.getDragboard().getFiles())
+					if (f.getName().endsWith(".jar"))
+						hasNoJars = false;
+					else
+						hasOnlyJars = false;
+				if (hasOnlyJars)
+					dragBox.setBackground(Utilities.getBackgroundFromColor(Color.GREEN));
+				else if (hasNoJars)
+					dragBox.setBackground(Utilities.getBackgroundFromColor(Color.RED));
+				else
+					dragBox.setBackground(Utilities.getBackgroundFromColor(Color.GOLD));
+			} else
+				dragBox.setBackground(Utilities.getBackgroundFromColor(Color.FIREBRICK));
+			event.consume();
+		});
+		dragBox.setOnDragExited(event -> {
+			dragBox.setBackground(Utilities.getBackgroundFromColor(Color.TRANSPARENT));
+			event.consume();
+		});
+		dragBox.setOnDragDropped(event -> {
+
+			CHECK: if (event.getDragboard().hasFiles()) {
+				for (File f : event.getDragboard().getFiles())
+					if (f.getName().endsWith(".jar"))
+						break CHECK;
+				return;
+			}
+
+			ModuleWindow.loadModules(event.getDragboard().getFiles());
+			dragBox.setBackground(Utilities.getBackgroundFromColor(Color.TRANSPARENT));
+			event.consume();
 		});
 
 	}
