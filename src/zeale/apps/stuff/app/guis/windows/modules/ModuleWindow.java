@@ -159,6 +159,9 @@ public class ModuleWindow extends Window {
 
 	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
 
+	/**
+	 * 
+	 */
 	private @FXML void initialize() {
 		for (Module m : loadedModules)
 			new ModuleItem(m);
@@ -205,24 +208,36 @@ public class ModuleWindow extends Window {
 		});
 		dragBox.setOnDragEntered(event -> {
 			if (event.getDragboard().hasFiles()) {
-				boolean hasOnlyJars = true, hasNoJars = true;
+				int jarCount = 0;
 				for (File f : event.getDragboard().getFiles())
 					if (f.getName().endsWith(".jar"))
-						hasNoJars = false;
-					else
-						hasOnlyJars = false;
-				if (hasOnlyJars)
+						jarCount++;
+
+				if (jarCount == event.getDragboard().getFiles().size()) {
 					dragBox.setBackground(Utilities.getBackgroundFromColor(Color.GREEN));
-				else if (hasNoJars)
+					if (jarCount == 1)
+						dragInfoText.setText("Release your mouse button to attempt to load the jar file.");
+					else
+						dragInfoText
+								.setText("Release your mouse button to attempt to load " + jarCount + " jar files.");
+				} else if (jarCount == 0) {
 					dragBox.setBackground(Utilities.getBackgroundFromColor(Color.RED));
-				else
+					dragInfoText.setText("None of those files is a jar file.");
+				} else {
 					dragBox.setBackground(Utilities.getBackgroundFromColor(Color.GOLD));
-			} else
+					dragInfoText.setText(
+							"Found " + jarCount + " jar files; release your mouse button to attempt to load them.");
+
+				}
+			} else {
 				dragBox.setBackground(Utilities.getBackgroundFromColor(Color.FIREBRICK));
+				dragInfoText.setText("This content does not contain any files!");
+			}
 			event.consume();
 		});
 		dragBox.setOnDragExited(event -> {
 			dragBox.setBackground(Utilities.getBackgroundFromColor(Color.TRANSPARENT));
+			dragInfoText.setText("Drag Modules Here");
 			event.consume();
 		});
 		dragBox.setOnDragDropped(event -> {
@@ -236,6 +251,7 @@ public class ModuleWindow extends Window {
 
 			ModuleWindow.loadModules(event.getDragboard().getFiles());
 			dragBox.setBackground(Utilities.getBackgroundFromColor(Color.TRANSPARENT));
+			dragInfoText.setText("Drag Modules Here");
 			event.consume();
 		});
 
