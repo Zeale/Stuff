@@ -174,28 +174,33 @@ public class ModuleWindow extends Window {
 
 	public static void loadModules(Collection<File> modules) {
 		for (File f : modules) {
-			if (f.getName().endsWith(".jar")) {
-				File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), f.getName());
-				try {
-					Files.copy(f.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-					if (LOADED_MODULES.exists())
-						LOADED_MODULES.get().add(new Module(f));
-				} catch (IOException e) {
-					Logging.err("Failed to copy the module: " + f.getAbsolutePath()
-							+ " to the module directory, (which is at: "
-							+ MODULE_INSTALLATION_DIRECTORY.get().getAbsolutePath() + "), so that it can be loaded.");
-					Logging.err(e);
-				} catch (ModuleLoadException e) {
-					newFile.delete();
-					Logging.err("Failed to load the module: " + f.getAbsolutePath());
-					Logging.err(e);
-				}
-			}
+			if (f.getName().endsWith(".jar"))
+				loadModule(f);
+			else if (f.getName().endsWith(".zip"))
+				loadZip(f);
 		}
 	}
 
 	public static void loadModule(File module) {
-		/* TODO */
+		File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), module.getName());
+		try {
+			Files.copy(module.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			if (LOADED_MODULES.exists())
+				LOADED_MODULES.get().add(new Module(module));
+		} catch (IOException e) {
+			Logging.err("Failed to copy the module: " + module.getAbsolutePath()
+					+ " to the module directory, (which is at: " + MODULE_INSTALLATION_DIRECTORY.get().getAbsolutePath()
+					+ "), so that it can be loaded.");
+			Logging.err(e);
+		} catch (ModuleLoadException e) {
+			newFile.delete();
+			Logging.err("Failed to load the module: " + module.getAbsolutePath());
+			Logging.err(e);
+		}
+	}
+
+	private static void loadZip(File zip) {
+		loadPackage(zip);
 	}
 
 	public static void loadPackage(File pckge) {
