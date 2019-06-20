@@ -13,7 +13,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -64,8 +66,7 @@ public class ModuleWindow extends Window {
 				return file;
 			});
 
-	private static final PhoenixReference<ObservableList<Module>> LOADED_MODULES = new PhoenixReference<ObservableList<Module>>(
-			true) {
+	private static final PhoenixReference<ObservableList<Module>> LOADED_MODULES = new PhoenixReference<ObservableList<Module>>() {
 
 		@Override
 		protected ObservableList<Module> generate() {
@@ -127,13 +128,19 @@ public class ModuleWindow extends Window {
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		/* TODO */
+		FXMLLoader loader = new FXMLLoader(ModuleWindow.class.getResource("ModuleGUI.fxml"));
+		loader.setController(this);
+		try {
+			stage.setScene(new Scene(loader.load()));
+		} catch (IOException e) {
+			Logging.err("Failed to show the Module window.");
+			Logging.err(e);
+		}
 	}
 
 	public static void loadModules(Collection<File> modules) {
 		for (File f : modules) {
 			if (f.getName().endsWith(".jar")) {
-				Logging.dbg("LOADING MODULE: " + f.getAbsolutePath());
 				File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), f.getName());
 				try {
 					Files.copy(f.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
