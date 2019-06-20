@@ -270,7 +270,12 @@ public class ModuleWindow extends Window {
 	public static void loadModule(File module) {
 		File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), module.getName());
 		try {
-			Files.copy(module.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+			if (newFile.exists()) {
+				Logging.err("The module: \"" + module.getAbsolutePath()
+						+ "\" could not be loaded because a module with the same file name already exists.");
+				return;
+			}
+			Files.copy(module.toPath(), newFile.toPath());
 			if (LOADED_MODULES.exists())
 				LOADED_MODULES.get().add(new Module(module));
 		} catch (IOException e) {
