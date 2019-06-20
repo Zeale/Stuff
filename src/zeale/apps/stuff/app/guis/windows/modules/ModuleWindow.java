@@ -2,10 +2,11 @@ package zeale.apps.stuff.app.guis.windows.modules;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
 import javafx.collections.FXCollections;
@@ -57,7 +58,11 @@ public class ModuleWindow extends Window {
 	}
 
 	private final static PhoenixReference<File> MODULE_INSTALLATION_DIRECTORY = PhoenixReference
-			.create((Supplier<File>) () -> new File(Stuff.INSTALLATION_DIRECTORY, "Modules"));
+			.create((Supplier<File>) () -> {
+				File file = new File(Stuff.INSTALLATION_DIRECTORY, "Modules");
+				file.mkdirs();
+				return file;
+			});
 
 	private static final PhoenixReference<ObservableList<Module>> LOADED_MODULES = new PhoenixReference<ObservableList<Module>>(
 			true) {
@@ -105,14 +110,13 @@ public class ModuleWindow extends Window {
 			new ModuleItem(m);
 
 		loadedModules.addListener((ListChangeListener<Module>) c -> {
-			while (c.next()) {
+			while (c.next())
 				if (c.wasAdded())
 					for (Module m1 : c.getAddedSubList())
 						new ModuleItem(m1);
-				if (c.wasRemoved())
+				else if (c.wasRemoved())
 					for (Module m2 : c.getRemoved())
 						moduleViewMapping.get(m2).remove();
-			}
 		});
 	}
 
@@ -127,7 +131,26 @@ public class ModuleWindow extends Window {
 	}
 
 	public static void loadModules(Collection<File> modules) {
-		/* TODO */
+		for (File f : modules) {
+			if (f.getName().endsWith(".jar")) {
+				Logging.dbg("LOADING MODULE: " + f.getAbsolutePath());
+				File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), f.getName());
+				try {
+					Files.copy(f.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+					if (LOADED_MODULES.exists())
+						LOADED_MODULES.get().add(new Module(f));
+				} catch (IOException e) {
+					Logging.err("Failed to copy the module: " + f.getAbsolutePath()
+							+ " to the module directory, (which is at: "
+							+ MODULE_INSTALLATION_DIRECTORY.get().getAbsolutePath() + "), so that it can be loaded.");
+					Logging.err(e);
+				} catch (ModuleLoadException e) {
+					newFile.delete();
+					Logging.err("Failed to load the module: " + f.getAbsolutePath());
+					Logging.err(e);
+				}
+			}
+		}
 	}
 
 	public static void loadModule(File module) {
