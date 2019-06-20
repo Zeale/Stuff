@@ -3,6 +3,9 @@ package zeale.apps.stuff.app.guis.windows.modules;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
 import javafx.collections.FXCollections;
@@ -39,6 +42,7 @@ public class ModuleWindow extends Window {
 
 		public void remove() {
 			moduleBox.getChildren().remove(box);
+			moduleViewMapping.remove(module);
 		}
 
 		private final ImageView icon;
@@ -47,7 +51,7 @@ public class ModuleWindow extends Window {
 			box.getChildren().addAll(icon = new ImageView(module.getIcon()), new Text(module.getName()));
 			icon.setPreserveRatio(true);
 			icon.setFitWidth(128);
-			this.module = module;
+			moduleViewMapping.put(this.module = module, this);
 		}
 
 	}
@@ -92,13 +96,24 @@ public class ModuleWindow extends Window {
 	};
 
 	private @FXML FlowPane moduleBox;
-	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();
+	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();// Strong reference uWu
+
+	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
 
 	private @FXML void initialize() {
 		for (Module m : loadedModules)
 			new ModuleItem(m);
 
-		// TODO Listen to loadedModules for additions.
+		loadedModules.addListener((ListChangeListener<Module>) c -> {
+			while (c.next()) {
+				if (c.wasAdded())
+					for (Module m1 : c.getAddedSubList())
+						new ModuleItem(m1);
+				if (c.wasRemoved())
+					for (Module m2 : c.getRemoved())
+						moduleViewMapping.get(m2).remove();
+			}
+		});
 	}
 
 	@Override
