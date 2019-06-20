@@ -16,9 +16,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -31,6 +33,11 @@ import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 public class ModuleWindow extends Window {
 
 	// TODO Add drag and drop functionality.
+	private static final DropShadow DEFAULT_MODULE_HOVER_EFFECT = new DropShadow();
+	static {
+		DEFAULT_MODULE_HOVER_EFFECT.setSpread(0.35);
+		DEFAULT_MODULE_HOVER_EFFECT.setRadius(35);
+	}
 
 	private final class ModuleItem {
 
@@ -42,6 +49,8 @@ public class ModuleWindow extends Window {
 			box.setAlignment(Pos.CENTER);
 			box.setFillWidth(true);
 			moduleBox.getChildren().add(box);
+			box.setPickOnBounds(true);
+
 		}
 
 		public void remove() {
@@ -53,6 +62,21 @@ public class ModuleWindow extends Window {
 
 		public ModuleItem(Module module) {
 			box.getChildren().addAll(icon = new ImageView(module.getIcon()), new Text(module.getName()));
+			box.setOnMouseClicked(event -> {
+				try {
+					module.load().launch();
+				} catch (ModuleLoadException e1) {
+					Logging.err("Failed to launch the module: \"" + module.getName() + "\".");
+					Logging.err(e1);
+				} catch (Exception e2) {
+					Logging.err("An unexpected error occurred while trying to launch the module: \"" + module.getName()
+							+ "\".");
+					Logging.err(e2);
+				}
+			});
+			box.setOnMouseEntered(__ -> icon.setEffect(DEFAULT_MODULE_HOVER_EFFECT));
+			box.setOnMouseExited(__ -> icon.setEffect(null));
+
 			icon.setPreserveRatio(true);
 			icon.setFitWidth(128);
 			moduleViewMapping.put(this.module = module, this);
