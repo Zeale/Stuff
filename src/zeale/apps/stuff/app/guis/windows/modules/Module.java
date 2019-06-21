@@ -10,6 +10,7 @@ import java.util.zip.ZipFile;
 
 import branch.alixia.unnamed.Datamap;
 import javafx.scene.image.Image;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
 
@@ -30,7 +31,12 @@ class Module {
 				@Override
 				protected void finalize() throws Throwable {
 					super.finalize();// In case this method is overridden by parent in future Java versions.
-					close();
+					try {
+						close();
+					} catch (IOException e) {
+						Logging.err("Module Jar loader cleanup couldn't be performed for the \"" + name + "\" module.");
+						Logging.err(e);
+					}
 				}
 			};
 		}
