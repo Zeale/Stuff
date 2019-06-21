@@ -26,7 +26,7 @@
                         <TextField fx:id="searchField" promptText="Search Modules" />
                         <ScrollPane fitToHeight="true" fitToWidth="true" VBox.vgrow="SOMETIMES">
                            <content>
-                              <FlowPane fx:id="moduleBox" alignment="CENTER" columnHalignment="CENTER" hgap="30.0" style="-fx-font-size: 1.4em;" vgap="30.0">
+                              <FlowPane fx:id="moduleBox" alignment="CENTER" columnHalignment="CENTER" hgap="30.0" vgap="30.0">
                                  <padding>
                                     <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
                                  </padding>

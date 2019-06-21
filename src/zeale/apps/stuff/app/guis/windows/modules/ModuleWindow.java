@@ -18,9 +18,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
@@ -74,7 +77,9 @@ public class ModuleWindow extends Window {
 		private final ImageView icon;
 
 		public ModuleItem(Module module) {
-			getChildren().addAll(icon = new ImageView(module.getIcon()), new Text(module.getName()));
+			Text title = new Text(module.getName());
+			getChildren().addAll(icon = new ImageView(module.getIcon()), title);
+			title.setStyle("-fx-font-size: 1.4em;");
 			setOnMouseClicked(event -> {
 				try {
 					module.load().launch();
