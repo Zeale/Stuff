@@ -44,7 +44,14 @@ public abstract class Window {
 	/**
 	 * Shows this {@link Window} on the specified {@link Stage}. A {@link Window}
 	 * may only be shown on a single stage, and may only be shown once. If this
-	 * method is called more than once an exception will be thrown.
+	 * method is called more than once an exception will be thrown. If the
+	 * {@link #destroy()} method of the previous {@link Window} on the given
+	 * {@link Stage} (if any) throws an exception, the exception will be propagated
+	 * upwards. This process will prevent the previous {@link Window} from being
+	 * removed from the given {@link Stage}. It is safe to call this method again if
+	 * a failure occurs because of destruction of the previous {@link Window}, as
+	 * this {@link Window} will not be marked as shown and will not have its
+	 * {@link #show(Stage, ApplicationProperties)} method called.
 	 * 
 	 * @param stage The {@link Stage} to show on.
 	 * @throws WindowLoadFailureException In case this window fails to show itself
@@ -60,12 +67,42 @@ public abstract class Window {
 			throws WindowLoadFailureException {
 		if (called)
 			throw new RuntimeException("Cannot \"show\" a Window object twice.");
-		if (stage.getProperties().containsKey(STAGE_WINDOW_KEY)) {
+		if (stage.getProperties().containsKey(STAGE_WINDOW_KEY))
 			((Window) stage.getProperties().get(STAGE_WINDOW_KEY)).destroy();
-		}
 		stage.getProperties().put(STAGE_WINDOW_KEY, this);
 		show(stage, properties);
 		called = true;
+	}
+
+	public final synchronized void displayCarelessly(Stage stage, ApplicationProperties properties)
+			throws WindowLoadFailureException {
+
+		if (called)
+			throw new RuntimeException("Cannot \"show\" a Window object twice.");
+		if (stage.getProperties().containsKey(STAGE_WINDOW_KEY))
+			try {
+				((Window) stage.getProperties().get(STAGE_WINDOW_KEY)).destroy();
+			} catch (Exception e) {
+			}
+		stage.getProperties().put(STAGE_WINDOW_KEY, this);
+		show(stage, properties);
+		called = true;
+
+	}
+
+	/**
+	 * Calls {@link #destroy()} on the {@link Window} being displayed on the
+	 * specified {@link Stage}, if any. This process will also remove the
+	 * {@link Scene} created by the {@link Window} from the {@link Stage}.
+	 * 
+	 * @param stage The {@link Stage} to destroy the {@link Window} of.
+	 */
+	public static void destroyStage(Stage stage) {
+		if (stage.getProperties().containsKey(STAGE_WINDOW_KEY)) {
+			((Window) stage.getProperties().get(STAGE_WINDOW_KEY)).destroy();
+			stage.getProperties().remove(STAGE_WINDOW_KEY);
+			stage.setScene(null);
+		}
 	}
 
 	public static class WindowLoadFailureException extends Exception {

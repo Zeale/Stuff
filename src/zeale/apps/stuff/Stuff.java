@@ -105,6 +105,11 @@ public class Stuff extends Application {
 	}
 
 	@Override
+	public void stop() throws Exception {
+		Window.destroyStage(stage);
+	}
+
+	@Override
 	public void start(Stage primaryStage) throws Exception {
 		prepareStage(stage = primaryStage);
 		// When the primary window is closed, we shut down the application. (This

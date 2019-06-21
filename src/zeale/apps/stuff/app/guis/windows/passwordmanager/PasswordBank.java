@@ -1,6 +1,7 @@
 package zeale.apps.stuff.app.guis.windows.passwordmanager;
 
 import java.io.File;
+import java.util.function.Supplier;
 
 import org.alixia.javalibrary.files.FileTools;
 
@@ -46,7 +47,7 @@ public abstract class PasswordBank {
 	};
 
 	public static final PhoenixReference<ObservableMap<String, PasswordBank>> LOADED_BANK_LIST = PhoenixReference
-			.create(true, FXCollections::observableHashMap);
+			.create(true, (Supplier<ObservableMap<String, PasswordBank>>) FXCollections::observableHashMap);
 
 	/**
 	 * Returns <code>true</code> if there is a {@link PasswordBank} on the hard
