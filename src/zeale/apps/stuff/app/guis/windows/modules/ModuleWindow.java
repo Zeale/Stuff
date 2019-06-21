@@ -47,6 +47,8 @@ public class ModuleWindow extends Window {
 
 	private final class ModuleItem extends VBox {
 
+		private final MenuItem deleteModule = new MenuItem("Delete");
+		private final ContextMenu rightClickMenu = new ContextMenu(deleteModule);
 		private final Module module;
 
 		{
@@ -61,6 +63,12 @@ public class ModuleWindow extends Window {
 				moduleBox.getChildren().remove(this);
 				moduleViewMapping.remove(module);
 			}
+		}
+
+		public void delete() {
+			if (LOADED_MODULES.exists())
+				LOADED_MODULES.get().remove(module);
+			module.delete();
 		}
 
 		private final ImageView icon;
@@ -87,6 +95,14 @@ public class ModuleWindow extends Window {
 			moduleViewMapping.put(this.module = module, this);
 			if (fits(getName(), searchField.getText()))
 				moduleBox.getChildren().add(this);
+
+			setOnMouseClicked(event -> {
+				if (event.getButton() == MouseButton.SECONDARY) {
+					rightClickMenu.show(this, event.getScreenX(), event.getScreenY());
+					event.consume();
+				}
+			});
+			deleteModule.setOnAction(__ -> delete());
 
 		}
 
