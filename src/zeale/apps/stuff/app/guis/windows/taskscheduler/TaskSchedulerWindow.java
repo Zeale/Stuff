@@ -17,11 +17,13 @@ import org.alixia.javalibrary.util.Box;
 import org.alixia.javalibrary.util.Gateway;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,6 +32,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuItem;
@@ -141,6 +144,8 @@ public class TaskSchedulerWindow extends Window {
 
 	private @FXML Tab viewTasksTab;
 	private @FXML TabPane layoutTabPane;
+
+	private @FXML CheckMenuItem showCompletedMenuOption;
 
 	private ReadOnlyObjectProperty<Task> selectedTask;
 
@@ -287,7 +292,7 @@ public class TaskSchedulerWindow extends Window {
 			}
 		});
 
-		ChangeListener<Boolean> listener = (ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+		ChangeListener<Boolean> syncListener = (ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (editSync1.isSelected() && !newValue && selectedTask.get() != null) {
 				try {
 					selectedTask.get().flush();
@@ -301,11 +306,11 @@ public class TaskSchedulerWindow extends Window {
 			}
 		};
 		/* ~PROPERTIES */
-		editName.focusedProperty().addListener(listener);
-		editDescription.focusedProperty().addListener(listener);
-		editUrgent.focusedProperty().addListener(listener);
-		editComplete.focusedProperty().addListener(listener);
-		editDueDate.focusedProperty().addListener(listener);
+		editName.focusedProperty().addListener(syncListener);
+		editDescription.focusedProperty().addListener(syncListener);
+		editUrgent.focusedProperty().addListener(syncListener);
+		editComplete.focusedProperty().addListener(syncListener);
+		editDueDate.focusedProperty().addListener(syncListener);
 
 		/* ~PROPERTIES */
 		nameColumn.setCellValueFactory(t -> t.getValue().nameProperty());
@@ -322,7 +327,37 @@ public class TaskSchedulerWindow extends Window {
 		completeColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.completedProperty()));
 		dueDateColumn.setCellFactory(__ -> new BasicCell<>());
 
-		taskView.setItems(TASK_LIST.get());
+		ObservableList<Task> taskList = FXCollections.observableArrayList();
+		ListChangeListener<Task> completionBinder = (ListChangeListener<Task>) c -> {
+			while (c.next()) {
+				if (c.wasAdded()) {
+					for (Task t1 : c.getAddedSubList())
+						if (!t1.isCompleted())
+							taskList.add(t1);
+				} else if (c.wasRemoved())
+					for (Task t2 : c.getRemoved())
+						if (!t2.isCompleted())
+							taskList.remove(t2);
+			}
+		};
+		Bindings.bindContent(taskList, TASK_LIST.get());
+		showCompletedMenuOption.selectedProperty()
+				.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+					Logging.dbg("" + newValue);
+					if (newValue) {
+						Bindings.unbindContent(taskList, TASK_LIST.get());
+						taskList.clear();
+						for (Task t : TASK_LIST.get())
+							if (!t.isCompleted())
+								taskList.add(t);
+						TASK_LIST.get().addListener(completionBinder);
+					} else {
+						TASK_LIST.get().removeListener(completionBinder);
+						Bindings.bindContent(taskList, TASK_LIST.get());
+					}
+				});
+
+		taskView.setItems(taskList);
 
 	}
 

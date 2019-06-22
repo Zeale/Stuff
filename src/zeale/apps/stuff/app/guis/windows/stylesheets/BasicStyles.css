@@ -124,30 +124,44 @@ Text {
 	-fx-spacing: 0.0;
 }
 
-.menu-bar .container .menu:hover {
+.menu > .label .text {
+	-fx-text-fill: -stuff-text-fill;
+}
+.menu:hover > .label .text,
+.menu:focused > .label .text,
+.menu:showing > .label .text {
+	-fx-fill: -stuff-hover-fill;
+}
+.menu:hover,
+.menu:focused,
+.menu:showing {
 	-fx-background-color: -stuff-light;
 }
-.menu-bar .container .menu:showing {
-	-fx-background-color: -stuff-text-fill;
-}
-.menu-bar .container .menu:showing > .label {
-	-fx-text-fill: -stuff-dark;
-}
 
-.menu-bar .container .menu:showing .context-menu {
+.context-menu {
 	-fx-background-color: -stuff-dark;
 }
 
-.menu-bar .container .menu:showing .menu-item:hover,
-.menu-bar .container .menu:showing .menu-item:showing,
-.menu-bar .container .menu:showing .menu-item:focused {
-	/* :focused is needed bc if the cursor is moved outside of the menu, items which do not have submenus will have the default blue effect. The top level menu items don't suffer from this effect. /shrug */
-	-fx-background-color: -stuff-text-fill;
+.menu:hover .arrow,
+.menu:focused .arrow {
+	-fx-background-color: -stuff-hover-fill;
 }
-.menu-bar .container .menu:showing .menu-item:hover .label,
-.menu-bar .container .menu:showing .menu-item:showing .label,
-.menu-bar .container .menu:showing .menu-item:focused .label {
-	-fx-text-fill: -stuff-dark;
+
+.menu-item:showing {
+	-fx-background-color: -stuff-dark;
+}
+.menu-item:hover,
+.menu-item:focused {
+	/* :focused is needed bc if the cursor is moved outside of the menu, items which do not have submenus will have the default blue effect. The top level menu items don't suffer from this effect. /shrug */
+	-fx-background-color: -stuff-light;
+}
+
+.menu-item .label {
+	-fx-text-fill: -stuff-text-fill;
+}
+.menu-item:hover .label,
+.menu-item:focused .label {
+	-fx-text-fill: -stuff-hover-fill;
 }
 
 /* SplitPanes */
