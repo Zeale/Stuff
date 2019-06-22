@@ -10,11 +10,12 @@ import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 
-public class ViewAccountsWindow extends Window {
+class ViewAccountsWindow extends Window {
 
 	private @FXML TreeTableView<Account> table;
+
 	private @FXML void initialize() {
-		
+
 	}
 
 	@Override
