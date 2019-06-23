@@ -163,6 +163,10 @@ Text {
 .menu-item:focused .label {
 	-fx-text-fill: -stuff-hover-fill;
 }
+.check-menu-item {
+	-fx-mark-color: -stuff-text-fill;
+	-fx-focused-mark-color: -stuff-hover-fill;
+}
 
 /* SplitPanes */
 .split-pane {
