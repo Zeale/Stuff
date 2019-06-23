@@ -12,18 +12,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.alixia.javalibrary.javafx.bindings.BindingTools;
+import org.alixia.javalibrary.javafx.bindings.BindingTools.FilterBinding;
 import org.alixia.javalibrary.javafx.bindings.BindingTools.PipewayBinding;
 import org.alixia.javalibrary.util.Box;
 import org.alixia.javalibrary.util.Gateway;
 
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -145,7 +144,7 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML Tab viewTasksTab;
 	private @FXML TabPane layoutTabPane;
 
-	private @FXML CheckMenuItem showCompletedMenuOption;
+	private @FXML CheckMenuItem filterComplete, filterUrgent;
 
 	private ReadOnlyObjectProperty<Task> selectedTask;
 
@@ -328,35 +327,25 @@ public class TaskSchedulerWindow extends Window {
 		dueDateColumn.setCellFactory(__ -> new BasicCell<>());
 
 		ObservableList<Task> taskList = FXCollections.observableArrayList();
-		ListChangeListener<Task> completionBinder = (ListChangeListener<Task>) c -> {
-			while (c.next()) {
-				if (c.wasAdded()) {
-					for (Task t1 : c.getAddedSubList())
-						if (!t1.isCompleted())
-							taskList.add(t1);
-				} else if (c.wasRemoved())
-					for (Task t2 : c.getRemoved())
-						if (!t2.isCompleted())
-							taskList.remove(t2);
-			}
-		};
-		Bindings.bindContent(taskList, TASK_LIST.get());
-		showCompletedMenuOption.selectedProperty()
-				.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
-					Logging.dbg("" + newValue);
-					if (newValue) {
-						Bindings.unbindContent(taskList, TASK_LIST.get());
-						taskList.clear();
-						for (Task t : TASK_LIST.get())
-							if (!t.isCompleted())
-								taskList.add(t);
-						TASK_LIST.get().addListener(completionBinder);
-					} else {
-						TASK_LIST.get().removeListener(completionBinder);
-						Bindings.bindContent(taskList, TASK_LIST.get());
-					}
-				});
+		FilterBinding<Task> filteredBinding = BindingTools.filterBind(TASK_LIST.get(), taskList);
+		class FilterSelectedListener implements ChangeListener<Boolean> {
+			private final Function<? super Task, Boolean> filter;
 
+			public FilterSelectedListener(Function<? super Task, Boolean> filter) {
+				this.filter = filter;
+			}
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue)
+					filteredBinding.addFilter(filter);
+				else
+					filteredBinding.removeFilter(filter);
+			}
+
+		}
+		filterComplete.selectedProperty().addListener(new FilterSelectedListener(t -> !t.isCompleted()));
+		filterUrgent.selectedProperty().addListener(new FilterSelectedListener(t -> !t.isUrgent()));
 		taskView.setItems(taskList);
 
 	}
