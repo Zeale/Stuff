@@ -33,7 +33,8 @@
 				</Menu>
             <Menu mnemonicParsing="false" text="Tasks">
               <items>
-                  <CheckMenuItem fx:id="showCompletedMenuOption" mnemonicParsing="false" text="Filter Complete" />
+                  <CheckMenuItem fx:id="filterComplete" mnemonicParsing="false" text="Filter Complete" />
+                  <CheckMenuItem fx:id="filterUrgent" mnemonicParsing="false" text="Filter Urgent" />
               </items>
             </Menu>
 			</menus>
