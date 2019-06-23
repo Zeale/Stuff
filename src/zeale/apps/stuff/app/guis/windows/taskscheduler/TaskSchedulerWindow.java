@@ -226,8 +226,8 @@ public class TaskSchedulerWindow extends Window {
 					task.urgentProperty().bindBidirectional(editUrgent.selectedProperty());
 					task.nameProperty().bindBidirectional(editName.textProperty());
 					task.descriptionProperty().bindBidirectional(editDescription.textProperty());
-					binding.value = BindingTools.bibindDbg(task.dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY,
-							editDueDate.valueProperty());
+					binding.value = new PipewayBinding<>(task.dueDateProperty(), editDueDate.valueProperty(),
+							INSTANT_TO_LOCALDATE_GATEWAY, Logging::err);
 				}
 			} else {
 				AnchorPane.setBottomAnchor(editDescription, 200d);
@@ -267,8 +267,8 @@ public class TaskSchedulerWindow extends Window {
 				newValue.urgentProperty().bindBidirectional(editUrgent.selectedProperty());
 				newValue.nameProperty().bindBidirectional(editName.textProperty());
 				newValue.descriptionProperty().bindBidirectional(editDescription.textProperty());
-				binding.value = BindingTools.bibindDbg(newValue.dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY,
-						editDueDate.valueProperty());
+				binding.value = new PipewayBinding<>(newValue.dueDateProperty(), editDueDate.valueProperty(),
+						INSTANT_TO_LOCALDATE_GATEWAY, Logging::err);
 			}
 		});
 
