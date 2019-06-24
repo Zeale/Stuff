@@ -84,6 +84,10 @@ public class Datapiece {
 		return data;
 	}
 
+	protected static final Datamap readDatamap(File file) throws FileNotFoundException {
+		return Datamap.readLax(new FileInputStream(file));
+	}
+
 	/**
 	 * Clears this {@link Datapiece}'s data and then calls {@link #update()}. This
 	 * effectively discards any data in this {@link Datapiece} and then loads in any

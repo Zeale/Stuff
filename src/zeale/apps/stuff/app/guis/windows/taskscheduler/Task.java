@@ -1,9 +1,7 @@
 package zeale.apps.stuff.app.guis.windows.taskscheduler;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.time.Instant;
 
 import org.alixia.javalibrary.util.StringGateway;
@@ -16,11 +14,7 @@ import zeale.apps.stuff.api.files.data.Datapiece;
 
 class Task extends Datapiece {
 	public static Task load(File file) throws FileNotFoundException {
-		return new Task(Datamap.readLax(new FileInputStream(file)), file);
-	}
-
-	public static void save(Task task) throws FileNotFoundException {
-		Datamap.save(task.datamap, new FileOutputStream(task.data));
+		return new Task(readDatamap(file), file);
 	}
 
 	private final StringProperty name, description;
