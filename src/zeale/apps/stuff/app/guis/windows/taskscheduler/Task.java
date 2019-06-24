@@ -42,10 +42,10 @@ class Task {
 			if (newValue == null)
 				rem(name);
 			else
-				put(name, gateway.to(newValue));
+				put(name, gateway.from(newValue));
 		});
 		if (datamap.containsKey(name))
-			prop.set(gateway.from(datamap.get(name)));
+			prop.set(gateway.to(datamap.get(name)));
 		return prop;
 	}
 
@@ -55,10 +55,10 @@ class Task {
 			if (newValue == null)
 				rem(name);
 			else
-				put(name, gateway.to(newValue));
+				put(name, gateway.from(newValue));
 		});
 		if (datamap.containsKey(name))
-			prop.set(gateway.from(datamap.get(name)));
+			prop.set(gateway.to(datamap.get(name)));
 		return prop;
 	}
 

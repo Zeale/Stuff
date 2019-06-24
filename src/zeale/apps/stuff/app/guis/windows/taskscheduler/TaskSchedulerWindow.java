@@ -160,12 +160,12 @@ public class TaskSchedulerWindow extends Window {
 	private static final Gateway<Instant, LocalDate> INSTANT_TO_LOCALDATE_GATEWAY = new Gateway<Instant, LocalDate>() {
 
 		@Override
-		public LocalDate from(Instant value) {
+		public LocalDate to(Instant value) {
 			return value == null ? null : value.atZone(ZoneId.systemDefault()).toLocalDate();
 		}
 
 		@Override
-		public Instant to(LocalDate value) {
+		public Instant from(LocalDate value) {
 			return value == null ? null : value.atStartOfDay(ZoneId.systemDefault()).toInstant();
 		}
 	};
@@ -249,7 +249,7 @@ public class TaskSchedulerWindow extends Window {
 				editUrgent.setSelected(newValue.isUrgent());
 				editName.setText(newValue.getName());
 				editDescription.setText(newValue.getDescription());
-				editDueDate.setValue(INSTANT_TO_LOCALDATE_GATEWAY.from(newValue.getDueDate()));
+				editDueDate.setValue(INSTANT_TO_LOCALDATE_GATEWAY.to(newValue.getDueDate()));
 			}
 			if (!editSync1.isSelected())
 				return;
@@ -278,7 +278,7 @@ public class TaskSchedulerWindow extends Window {
 				task.setDescription(editDescription.getText());
 				task.setUrgent(editUrgent.isSelected());
 				task.setCompleted(editComplete.isSelected());
-				task.setDueDate(INSTANT_TO_LOCALDATE_GATEWAY.to(editDueDate.getValue()));
+				task.setDueDate(INSTANT_TO_LOCALDATE_GATEWAY.from(editDueDate.getValue()));
 				try {
 					task.flush();
 					if (DIRTY_TASKS.exists())
@@ -317,7 +317,7 @@ public class TaskSchedulerWindow extends Window {
 		urgentColumn.setCellValueFactory(t -> t.getValue().urgentProperty());
 		completeColumn.setCellValueFactory(t -> t.getValue().completedProperty());
 		dueDateColumn.setCellValueFactory(
-				t -> BindingTools.mask(t.getValue().dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY::from));
+				t -> BindingTools.mask(t.getValue().dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY::to));
 
 		/* ~PROPERTIES */
 		nameColumn.setCellFactory(__ -> new BasicCell<>());
@@ -353,7 +353,7 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML void createNewTab() {
 		Instant instant;
 		try {
-			instant = INSTANT_TO_LOCALDATE_GATEWAY.to(createDueDate.getValue());
+			instant = INSTANT_TO_LOCALDATE_GATEWAY.from(createDueDate.getValue());
 		} catch (Exception e) {
 			Logging.err("Could not convert " + createDueDate.getValue() + " to a time stamp.");
 			return;
