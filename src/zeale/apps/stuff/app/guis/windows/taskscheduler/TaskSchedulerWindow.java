@@ -27,6 +27,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -181,8 +182,16 @@ public class TaskSchedulerWindow extends Window {
 						setBorder(newValue ? SELECTED_ROW_HOVER_BORDER : SELECTED_ROW_DEFAULT_BORDER);
 				});
 
-				selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> setBorder(
-						newValue ? isHover() ? SELECTED_ROW_HOVER_BORDER : SELECTED_ROW_DEFAULT_BORDER : null));
+				final Insets borderCounteringInsets = new Insets(0, -1, 0, -1);
+				selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+					if (newValue) {
+						setBorder(isHover() ? SELECTED_ROW_HOVER_BORDER : SELECTED_ROW_DEFAULT_BORDER);
+						setPadding(borderCounteringInsets);
+					} else {
+						setBorder(null);
+						setPadding(Insets.EMPTY);
+					}
+				});
 
 				ContextMenu rightClickMenu = new ContextMenu();
 				MenuItem item = new MenuItem();
