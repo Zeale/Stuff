@@ -4,11 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.function.Function;
 
 import org.alixia.javalibrary.util.Gateway;
 import org.alixia.javalibrary.util.StringGateway;
 
 import branch.alixia.unnamed.Datamap;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,13 +20,14 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.ObservableList;
 import zeale.apps.tools.api.data.files.filesystem.storage.FileStorage.Data;
 
 public class Datapiece {
 
 	protected final Datamap datamap;
 	protected final File data;
-	static final StringGateway<Boolean> BOOLEAN_STRING_GATEWAY = Boolean::valueOf;
+	private static final StringGateway<Boolean> BOOLEAN_STRING_GATEWAY = Boolean::valueOf;
 
 	protected StringProperty property(String name) {
 		SimpleStringProperty prop = new SimpleStringProperty(this, name);
@@ -37,7 +42,7 @@ public class Datapiece {
 		return prop;
 	}
 
-	private BooleanProperty bprop(String name, Gateway<String, Boolean> gateway) {
+	protected BooleanProperty bprop(String name, Gateway<String, Boolean> gateway) {
 		BooleanProperty prop = new SimpleBooleanProperty(this, name);
 		prop.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue == null)
@@ -61,6 +66,26 @@ public class Datapiece {
 		if (datamap.containsKey(name))
 			prop.set(gateway.to(datamap.get(name)));
 		return prop;
+	}
+
+	private static <T> String toString(Collection<T> items, Function<? super T, String> converter) {
+		String result = "[";
+		Iterator<T> itr = items.iterator();
+		if (itr.hasNext()) {
+			result += converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,").replace("]", "\\]");
+			while (itr.hasNext())
+				result += ','
+						+ converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,").replace("]", "\\]");
+		}
+		return result + ']';
+	}
+
+	protected <T, LT extends ObservableList<T>> LT lprop(String name, Gateway<String, ? super T> gateway, LT list) {
+		list.addListener((InvalidationListener) observable -> put(name, Datapiece.toString(list, gateway.to())));
+		if (datamap.containsKey(name)) {
+			// TODO Load map from String.
+		}
+		return list;
 	}
 
 	protected BooleanProperty bprop(String name) {
