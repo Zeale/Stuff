@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -56,6 +55,7 @@ import javafx.stage.Stage;
 import zeale.applicationss.notesss.utilities.Utilities;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
+import zeale.apps.stuff.api.files.data.Datapiece;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
@@ -70,28 +70,66 @@ public class TaskSchedulerWindow extends Window {
 			LABEL_DATA_DIR = PhoenixReference
 					.create((Supplier<File>) () -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Labels"));
 
-	private static final PhoenixReference<List<Task>> DIRTY_TASKS = new PhoenixReference<List<Task>>(true) {
+	private final static class FlushList<E extends Datapiece> extends ArrayList<E> {
+		/**
+		 * SUID
+		 */
+		private static final long serialVersionUID = 1L;
+		private final Function<? super E, String> msgGetter;
+
+		public FlushList(Function<? super E, String> msgGetter) {
+			this.msgGetter = msgGetter;
+		}
 
 		@Override
-		protected ArrayList<Task> generate() {
-			return new ArrayList<Task>() {
-
-				/**
-				 * SUID
-				 */
-				private static final long serialVersionUID = 1L;
-
-				protected void finalize() {
-					for (Task t : this) {
-						try {
-							t.flush();
-						} catch (FileNotFoundException e) {
-							Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
-						}
-					}
+		protected void finalize() throws Throwable {
+			Throwable exception = null;
+			try {
+				super.finalize();
+			} catch (Throwable e) {
+				exception = e;
+			} finally {
+				try {
+					flush();
+				} catch (Throwable e) {
+					Logging.err("(To Do List) There was an error while saving data to the file...");
+					Logging.err(e);
 				}
-			};
+				if (exception != null)
+					throw exception;
+			}
 		}
+
+		public synchronized void flushList() {
+			flush();
+			clear();
+		}
+
+		private void flush() {
+			for (E e : this)
+				try {
+					e.flush();
+				} catch (FileNotFoundException err) {
+					Logging.err(msgGetter.apply(e));
+				}
+		}
+
+	}
+
+	private static final PhoenixReference<FlushList<Datapiece>> DIRTY_OBJECTS = new PhoenixReference<FlushList<Datapiece>>() {
+
+		@Override
+		protected FlushList<Datapiece> generate() {
+			return new FlushList<>(a -> {
+				return a instanceof Task
+						? "Failed to write the Task, \"" + ((Task) a).getName() + "\" to its file:" + a.getData()
+						: a instanceof Label
+								? "Failed to write the label, \"" + ((Task) a).getName() + "\" to its file:"
+										+ a.getData()
+								: "Failed to write an object to the file: " + a.getData();
+			});
+		}
+
 	};
 
 	private final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(
@@ -115,8 +153,8 @@ public class TaskSchedulerWindow extends Window {
 						continue;
 					}
 					InvalidationListener invalidationListener = __ -> {
-						if (!DIRTY_TASKS.get().contains(task))
-							DIRTY_TASKS.get().add(task);
+						if (!DIRTY_OBJECTS.get().contains(task))
+							DIRTY_OBJECTS.get().add(task);
 					};
 
 					/* ~PROPERTIES */
@@ -152,11 +190,14 @@ public class TaskSchedulerWindow extends Window {
 						continue;
 					}
 					InvalidationListener dirtyMarker = __ -> {
-						// TODO
+						if (!DIRTY_OBJECTS.get().contains(lbl))
+							DIRTY_OBJECTS.get().add(lbl);
 					};
-					
-					/*~LABEL.PROPERTIES*/
-					
+
+					/* ~LABEL.PROPERTIES */
+					lbl.colorProperty().addListener(dirtyMarker);
+					lbl.nameProperty().addListener(dirtyMarker);
+
 					list.add(lbl);
 				}
 			return list;
@@ -206,7 +247,7 @@ public class TaskSchedulerWindow extends Window {
 			return value == null ? null : value.atStartOfDay(ZoneId.systemDefault()).toInstant();
 		}
 	};
-	
+
 	private @FXML Button test;
 
 	private @FXML void initialize() {
@@ -327,8 +368,8 @@ public class TaskSchedulerWindow extends Window {
 				task.setDueDate(INSTANT_TO_LOCALDATE_GATEWAY.from(editDueDate.getValue()));
 				try {
 					task.flush();
-					if (DIRTY_TASKS.exists())
-						DIRTY_TASKS.get().remove(task);
+					if (DIRTY_OBJECTS.exists())
+						DIRTY_OBJECTS.get().remove(task);
 				} catch (FileNotFoundException e) {
 					Logging.err("Failed to save the task, \"" + task.getName() + "\" to the file:"
 							+ selectedTask.get().getData().getAbsolutePath());
@@ -341,8 +382,8 @@ public class TaskSchedulerWindow extends Window {
 			if (editSync1.isSelected() && !newValue && selectedTask.get() != null) {
 				try {
 					selectedTask.get().flush();
-					if (DIRTY_TASKS.exists())
-						DIRTY_TASKS.get().remove(selectedTask.get());
+					if (DIRTY_OBJECTS.exists())
+						DIRTY_OBJECTS.get().remove(selectedTask.get());
 				} catch (FileNotFoundException e) {
 					Logging.err("Failed to save the task, \"" + selectedTask.get().getName() + "\" to the file: "
 							+ selectedTask.get().getData().getAbsolutePath());
@@ -570,22 +611,35 @@ public class TaskSchedulerWindow extends Window {
 
 	private @FXML void reload() {
 		TASK_LIST.regenerate();
-		if (DIRTY_TASKS.exists())
-			DIRTY_TASKS.get().clear();
+		LABEL_LIST.regenerate();
+		if (DIRTY_OBJECTS.exists())
+			synchronized (DIRTY_OBJECTS.get()) {
+				DIRTY_OBJECTS.get().clear();
+			}
 	}
 
 	private @FXML void update() {
+
 		if (TASK_LIST.exists())
 			for (Task t : TASK_LIST.get())
 				try {
 					t.update();
 				} catch (FileNotFoundException e) {
 					Logging.err(
-							"Failed to update the task, \"" + t.getName() + "\" from it's file: " + t.getData() + ".");
+							"Failed to update the Task, \"" + t.getName() + "\" from its file: " + t.getData() + ".");
 					Logging.err(e);
 				}
-		if (DIRTY_TASKS.exists())
-			DIRTY_TASKS.get().clear();
+		if (LABEL_LIST.exists())
+			for (Label l : LABEL_LIST.get())
+				try {
+					l.update();
+				} catch (FileNotFoundException e) {
+					Logging.err(
+							"Failed to update the Label, \"" + l.getName() + "\" from its file: " + l.getData() + ".");
+					Logging.err(e);
+				}
+		if (DIRTY_OBJECTS.exists())
+			DIRTY_OBJECTS.get().clear();
 	}
 
 	private @FXML void flush() {
@@ -594,10 +648,17 @@ public class TaskSchedulerWindow extends Window {
 				try {
 					t.flush();
 				} catch (FileNotFoundException e) {
-					Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
+					Logging.err("Failed to write the Task, \"" + t.getName() + "\" to its file:" + t.getData());
 				}
-		if (DIRTY_TASKS.exists())
-			DIRTY_TASKS.get().clear();
+		if (LABEL_LIST.exists())
+			for (Label l : LABEL_LIST.get())
+				try {
+					l.flush();
+				} catch (FileNotFoundException e) {
+					Logging.err("Failed to write the Label, \"" + l.getName() + "\" to its file:" + l.getData());
+				}
+		if (DIRTY_OBJECTS.exists())
+			DIRTY_OBJECTS.get().clear();
 	}
 
 	@Override
@@ -605,21 +666,16 @@ public class TaskSchedulerWindow extends Window {
 		if (selectedTask.get() != null && editSync1.isSelected()) {
 			try {
 				selectedTask.get().flush();
-				if (DIRTY_TASKS.exists())
-					DIRTY_TASKS.get().remove(selectedTask.get());
+				if (DIRTY_OBJECTS.exists())
+					DIRTY_OBJECTS.get().remove(selectedTask.get());
 			} catch (FileNotFoundException e) {
 				Logging.err("Failed to write the task: \"" + selectedTask.get().getName() + "\" to the file: "
 						+ selectedTask.get().getData().getAbsolutePath());
 				Logging.err(e);
 			}
 		}
-		if (DIRTY_TASKS.exists())
-			for (Task t : DIRTY_TASKS.get())
-				try {
-					t.flush();
-				} catch (FileNotFoundException e) {
-					Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
-				}
+		if (DIRTY_OBJECTS.exists())
+			DIRTY_OBJECTS.get().flushList();
 	}
 
 	@Override
