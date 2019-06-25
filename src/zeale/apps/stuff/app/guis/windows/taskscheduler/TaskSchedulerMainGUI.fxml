@@ -16,8 +16,10 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -65,7 +67,7 @@
                         </TableView>
                         <TabPane minHeight="600.0" minWidth="450.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                            <Tab text="Basic Info">
+                            <Tab text="Information">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -81,7 +83,7 @@
                                        </children></AnchorPane>
                               </content>
                             </Tab>
-                            <Tab text="Other">
+                            <Tab text="Attributes">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -98,6 +100,28 @@
                                        </children></AnchorPane>
                               </content>
                             </Tab>
+                              <Tab text="Labels">
+                                <content>
+                                  <AnchorPane>
+                                       <children>
+                                          <Button layoutX="372.0" layoutY="14.0" mnemonicParsing="false" styleClass="pop-button" text="Edit">
+                                             <tooltip>
+                                                <Tooltip text="Edit available labels..." />
+                                             </tooltip>
+                                          </Button>
+                                          <VBox layoutY="200.0" spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0">
+                                             <children>
+                                                <TextField promptText="Search for a Label..." />
+                                                <FlowPane hgap="10.0" vgap="10.0" VBox.vgrow="SOMETIMES" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
                           </tabs>
                         </TabPane>
                      </items>
