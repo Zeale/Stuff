@@ -206,9 +206,10 @@ public class TaskSchedulerWindow extends Window {
 			return value == null ? null : value.atStartOfDay(ZoneId.systemDefault()).toInstant();
 		}
 	};
+	
+	private @FXML Button test;
 
 	private @FXML void initialize() {
-
 		selectedTask = taskView.getSelectionModel().selectedItemProperty();
 
 		taskView.setRowFactory(param -> new TableRow<Task>() {
