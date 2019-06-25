@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -62,10 +63,14 @@ import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class TaskSchedulerWindow extends Window {
 
-	private final static PhoenixReference<File> TASK_DATA_DIR = PhoenixReference
-			.create((Supplier<File>) () -> new File(Stuff.INSTALLATION_DIRECTORY, "App Data/Task Scheduler/Tasks"));
+	private final static PhoenixReference<File> TASK_SCHEDULER_DATA_DIR = PhoenixReference
+			.create((Supplier<File>) () -> new File(Stuff.INSTALLATION_DIRECTORY, "App Data/Task Scheduler/")),
+			TASK_DATA_DIR = PhoenixReference
+					.create((Supplier<File>) () -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Tasks")),
+			LABEL_DATA_DIR = PhoenixReference
+					.create((Supplier<File>) () -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Labels"));
 
-	private static final PhoenixReference<ArrayList<Task>> DIRTY_TASKS = new PhoenixReference<ArrayList<Task>>(true) {
+	private static final PhoenixReference<List<Task>> DIRTY_TASKS = new PhoenixReference<List<Task>>(true) {
 
 		@Override
 		protected ArrayList<Task> generate() {
@@ -122,6 +127,37 @@ public class TaskSchedulerWindow extends Window {
 					task.dueDateProperty().addListener(invalidationListener);
 
 					list.add(task);
+				}
+			return list;
+		}
+	};
+
+	private final static PhoenixReference<ObservableList<Label>> LABEL_LIST = new PhoenixReference<ObservableList<Label>>() {
+
+		@Override
+		protected ObservableList<Label> generate() {
+			LABEL_DATA_DIR.get().mkdirs();
+			ObservableList<Label> list = FXCollections.observableArrayList();
+			File[] files = LABEL_DATA_DIR.get().listFiles();
+			if (files == null) {
+				Logging.err("Failed to load the Labels from the disk; the label storage directory is not a directory: "
+						+ LABEL_DATA_DIR.get().getAbsolutePath());
+			} else
+				for (File f : files) {
+					Label lbl;
+					try {
+						lbl = Label.load(f);
+					} catch (Exception e) {
+						Logging.err("Failed to load a Label from the file: " + f.getAbsolutePath());
+						continue;
+					}
+					InvalidationListener dirtyMarker = __ -> {
+						// TODO
+					};
+					
+					/*~LABEL.PROPERTIES*/
+					
+					list.add(lbl);
 				}
 			return list;
 		}
