@@ -2,8 +2,10 @@ package zeale.apps.stuff.app.guis.windows.taskscheduler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.UUID;
 
 import org.alixia.javalibrary.util.Gateway;
+import org.alixia.javalibrary.util.StringGateway;
 
 import branch.alixia.unnamed.Datamap;
 import javafx.beans.property.ObjectProperty;
@@ -34,6 +36,7 @@ class Label extends Datapiece {
 
 	private final StringProperty name;
 	private final ObjectProperty<Color> color;
+	private final ObjectProperty<UUID> id;
 
 	public static Label load(File data) throws FileNotFoundException {
 		return new Label(readDatamap(data), data);
@@ -42,8 +45,8 @@ class Label extends Datapiece {
 	private Label(Datamap map, File data) {
 		super(map, data);
 		name = property("name");
-
 		color = oprop("color", STRING_COLOR_GATEWAY);
+		id = oprop("id", (StringGateway<UUID>) a -> UUID.fromString(a));
 	}
 
 	Label(File data) {
@@ -72,6 +75,14 @@ class Label extends Datapiece {
 
 	public final void setColor(final Color color) {
 		this.colorProperty().set(color);
+	}
+
+	private final ObjectProperty<UUID> idProperty() {
+		return this.id;
+	}
+
+	public final UUID getId() {
+		return this.idProperty().get();
 	}
 
 }
