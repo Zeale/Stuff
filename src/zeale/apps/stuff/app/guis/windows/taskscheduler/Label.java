@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.alixia.javalibrary.util.Gateway;
 import org.alixia.javalibrary.util.StringGateway;
 
-import branch.alixia.unnamed.Datamap;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
@@ -34,23 +33,18 @@ class Label extends Datapiece {
 		}
 	};
 
-	private final StringProperty name;
-	private final ObjectProperty<Color> color;
-	private final ObjectProperty<UUID> id;
+	private final StringProperty name = property("name");
+	private final ObjectProperty<Color> color = oprop("color", STRING_COLOR_GATEWAY);
+	private final ObjectProperty<UUID> id = oprop("id", (StringGateway<UUID>) a -> UUID.fromString(a));
 
 	public static Label load(File data) throws FileNotFoundException {
-		return new Label(readDatamap(data), data);
+		Label label = new Label(data);
+		label.update();
+		return label;
 	}
 
-	private Label(Datamap map, File data) {
-		super(map, data);
-		name = property("name");
-		color = oprop("color", STRING_COLOR_GATEWAY);
-		id = oprop("id", (StringGateway<UUID>) a -> UUID.fromString(a));
-	}
-
-	Label(File data) {
-		this(new Datamap(), data);
+	private Label(File data) {
+		super(data);
 	}
 
 	public final StringProperty nameProperty() {

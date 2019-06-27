@@ -4,15 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.function.Function;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.alixia.javalibrary.util.Gateway;
 import org.alixia.javalibrary.util.StringGateway;
 
 import branch.alixia.unnamed.Datamap;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -20,14 +22,35 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.ObservableList;
 import zeale.apps.tools.api.data.files.filesystem.storage.FileStorage.Data;
 
 public class Datapiece {
 
-	protected final Datamap datamap;
+	protected class DatapieceMap extends Datamap {
+
+		/**
+		 * SUID
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public DatapieceMap() {
+		}
+
+		@Override
+		protected void write(PrintWriter writer) {
+			super.write(writer);
+			for (Entry<String, Supplier<String>> e : converters.entrySet())
+				write(writer, e.getKey(), e.getValue().get());
+		}
+
+	}
+
+	protected final DatapieceMap datamap = new DatapieceMap();
+	private final Map<String, Supplier<String>> converters = new HashMap<>();
 	protected final File data;
-	private static final StringGateway<Boolean> BOOLEAN_STRING_GATEWAY = Boolean::valueOf;
+	protected static final StringGateway<Boolean> BOOLEAN_STRING_GATEWAY = Boolean::valueOf;
+
+	private final Map<String, Consumer<String>> updateHandlers = new HashMap<>();
 
 	protected StringProperty property(String name) {
 		SimpleStringProperty prop = new SimpleStringProperty(this, name);
@@ -37,8 +60,7 @@ public class Datapiece {
 			else
 				put(name, newValue);
 		});
-		if (datamap.containsKey(name))
-			prop.set(datamap.get(name));
+		updateHandlers.put(name, prop::set);
 		return prop;
 	}
 
@@ -50,8 +72,7 @@ public class Datapiece {
 			else
 				put(name, gateway.from(newValue));
 		});
-		if (datamap.containsKey(name))
-			prop.set(gateway.to(datamap.get(name)));
+		updateHandlers.put(name, s -> prop.set(gateway.to(s)));
 		return prop;
 	}
 
@@ -63,30 +84,35 @@ public class Datapiece {
 			else
 				put(name, gateway.from(newValue));
 		});
-		if (datamap.containsKey(name))
-			prop.set(gateway.to(datamap.get(name)));
+		updateHandlers.put(name, s -> prop.set(gateway.to(s)));
 		return prop;
 	}
 
-	private static <T> String toString(Collection<T> items, Function<? super T, String> converter) {
-		String result = "[";
-		Iterator<T> itr = items.iterator();
-		if (itr.hasNext()) {
-			result += converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,").replace("]", "\\]");
-			while (itr.hasNext())
-				result += ','
-						+ converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,").replace("]", "\\]");
-		}
-		return result + ']';
-	}
-
-	protected <T, LT extends ObservableList<T>> LT lprop(String name, Gateway<String, ? super T> gateway, LT list) {
-		list.addListener((InvalidationListener) observable -> put(name, Datapiece.toString(list, gateway.to())));
-		if (datamap.containsKey(name)) {
-			// TODO Load map from String.
-		}
-		return list;
-	}
+//	private static <T> String toString(Collection<T> items, Function<? super T, String> converter) {
+//		String result = "[";
+//		Iterator<T> itr = items.iterator();
+//		if (itr.hasNext()) {
+//			result += converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,").replace("]", "\\]");
+//			while (itr.hasNext())
+//				result += ','
+//						+ converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,").replace("]", "\\]");
+//		}
+//		return result + ']';
+//	}
+//
+//	protected <T, LT extends ObservableList<T>> LT lprop(String name, Gateway<String, ? super T> gateway, LT list) {
+//		list.addListener((InvalidationListener) observable -> put(name, Datapiece.toString(list, gateway.to())));
+//		if (datamap.containsKey(name)) {
+//			String value = name;
+//			if (!value.isEmpty()) {
+//				StringBuffer item = new StringBuffer();
+//				for (int i = 0; i < value.length(); i++) {
+//					char c = 
+//				}
+//			}
+//		}
+//		return list;
+//	}
 
 	protected BooleanProperty bprop(String name) {
 		return bprop(name, BOOLEAN_STRING_GATEWAY);
@@ -100,17 +126,18 @@ public class Datapiece {
 		datamap.put(key, value);
 	}
 
-	public Datapiece(Datamap map, File data) {
-		datamap = map;
-		this.data = data;
+	public Datapiece(File file) {
+		data = file;
 	}
 
 	public File getData() {
 		return data;
 	}
 
-	protected static final Datamap readDatamap(File file) throws FileNotFoundException {
-		return Datamap.readLax(new FileInputStream(file));
+	protected final DatapieceMap readDatamap(File file) throws FileNotFoundException {
+		DatapieceMap map = new DatapieceMap();
+		map.update(new FileInputStream(file));
+		return map;
 	}
 
 	/**
@@ -127,15 +154,20 @@ public class Datapiece {
 	}
 
 	/**
-	 * Loads any new key-value pairs of data in this {@link Datapiece}'s
-	 * {@link #getData() Data object} but not contained by this {@link Datapiece}'s
-	 * {@link #datamap} already, into this {@link Datapiece}'s {@link #datamap}.
+	 * Updates this {@link Datapiece} from its {@link File}.
 	 * 
 	 * @throws FileNotFoundException In case reading from the {@link #getData()
 	 *                               data} object fails.
 	 */
 	public void update() throws FileNotFoundException {
 		datamap.update(new FileInputStream(data));
+		refreshProps();
+	}
+
+	protected final void refreshProps() {
+		for (Entry<String, String> e : datamap.entrySet())
+			if (updateHandlers.containsKey(e.getKey()))
+				updateHandlers.get(e.getKey()).accept(e.getValue());
 	}
 
 	/**

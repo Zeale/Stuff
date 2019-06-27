@@ -6,7 +6,6 @@ import java.time.Instant;
 
 import org.alixia.javalibrary.util.StringGateway;
 
-import branch.alixia.unnamed.Datamap;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -14,24 +13,17 @@ import zeale.apps.stuff.api.files.data.Datapiece;
 
 class Task extends Datapiece {
 	public static Task load(File file) throws FileNotFoundException {
-		return new Task(readDatamap(file), file);
+		Task task = new Task(file);
+		task.update();
+		return task;
 	}
 
-	private final StringProperty name, description;
-	private final BooleanProperty completed, urgent;
-	private final ObjectProperty<Instant> dueDate;
-
-	private Task(Datamap datamap, File data) {
-		super(datamap, data);
-		name = property("name");
-		description = property("description");
-		completed = bprop("completed");
-		urgent = bprop("urgent");
-		dueDate = oprop("due-date", (StringGateway<Instant>) Instant::parse);
-	}
+	private final StringProperty name = property("name"), description = property("description");
+	private final BooleanProperty completed = bprop("completed"), urgent = bprop("urgent");
+	private final ObjectProperty<Instant> dueDate = oprop("due-date", (StringGateway<Instant>) Instant::parse);
 
 	Task(File data) {
-		this(new Datamap(), data);
+		super(data);
 	}
 
 	public final StringProperty nameProperty() {
