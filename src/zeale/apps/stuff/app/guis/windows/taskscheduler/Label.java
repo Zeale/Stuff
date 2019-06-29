@@ -2,10 +2,8 @@ package zeale.apps.stuff.app.guis.windows.taskscheduler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.UUID;
 
 import org.alixia.javalibrary.util.Gateway;
-import org.alixia.javalibrary.util.StringGateway;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
@@ -33,9 +31,12 @@ class Label extends Datapiece {
 		}
 	};
 
-	private final StringProperty name = property("name");
+	private final StringProperty name = property("name"), id = property("id");
 	private final ObjectProperty<Color> color = oprop("color", STRING_COLOR_GATEWAY);
-	private final ObjectProperty<UUID> id = oprop("id", (StringGateway<UUID>) a -> UUID.fromString(a));
+
+	// Yet again, the burden is on the using class (TaskSchedulerWindow) to assure
+	// that no "duplicate" Label objects, (i.e. two different Labels that point to
+	// the same file), are being used.
 
 	public static Label load(File data) throws FileNotFoundException {
 		Label label = new Label(data);
@@ -43,7 +44,12 @@ class Label extends Datapiece {
 		return label;
 	}
 
-	private Label(File data) {
+	Label(File data, String id) {
+		this(data);
+		this.id.set(id);
+	}
+
+	Label(File data) {
 		super(data);
 	}
 
@@ -71,11 +77,11 @@ class Label extends Datapiece {
 		this.colorProperty().set(color);
 	}
 
-	private final ObjectProperty<UUID> idProperty() {
+	private final StringProperty idProperty() {
 		return this.id;
 	}
 
-	public final UUID getId() {
+	public final String getId() {
 		return this.idProperty().get();
 	}
 

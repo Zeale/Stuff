@@ -147,7 +147,7 @@ public class TaskSchedulerWindow extends Window {
 				for (File f : listFiles) {
 					Task task;
 					try {
-						task = Task.load(f);
+						task = Task.load(f, LABEL_OBTAINER.get());
 					} catch (Exception e) {
 						Logging.err("Failed to load a Task from the file: " + f.getAbsolutePath());
 						continue;
@@ -203,6 +203,35 @@ public class TaskSchedulerWindow extends Window {
 			return list;
 		}
 	};
+
+	private static final PhoenixReference<Function<String, Label>> LABEL_OBTAINER = new PhoenixReference<Function<String, Label>>() {
+
+		@Override
+		protected Function<String, Label> generate() {
+			return t -> {
+				Label label = getLabel(t);
+				if (label == null)
+					try {
+						label = new Label(findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), t);
+					} catch (FileNotFoundException e) {
+						Logging.err("Failed to find a feasible file for a Label.");
+						Logging.err(e);
+						throw new RuntimeException("Failed to create a file for a label with the ID, \"" + t + "\".",
+								e);
+					}
+				return label;
+			};
+		}
+	};
+
+	private static final Label getLabel(String id) {
+		if (LABEL_LIST.exists())
+			for (Label l : LABEL_LIST.get()) {
+				if (l.getId().equals(id))
+					return l;
+			}
+		return null;
+	}
 
 	private static final Border SELECTED_ROW_DEFAULT_BORDER = Utilities.getBorderFromColor(Color.GOLD, 1),
 			SELECTED_ROW_HOVER_BORDER = Utilities.getBorderFromColor(Color.RED, 1);
@@ -437,6 +466,41 @@ public class TaskSchedulerWindow extends Window {
 
 	}
 
+//	private static class NameNotFoundException extends Exception {
+//
+//		/**
+//		 * SUID
+//		 */
+//		private static final long serialVersionUID = 1L;
+//
+//	}
+//
+//	private static String findFeasibleName(Function<String, Boolean> existenceChecker) throws NameNotFoundException {
+//		String uuid = UUID.randomUUID().toString();
+//		if (existenceChecker.apply(uuid)) {
+//			int val = 0;
+//			while (existenceChecker.apply(uuid + "-" + val))
+//				if (++val == 0)
+//					throw new NameNotFoundException();
+//			return uuid + "-" + val;
+//		}
+//		return uuid;
+//	}
+
+	private static final File findFeasibleFile(File location, String extension) throws FileNotFoundException {
+		String uuid = UUID.randomUUID().toString();
+		File file = new File(TASK_DATA_DIR.get(), uuid);
+		if (file.exists()) {
+			int val = 0;
+			while ((file = new File(location, uuid + "-" + val + extension)).exists())
+				if (++val == 0)
+					// If the user has 2^32 files in this directory each with the same UUID then
+					// wtf.
+					throw new FileNotFoundException();
+		}
+		return file;
+	}
+
 	private @FXML void createNewTab() {
 		Instant instant;
 		try {
@@ -445,13 +509,14 @@ public class TaskSchedulerWindow extends Window {
 			Logging.err("Could not convert " + createDueDate.getValue() + " to a time stamp.");
 			return;
 		}
-		String uuid = UUID.randomUUID().toString();
-		File file = new File(TASK_DATA_DIR.get(), uuid);
-		int val = 0;
-		if (file.exists())
-			while ((file = new File(TASK_DATA_DIR.get(), uuid + "-" + val++ + ".tsk")).exists())
-				;
-		Task task = new Task(file);
+		File file;
+		try {
+			file = findFeasibleFile(TASK_DATA_DIR.get(), ".tsk");
+		} catch (FileNotFoundException e1) {
+			Logging.err("Failed to find a feasible file for the Task, \"" + createName.getText() + "\".");
+			return;
+		}
+		Task task = new Task(file, LABEL_OBTAINER.get());
 		task.setCompleted(createComplete.isSelected());
 		task.setUrgent(createUrgent.isSelected());
 		task.setDescription(createDescription.getText());

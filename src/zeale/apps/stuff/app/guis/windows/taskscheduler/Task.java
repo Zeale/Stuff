@@ -3,17 +3,22 @@ package zeale.apps.stuff.app.guis.windows.taskscheduler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.Instant;
+import java.util.function.Function;
 
+import org.alixia.javalibrary.util.Gateway;
 import org.alixia.javalibrary.util.StringGateway;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import zeale.apps.stuff.api.files.data.Datapiece;
 
 class Task extends Datapiece {
-	public static Task load(File file) throws FileNotFoundException {
-		Task task = new Task(file);
+	public static Task load(File file, Function<? super String, ? extends Label> labelObtainer)
+			throws FileNotFoundException {
+		Task task = new Task(file, labelObtainer);
 		task.update();
 		return task;
 	}
@@ -21,9 +26,40 @@ class Task extends Datapiece {
 	private final StringProperty name = property("name"), description = property("description");
 	private final BooleanProperty completed = bprop("completed"), urgent = bprop("urgent");
 	private final ObjectProperty<Instant> dueDate = oprop("due-date", (StringGateway<Instant>) Instant::parse);
+	private final ObservableList<Label> labels;
 
-	Task(File data) {
+	public ObservableList<Label> getLabels() {
+		return labels;
+	}
+
+	public void addLabel(Label label) {
+		labels.add(label);
+	}
+
+	public void removeLabel(Label label) {
+		labels.remove(label);
+	}
+
+	/**
+	 * Creates a new {@link Task} in memory. No writing or reading operations occur
+	 * when this is called.
+	 * 
+	 * @param data The location of this {@link Task}.
+	 */
+	Task(File data, Function<? super String, ? extends Label> labelObtainer) {
 		super(data);
+		labels = lprop("labels", new Gateway<String, Label>() {
+
+			@Override
+			public Label to(String value) {
+				return labelObtainer.apply(value);
+			}
+
+			@Override
+			public String from(Label value) {
+				return value.getId();
+			}
+		}, FXCollections.observableArrayList());
 	}
 
 	public final StringProperty nameProperty() {

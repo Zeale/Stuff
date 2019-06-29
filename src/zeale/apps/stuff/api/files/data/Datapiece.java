@@ -5,10 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.alixia.javalibrary.util.Gateway;
@@ -22,6 +25,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.ObservableList;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.tools.api.data.files.filesystem.storage.FileStorage.Data;
 
 public class Datapiece {
@@ -88,31 +93,73 @@ public class Datapiece {
 		return prop;
 	}
 
-//	private static <T> String toString(Collection<T> items, Function<? super T, String> converter) {
-//		String result = "[";
-//		Iterator<T> itr = items.iterator();
-//		if (itr.hasNext()) {
-//			result += converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,").replace("]", "\\]");
-//			while (itr.hasNext())
-//				result += ','
-//						+ converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,").replace("]", "\\]");
-//		}
-//		return result + ']';
-//	}
-//
-//	protected <T, LT extends ObservableList<T>> LT lprop(String name, Gateway<String, ? super T> gateway, LT list) {
-//		list.addListener((InvalidationListener) observable -> put(name, Datapiece.toString(list, gateway.to())));
-//		if (datamap.containsKey(name)) {
-//			String value = name;
-//			if (!value.isEmpty()) {
-//				StringBuffer item = new StringBuffer();
-//				for (int i = 0; i < value.length(); i++) {
-//					char c = 
-//				}
-//			}
-//		}
-//		return list;
-//	}
+	/**
+	 * Returns the {@link Map} of update handlers which are called when an update is
+	 * made to the given property by one of either {@link #reload()} or
+	 * {@link #update()}.
+	 * 
+	 * @return The editable {@link Map} of update handlers.
+	 */
+	protected Map<String, Consumer<String>> getUpdateHandlers() {
+		return updateHandlers;
+	}
+
+	/**
+	 * Returns a {@link Map} of the converters for this {@link Datapiece}. Whenever
+	 * the {@link Datapiece} is being written, each of these converters is
+	 * automatically called after the normal values in the {@link #datamap} are
+	 * written, and the values returned by the {@link Supplier}s of these converters
+	 * are written out with the key of these converters as the key.
+	 * 
+	 * @return The editable {@link Map} of converters.
+	 */
+	protected Map<String, Supplier<String>> getConverters() {
+		return converters;
+	}
+
+	private static <T> String toString(Collection<? extends T> items, Function<? super T, String> converter) {
+		String result = "";
+		Iterator<? extends T> itr = items.iterator();
+		if (itr.hasNext()) {
+			result += converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,");
+			while (itr.hasNext())
+				result += ',' + converter.apply(itr.next()).replace("\\", "\\\\").replace(",", "\\,");
+		}
+		return result;
+	}
+
+	protected <T, LT extends ObservableList<T>> LT lprop(String name, Gateway<String, T> gateway, LT list) {
+
+		updateHandlers.put(name, t -> {
+			list.clear();
+			if (!t.isEmpty()) {
+				StringBuffer item = new StringBuffer();
+				boolean escaped = false;
+				for (int i = 0; i < t.length(); i++) {
+					char c = t.charAt(i);
+					if (c == '\\')
+						if (escaped)
+							item.append('\\');
+						else {
+							escaped = true;
+							continue;
+						}
+					else if (c == ',')
+						if (escaped)
+							item.append(',');
+						else {
+							list.add(gateway.to(item.toString()));
+							item = new StringBuffer();
+						}
+					else
+						item.append(c);
+					escaped = false;
+				}
+			}
+		});
+		converters.put(name, () -> Datapiece.toString(list, gateway.to()));
+		return list;
+	}
 
 	protected BooleanProperty bprop(String name) {
 		return bprop(name, BOOLEAN_STRING_GATEWAY);
@@ -120,10 +167,21 @@ public class Datapiece {
 
 	private void rem(String key) {
 		datamap.remove(key);
+		update(key, null);
 	}
 
 	private void put(String key, String value) {
 		datamap.put(key, value);
+		update(key, value);
+	}
+
+	private final void update(String key, String value) {
+		if (updateHandlers.containsKey(key))
+			try {
+				updateHandlers.get(key).accept(value);
+			} catch (RuntimeException e) {
+				Logging.err(e);
+			}
 	}
 
 	public Datapiece(File file) {
@@ -166,8 +224,7 @@ public class Datapiece {
 
 	protected final void refreshProps() {
 		for (Entry<String, String> e : datamap.entrySet())
-			if (updateHandlers.containsKey(e.getKey()))
-				updateHandlers.get(e.getKey()).accept(e.getValue());
+			update(e.getKey(), e.getValue());
 	}
 
 	/**
