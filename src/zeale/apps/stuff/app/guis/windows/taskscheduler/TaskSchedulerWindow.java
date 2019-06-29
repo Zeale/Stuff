@@ -240,7 +240,7 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML TextField createName, editName;
 	private @FXML TextArea createDescription, editDescription;
 	private @FXML DatePicker createDueDate, editDueDate;
-	private @FXML CheckBox createComplete, editComplete, createUrgent, editUrgent, editSync1, editSync2;
+	private @FXML CheckBox createComplete, editComplete, createUrgent, editUrgent, editSync1, editSync2, editSync3;
 	private @FXML Button editFlush;
 
 	private @FXML TableView<Task> taskView;
@@ -332,6 +332,7 @@ public class TaskSchedulerWindow extends Window {
 		final Box<PipewayBinding<?, ?, ?, ?>> binding = new Box<>();
 
 		editSync1.selectedProperty().bindBidirectional(editSync2.selectedProperty());
+		editSync1.selectedProperty().bindBidirectional(editSync3.selectedProperty());
 		editSync1.selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue) {
 				AnchorPane.setBottomAnchor(editDescription, 50d);

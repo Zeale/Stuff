@@ -119,6 +119,7 @@
                                                 <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
                                              </padding>
                                           </VBox>
+                                          <CheckBox fx:id="editSync3" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Sync" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="20.0" />
                                        </children>
                                     </AnchorPane>
                                 </content>
