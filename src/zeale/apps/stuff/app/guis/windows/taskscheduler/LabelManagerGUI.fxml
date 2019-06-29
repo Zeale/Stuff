@@ -1,8 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <stylesheets>
+      <URL value="@../stylesheets/Pop%20Button.css" />
+      <URL value="@../stylesheets/BasicStyles.css" />
+   </stylesheets>
+   <center>
+      <SplitPane BorderPane.alignment="CENTER">
+        <items>
+            <VBox minHeight="300.0" minWidth="400.0" prefHeight="600.0" prefWidth="800.0" spacing="40.0">
+               <children>
+                  <TextField fx:id="labelSearch" />
+                  <TilePane fx:id="labelView" hgap="20.0" prefHeight="200.0" prefWidth="200.0" vgap="20.0" VBox.vgrow="SOMETIMES" />
+               </children>
+               <padding>
+                  <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
+               </padding>
+            </VBox>
+        </items>
+      </SplitPane>
+   </center>
 </BorderPane>
-
