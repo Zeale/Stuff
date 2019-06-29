@@ -132,6 +132,40 @@ public class TaskSchedulerWindow extends Window {
 
 	};
 
+	private final static PhoenixReference<ObservableList<Label>> LABEL_LIST = new PhoenixReference<ObservableList<Label>>() {
+
+		@Override
+		protected ObservableList<Label> generate() {
+			LABEL_DATA_DIR.get().mkdirs();
+			ObservableList<Label> list = FXCollections.observableArrayList();
+			File[] files = LABEL_DATA_DIR.get().listFiles();
+			if (files == null) {
+				Logging.err("Failed to load the Labels from the disk; the label storage directory is not a directory: "
+						+ LABEL_DATA_DIR.get().getAbsolutePath());
+			} else
+				for (File f : files) {
+					Label lbl;
+					try {
+						lbl = Label.load(f);
+					} catch (Exception e) {
+						Logging.err("Failed to load a Label from the file: " + f.getAbsolutePath());
+						continue;
+					}
+					InvalidationListener dirtyMarker = __ -> {
+						if (!DIRTY_OBJECTS.get().contains(lbl))
+							DIRTY_OBJECTS.get().add(lbl);
+					};
+
+					/* ~LABEL.PROPERTIES */
+					lbl.colorProperty().addListener(dirtyMarker);
+					lbl.nameProperty().addListener(dirtyMarker);
+
+					list.add(lbl);
+				}
+			return list;
+		}
+	};
+
 	private final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(
 			true) {
 
@@ -163,42 +197,9 @@ public class TaskSchedulerWindow extends Window {
 					task.nameProperty().addListener(invalidationListener);
 					task.descriptionProperty().addListener(invalidationListener);
 					task.dueDateProperty().addListener(invalidationListener);
+					task.getLabels().addListener(invalidationListener);
 
 					list.add(task);
-				}
-			return list;
-		}
-	};
-
-	private final static PhoenixReference<ObservableList<Label>> LABEL_LIST = new PhoenixReference<ObservableList<Label>>() {
-
-		@Override
-		protected ObservableList<Label> generate() {
-			LABEL_DATA_DIR.get().mkdirs();
-			ObservableList<Label> list = FXCollections.observableArrayList();
-			File[] files = LABEL_DATA_DIR.get().listFiles();
-			if (files == null) {
-				Logging.err("Failed to load the Labels from the disk; the label storage directory is not a directory: "
-						+ LABEL_DATA_DIR.get().getAbsolutePath());
-			} else
-				for (File f : files) {
-					Label lbl;
-					try {
-						lbl = Label.load(f);
-					} catch (Exception e) {
-						Logging.err("Failed to load a Label from the file: " + f.getAbsolutePath());
-						continue;
-					}
-					InvalidationListener dirtyMarker = __ -> {
-						if (!DIRTY_OBJECTS.get().contains(lbl))
-							DIRTY_OBJECTS.get().add(lbl);
-					};
-
-					/* ~LABEL.PROPERTIES */
-					lbl.colorProperty().addListener(dirtyMarker);
-					lbl.nameProperty().addListener(dirtyMarker);
-
-					list.add(lbl);
 				}
 			return list;
 		}
@@ -343,6 +344,7 @@ public class TaskSchedulerWindow extends Window {
 					task.descriptionProperty().bindBidirectional(editDescription.textProperty());
 					binding.value = new PipewayBinding<>(task.dueDateProperty(), editDueDate.valueProperty(),
 							INSTANT_TO_LOCALDATE_GATEWAY, Logging::err);
+					// TODO Label setup.
 				}
 			} else {
 				AnchorPane.setBottomAnchor(editDescription, 200d);
@@ -355,6 +357,7 @@ public class TaskSchedulerWindow extends Window {
 					task.descriptionProperty().unbindBidirectional(editDescription.textProperty());
 					if (binding.value != null)
 						binding.value.unbind();
+					// TODO Label setup.
 				}
 			}
 		});
@@ -366,6 +369,7 @@ public class TaskSchedulerWindow extends Window {
 				editName.setText(newValue.getName());
 				editDescription.setText(newValue.getDescription());
 				editDueDate.setValue(INSTANT_TO_LOCALDATE_GATEWAY.to(newValue.getDueDate()));
+				// TODO Label setup.
 			}
 			if (!editSync1.isSelected())
 				return;
@@ -376,6 +380,7 @@ public class TaskSchedulerWindow extends Window {
 				oldValue.descriptionProperty().unbindBidirectional(editDescription.textProperty());
 				if (binding.value != null)
 					binding.value.unbind();
+				// TODO Label setup.
 			}
 			if (newValue != null) {/* ~PROPERTIES */
 				newValue.completedProperty().bindBidirectional(editComplete.selectedProperty());
@@ -384,6 +389,7 @@ public class TaskSchedulerWindow extends Window {
 				newValue.descriptionProperty().bindBidirectional(editDescription.textProperty());
 				binding.value = new PipewayBinding<>(newValue.dueDateProperty(), editDueDate.valueProperty(),
 						INSTANT_TO_LOCALDATE_GATEWAY, Logging::err);
+				// TODO Label setup.
 			}
 		});
 
@@ -395,6 +401,7 @@ public class TaskSchedulerWindow extends Window {
 				task.setUrgent(editUrgent.isSelected());
 				task.setCompleted(editComplete.isSelected());
 				task.setDueDate(INSTANT_TO_LOCALDATE_GATEWAY.from(editDueDate.getValue()));
+				// TODO Label setup.
 				try {
 					task.flush();
 					if (DIRTY_OBJECTS.exists())
@@ -426,6 +433,7 @@ public class TaskSchedulerWindow extends Window {
 		editUrgent.focusedProperty().addListener(syncListener);
 		editComplete.focusedProperty().addListener(syncListener);
 		editDueDate.focusedProperty().addListener(syncListener);
+		// TODO Label setup.
 
 		/* ~PROPERTIES */
 		nameColumn.setCellValueFactory(t -> t.getValue().nameProperty());
