@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 
 import org.alixia.javalibrary.util.Gateway;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
@@ -33,6 +34,7 @@ class Label extends Datapiece {
 
 	private final StringProperty name = property("name"), id = property("id"), description = property("description");
 	private final ObjectProperty<Color> color = oprop("color", STRING_COLOR_GATEWAY);
+	private final DoubleProperty opacity = dprop("opacity");
 
 	// Yet again, the burden is on the using class (TaskSchedulerWindow) to assure
 	// that no "duplicate" Label objects, (i.e. two different Labels that point to
@@ -95,6 +97,18 @@ class Label extends Datapiece {
 
 	public final void setDescription(final String description) {
 		this.descriptionProperty().set(description);
+	}
+
+	public final DoubleProperty opacityProperty() {
+		return this.opacity;
+	}
+
+	public final double getOpacity() {
+		return this.opacityProperty().get();
+	}
+
+	public final void setOpacity(final double opacity) {
+		this.opacityProperty().set(opacity);
 	}
 
 }
