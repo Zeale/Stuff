@@ -225,7 +225,14 @@ public class TaskSchedulerWindow extends Window {
 		}
 	};
 
-	private static final Label getLabel(String id) {
+	static final Label createLabel() throws NameNotFoundException, FileNotFoundException {
+		String uuid = findFeasibleName(s -> getLabel(s) != null);
+		Label label = new Label(findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), uuid);
+		label.flush();
+		return label;
+	}
+
+	static final Label getLabel(String id) {
 		if (LABEL_LIST.exists())
 			for (Label l : LABEL_LIST.get()) {
 				if (l.getId().equals(id))
@@ -475,26 +482,26 @@ public class TaskSchedulerWindow extends Window {
 
 	}
 
-//	private static class NameNotFoundException extends Exception {
-//
-//		/**
-//		 * SUID
-//		 */
-//		private static final long serialVersionUID = 1L;
-//
-//	}
-//
-//	private static String findFeasibleName(Function<String, Boolean> existenceChecker) throws NameNotFoundException {
-//		String uuid = UUID.randomUUID().toString();
-//		if (existenceChecker.apply(uuid)) {
-//			int val = 0;
-//			while (existenceChecker.apply(uuid + "-" + val))
-//				if (++val == 0)
-//					throw new NameNotFoundException();
-//			return uuid + "-" + val;
-//		}
-//		return uuid;
-//	}
+	static class NameNotFoundException extends Exception {
+
+		/**
+		 * SUID
+		 */
+		private static final long serialVersionUID = 1L;
+
+	}
+
+	private static String findFeasibleName(Function<String, Boolean> existenceChecker) throws NameNotFoundException {
+		String uuid = UUID.randomUUID().toString();
+		if (existenceChecker.apply(uuid)) {
+			int val = 0;
+			while (existenceChecker.apply(uuid + "-" + val))
+				if (++val == 0)
+					throw new NameNotFoundException();
+			return uuid + "-" + val;
+		}
+		return uuid;
+	}
 
 	private static final File findFeasibleFile(File location, String extension) throws FileNotFoundException {
 		String uuid = UUID.randomUUID().toString();
