@@ -163,7 +163,8 @@ Text {
 .menu-item:focused .label {
 	-fx-text-fill: -stuff-hover-fill;
 }
-.check-menu-item {
+.menu-item, .check-menu-item {
+	/* Adding '.menu-item' covers check menu items in TabPane control button dropdowns. */
 	-fx-mark-color: -stuff-text-fill;
 	-fx-focused-mark-color: -stuff-hover-fill;
 }
