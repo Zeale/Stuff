@@ -19,8 +19,10 @@ import org.alixia.javalibrary.util.StringGateway;
 
 import branch.alixia.unnamed.Datamap;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -54,6 +56,7 @@ public class Datapiece {
 	private final Map<String, Supplier<String>> converters = new HashMap<>();
 	protected final File data;
 	protected static final StringGateway<Boolean> BOOLEAN_STRING_GATEWAY = Boolean::valueOf;
+	protected static final StringGateway<Double> DOUBLE_STRING_GATEWAY = Double::valueOf;
 
 	private final Map<String, Consumer<String>> updateHandlers = new HashMap<>();
 
@@ -67,6 +70,22 @@ public class Datapiece {
 		});
 		updateHandlers.put(name, prop::set);
 		return prop;
+	}
+
+	protected DoubleProperty dprop(String name, Gateway<String, Double> gateway) {
+		DoubleProperty prop = new SimpleDoubleProperty(this, name);
+		prop.addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> {
+			if (newValue == null)
+				rem(name);
+			else
+				put(name, gateway.from(newValue.doubleValue()));
+		});
+		updateHandlers.put(name, s -> prop.set(gateway.to(s)));
+		return prop;
+	}
+
+	protected DoubleProperty dprop(String name) {
+		return dprop(name, DOUBLE_STRING_GATEWAY);
 	}
 
 	protected BooleanProperty bprop(String name, Gateway<String, Boolean> gateway) {
@@ -226,7 +245,7 @@ public class Datapiece {
 		for (Entry<String, String> e : datamap.entrySet())
 			update(e.getKey(), e.getValue());
 	}
-	
+
 	public void deleteFile() {
 		data.delete();
 	}
