@@ -255,11 +255,16 @@ Text {
 	-fx-background-color: -stuff-text-fill;
 }
 
-/* DatePickers */
-.date-picker {
+/* DatePickers, ColorPickers */
+.date-picker, .color-picker {
 	-fx-background-color: -stuff-dark;
 	-fx-background-radius: 0;
 }
+.date-picker .arrow-button .arrow, .color-picker .arrow-button .arrow {
+	-fx-background-color: -stuff-text-fill;
+}
+
+/* DatePickers */
 .date-picker .date-picker-display-node {
 	-fx-text-fill: -stuff-text-fill;
 }
@@ -267,6 +272,12 @@ Text {
 	-fx-background-color: black;
 	-fx-background-radius: 0;
 }
-.date-picker .arrow-button .arrow {
-	-fx-background-color: -stuff-text-fill;
+
+/* Color Pickers */
+.color-picker .color-picker-label {
+	-fx-text-fill: gold;
+}
+
+.color-picker .color-picker-label .picker-color .picker-color-rect, .color-picker .color-picker-label .picker-color {
+	-fx-border-width: 0;
 }
