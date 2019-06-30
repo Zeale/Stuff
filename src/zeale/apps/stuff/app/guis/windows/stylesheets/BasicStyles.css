@@ -110,6 +110,13 @@ Text {
 	-fx-text-fill: -stuff-hover-fill;
 }
 
+.tab-pane .tab-header-area .control-buttons-tab .tab-button-down {
+	-fx-background-color: -stuff-dark;
+}
+.tab-pane .tab-header-area .control-buttons-tab .tab-button-down .arrow {
+	-fx-background-color: -stuff-text-fill;
+}
+
 /* MenuBars */
 /* These style specs aren't comprehensive of nested menus (I believe). Specifically in terms of hovering and focusing nested menus. This may need to be covered by a separate stylesheet (or by this one) when the problem shows up. */
 .menu-bar {
