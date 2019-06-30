@@ -110,10 +110,10 @@ Text {
 	-fx-text-fill: -stuff-hover-fill;
 }
 
-.tab-pane .tab-header-area .control-buttons-tab .tab-button-down {
-	-fx-background-color: -stuff-dark;
+.tab-pane .tab-header-area .control-buttons-tab .tab-down-button {
+	-fx-background-color: black;
 }
-.tab-pane .tab-header-area .control-buttons-tab .tab-button-down .arrow {
+.tab-pane .tab-header-area .control-buttons-tab .tab-down-button .arrow {
 	-fx-background-color: -stuff-text-fill;
 }
 
