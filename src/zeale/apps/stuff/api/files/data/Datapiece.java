@@ -226,6 +226,10 @@ public class Datapiece {
 		for (Entry<String, String> e : datamap.entrySet())
 			update(e.getKey(), e.getValue());
 	}
+	
+	public void deleteFile() {
+		data.delete();
+	}
 
 	/**
 	 * Writes this {@link Datapiece} out to its {@link Data} file.
