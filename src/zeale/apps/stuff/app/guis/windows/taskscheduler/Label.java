@@ -31,7 +31,7 @@ class Label extends Datapiece {
 		}
 	};
 
-	private final StringProperty name = property("name"), id = property("id");
+	private final StringProperty name = property("name"), id = property("id"), description = property("description");
 	private final ObjectProperty<Color> color = oprop("color", STRING_COLOR_GATEWAY);
 
 	// Yet again, the burden is on the using class (TaskSchedulerWindow) to assure
@@ -83,6 +83,18 @@ class Label extends Datapiece {
 
 	public final String getId() {
 		return this.idProperty().get();
+	}
+
+	public final StringProperty descriptionProperty() {
+		return this.description;
+	}
+
+	public final String getDescription() {
+		return this.descriptionProperty().get();
+	}
+
+	public final void setDescription(final String description) {
+		this.descriptionProperty().set(description);
 	}
 
 }
