@@ -132,7 +132,7 @@ public class TaskSchedulerWindow extends Window {
 
 	};
 
-	private final static PhoenixReference<ObservableList<Label>> LABEL_LIST = new PhoenixReference<ObservableList<Label>>() {
+	final static PhoenixReference<ObservableList<Label>> LABEL_LIST = new PhoenixReference<ObservableList<Label>>() {
 
 		@Override
 		protected ObservableList<Label> generate() {
