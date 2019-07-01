@@ -18,12 +18,18 @@ class LabelView extends javafx.scene.control.Label {
 	private static final CornerRadii DEFAULT_BORDER_RADIUS = new CornerRadii(4);
 	private static final double DEFAULT_BRIGHTNESS_THRESHOLD = 0.7, DEFAULT_OPACITY_THRESHOLD = 0.5;
 
+	private final Label label;
+
+	public Label getLabel() {
+		return label;
+	}
+
 	{
 		setPadding(new Insets(10));
 	}
 
 	public LabelView(Label label) {
-		textProperty().bind(label.nameProperty());
+		textProperty().bind((this.label = label).nameProperty());
 		textFillProperty()
 				.bind(Bindings.createObjectBinding(() -> label.getColor().getBrightness() > DEFAULT_BRIGHTNESS_THRESHOLD
 						|| label.getColor().getOpacity() * label.getOpacity() < DEFAULT_OPACITY_THRESHOLD ? Color.BLACK
