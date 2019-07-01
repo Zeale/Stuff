@@ -66,11 +66,15 @@ public abstract class Window {
 	public final synchronized void display(Stage stage, ApplicationProperties properties)
 			throws WindowLoadFailureException {
 		if (called)
-			throw new RuntimeException("Cannot \"show\" a Window object twice.");
+			throw new RuntimeException("Cannot show a Window object twice.");
 		if (stage.getProperties().containsKey(STAGE_WINDOW_KEY))
 			((Window) stage.getProperties().get(STAGE_WINDOW_KEY)).destroy();
 		stage.getProperties().put(STAGE_WINDOW_KEY, this);
-		show(stage, properties);
+		try {
+			show(stage, properties);
+		} catch (Exception e) {
+			throw new WindowLoadFailureException(e);
+		}
 		called = true;
 	}
 
