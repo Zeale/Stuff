@@ -49,7 +49,7 @@
             <VBox minHeight="300.0" minWidth="400.0" prefHeight="600.0" prefWidth="800.0" spacing="40.0">
                <children>
                   <TextField fx:id="labelSearch" />
-                  <TilePane fx:id="labelView" hgap="20.0" prefHeight="200.0" prefWidth="200.0" vgap="20.0" VBox.vgrow="SOMETIMES" />
+                  <TilePane fx:id="labelView" hgap="20.0" prefHeight="200.0" prefWidth="200.0" style="-fx-font-size: 1.4em;" vgap="20.0" VBox.vgrow="SOMETIMES" />
                </children>
                <padding>
                   <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
