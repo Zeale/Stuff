@@ -34,7 +34,7 @@ class Label extends Datapiece {
 
 	private final StringProperty name = property("name"), id = property("id"), description = property("description");
 	private final ObjectProperty<Color> color = oprop("color", STRING_COLOR_GATEWAY);
-	private final DoubleProperty opacity = dprop("opacity");
+	private final DoubleProperty opacity = dprop("opacity", 0.5);
 
 	// Yet again, the burden is on the using class (TaskSchedulerWindow) to assure
 	// that no "duplicate" Label objects, (i.e. two different Labels that point to
