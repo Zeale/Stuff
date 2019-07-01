@@ -112,12 +112,19 @@ class LabelManagerWindow extends Window {
 	}
 
 	private @FXML void modifyLabel() {
-
+		if (selectedLabel.get() == null)
+			Logging.err("Please select a label to modify.");
+		else if (modName.getText().equals(""))
+			Logging.err("The label name cannot be empty");
+		else {
+			selectedLabel.get().getLabel().setName(modName.getText());
+			selectedLabel.get().getLabel().setColor(modColor.getValue());
+			selectedLabel.get().getLabel().setDescription(modDesc.getText());
+		}
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
 
 	}
 
