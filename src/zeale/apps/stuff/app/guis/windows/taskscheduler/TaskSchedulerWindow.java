@@ -285,7 +285,27 @@ public class TaskSchedulerWindow extends Window {
 		}
 	};
 
-	private @FXML Button test;
+	private @FXML void showEditLabelGUI() {
+		try {
+			LabelManagerWindow window = new LabelManagerWindow();
+			Stuff.displayWindow(window);
+			window.showEditMenu();
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Failed to show the label editor window.");
+			Logging.err(e);
+		}
+	}
+
+	private @FXML void showCreateLabelGUI() {
+		try {
+			LabelManagerWindow window = new LabelManagerWindow();
+			Stuff.displayWindow(window);
+			window.showCreateMenu();
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Failed to show the label editor window.");
+			Logging.err(e);
+		}
+	}
 
 	private @FXML void initialize() {
 		selectedTask = taskView.getSelectionModel().selectedItemProperty();
@@ -478,6 +498,7 @@ public class TaskSchedulerWindow extends Window {
 		}
 		filterComplete.selectedProperty().addListener(new FilterSelectedListener(t -> !t.isCompleted()));
 		filterUrgent.selectedProperty().addListener(new FilterSelectedListener(t -> !t.isUrgent()));
+
 		taskView.setItems(taskList);
 
 	}
