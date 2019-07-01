@@ -59,6 +59,7 @@ import zeale.apps.stuff.api.files.data.Datapiece;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
+import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow.NameNotFoundException;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class TaskSchedulerWindow extends Window {
@@ -151,14 +152,13 @@ public class TaskSchedulerWindow extends Window {
 						Logging.err("Failed to load a Label from the file: " + f.getAbsolutePath());
 						continue;
 					}
-					InvalidationListener dirtyMarker = __ -> {
-						if (!DIRTY_OBJECTS.get().contains(lbl))
-							DIRTY_OBJECTS.get().add(lbl);
-					};
+					InvalidationListener dirtyMarker = __ -> markDirty(lbl);
 
 					/* ~LABEL.PROPERTIES */
 					lbl.colorProperty().addListener(dirtyMarker);
 					lbl.nameProperty().addListener(dirtyMarker);
+					lbl.opacityProperty().addListener(dirtyMarker);
+					lbl.descriptionProperty().addListener(dirtyMarker);
 
 					list.add(lbl);
 				}
@@ -186,10 +186,7 @@ public class TaskSchedulerWindow extends Window {
 						Logging.err("Failed to load a Task from the file: " + f.getAbsolutePath());
 						continue;
 					}
-					InvalidationListener invalidationListener = __ -> {
-						if (!DIRTY_OBJECTS.get().contains(task))
-							DIRTY_OBJECTS.get().add(task);
-					};
+					InvalidationListener invalidationListener = __ -> markDirty(task);
 
 					/* ~PROPERTIES */
 					task.completedProperty().addListener(invalidationListener);
@@ -213,21 +210,39 @@ public class TaskSchedulerWindow extends Window {
 				Label label = getLabel(t);
 				if (label == null)
 					try {
-						label = new Label(findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), t);
+						label = createLabel();
 					} catch (FileNotFoundException e) {
 						Logging.err("Failed to find a feasible file for a Label.");
 						Logging.err(e);
 						throw new RuntimeException("Failed to create a file for a label with the ID, \"" + t + "\".",
 								e);
+					} catch (NameNotFoundException e) {
+						Logging.err("Failed to find a feasible id for a Label.");
+						Logging.err(e);
+						throw new RuntimeException(e);
 					}
 				return label;
 			};
 		}
 	};
 
+	static void markDirty(Datapiece dp) {
+		if (!(DIRTY_OBJECTS.exists() && DIRTY_OBJECTS.get().contains(dp)))
+			DIRTY_OBJECTS.get().add(dp);
+	}
+
 	static final Label createLabel() throws NameNotFoundException, FileNotFoundException {
 		String uuid = findFeasibleName(s -> getLabel(s) != null);
 		Label label = new Label(findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), uuid);
+
+		InvalidationListener invalidationListener = __ -> markDirty(label);
+
+		/* ~LABEL.PROPERTIES */
+		label.colorProperty().addListener(invalidationListener);
+		label.nameProperty().addListener(invalidationListener);
+		label.descriptionProperty().addListener(invalidationListener);
+		label.opacityProperty().addListener(invalidationListener);
+
 		label.flush();
 		return label;
 	}
@@ -559,6 +574,16 @@ public class TaskSchedulerWindow extends Window {
 		task.setDescription(createDescription.getText());
 		task.setName(createName.getText());
 		task.setDueDate(instant);
+
+		InvalidationListener invalidationListener = __ -> markDirty(task);
+
+		/* ~PROPERTIES */
+		task.completedProperty().addListener(invalidationListener);
+		task.urgentProperty().addListener(invalidationListener);
+		task.nameProperty().addListener(invalidationListener);
+		task.descriptionProperty().addListener(invalidationListener);
+		task.dueDateProperty().addListener(invalidationListener);
+		task.getLabels().addListener(invalidationListener);
 
 		createComplete.setSelected(false);
 		createUrgent.setSelected(false);
