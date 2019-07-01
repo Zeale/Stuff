@@ -43,6 +43,7 @@
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#showEditLabelGUI" text="Edit" />
                   <MenuItem mnemonicParsing="false" onAction="#showCreateLabelGUI" text="Create" />
+                  <MenuItem mnemonicParsing="false" onAction="#showLabelManagerWindow" text="View" />
               </items>
             </Menu>
 			</menus>

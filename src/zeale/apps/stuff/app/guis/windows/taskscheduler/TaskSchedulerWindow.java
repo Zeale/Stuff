@@ -59,7 +59,6 @@ import zeale.apps.stuff.api.files.data.Datapiece;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
-import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow.NameNotFoundException;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class TaskSchedulerWindow extends Window {
@@ -317,7 +316,16 @@ public class TaskSchedulerWindow extends Window {
 			Stuff.displayWindow(window);
 			window.showCreateMenu();
 		} catch (WindowLoadFailureException e) {
-			Logging.err("Failed to show the label editor window.");
+			Logging.err("Failed to show the label creator window.");
+			Logging.err(e);
+		}
+	}
+
+	private @FXML void showLabelManagerWindow() {
+		try {
+			Stuff.displayWindow(new LabelManagerWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Failed to show the label manager window.");
 			Logging.err(e);
 		}
 	}
