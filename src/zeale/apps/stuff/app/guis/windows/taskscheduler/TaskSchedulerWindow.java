@@ -526,7 +526,7 @@ public class TaskSchedulerWindow extends Window {
 
 	private static final File findFeasibleFile(File location, String extension) throws FileNotFoundException {
 		String uuid = UUID.randomUUID().toString();
-		File file = new File(TASK_DATA_DIR.get(), uuid);
+		File file = new File(location, uuid);
 		if (file.exists()) {
 			int val = 0;
 			while ((file = new File(location, uuid + "-" + val + extension)).exists())
