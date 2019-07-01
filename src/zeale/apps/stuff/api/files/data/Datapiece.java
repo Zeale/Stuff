@@ -88,6 +88,12 @@ public class Datapiece {
 		return dprop(name, DOUBLE_STRING_GATEWAY);
 	}
 
+	protected DoubleProperty dprop(String name, double defaultValue) {
+		DoubleProperty prop = dprop(name);
+		prop.set(defaultValue);
+		return prop;
+	}
+
 	protected BooleanProperty bprop(String name, Gateway<String, Boolean> gateway) {
 		BooleanProperty prop = new SimpleBooleanProperty(this, name);
 		prop.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
