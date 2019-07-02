@@ -174,7 +174,7 @@ public class TaskSchedulerWindow extends Window {
 		}
 	};
 
-	private final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(
+	final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(
 			true) {
 
 		@Override

@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.control.Tab;
@@ -64,11 +66,23 @@ class LabelManagerWindow extends Window {
 
 	private final LabelView getView(Label label) {
 		LabelView view = new LabelView(label);
+		MenuItem item = new MenuItem();
+		ContextMenu rightClickMenu = new ContextMenu(item);
+		item.setText("Delete");
+		item.setOnAction(e -> {
+			for (Task t : TaskSchedulerWindow.TASK_LIST.get()) {
+				t.getLabels().remove(label);
+			}
+			if (TaskSchedulerWindow.LABEL_LIST.exists())
+				TaskSchedulerWindow.LABEL_LIST.get().remove(label);
+			label.deleteFile();
+		});
 		view.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				selectedLabel.set(selectedLabel.get() == view ? null : view);
 				event.consume();
-			}
+			} else if (event.getButton() == MouseButton.SECONDARY)
+				rightClickMenu.show(labelView, event.getScreenX(), event.getScreenY());
 		});
 
 		return view;
