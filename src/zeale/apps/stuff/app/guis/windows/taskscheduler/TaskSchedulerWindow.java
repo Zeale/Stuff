@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -20,8 +21,10 @@ import org.alixia.javalibrary.util.Box;
 import org.alixia.javalibrary.util.Gateway;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -47,6 +50,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.Glow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -526,35 +531,93 @@ public class TaskSchedulerWindow extends Window {
 			}
 
 		}
-		for (Label l : LABEL_LIST.get())
-			labelSelectionBox.getChildren().add(new LabelView(l));
+
 		filterComplete.selectedProperty().addListener(new FilterSelectedListener(t -> !t.isCompleted()));
 		filterUrgent.selectedProperty().addListener(new FilterSelectedListener(t -> !t.isUrgent()));
 
+		Function<Label, LabelView> labelViewObtainer = l -> {
+			LabelView e = new LabelView(l);
+			e.setOnMouseClicked(event -> {
+				if (event.getButton() == MouseButton.PRIMARY)
+					selectedLabel.set(selectedLabel.get() == e ? null : e);
+			});
+			return e;
+		};
+
+		for (Label l : LABEL_LIST.get())
+			labelSelectionBox.getChildren().add(labelViewObtainer.apply(l));
 		LABEL_LIST.get().addListener(new ListListener<Label>() {
 
 			@Override
 			public void added(List<? extends Label> items, int startpos) {
 				for (Label l : items)
 					if (l.getName().toLowerCase().contains(labelFilter.getText().toLowerCase()))
-						labelSelectionBox.getChildren().add(new LabelView(l));
+						labelSelectionBox.getChildren().add(labelViewObtainer.apply(l));
 			}
 
 			@Override
 			public void removed(List<? extends Label> items, int startpos) {
-				NEXT_ITEM: for (Label l : items) {
+				NEXT_ITEM: for (Label l : items)
 					if (l.getName().toLowerCase().contains(labelFilter.getText().toLowerCase()))
 						for (Node lv : labelSelectionBox.getChildren())
 							if (lv instanceof LabelView && ((LabelView) lv).getLabel() == l) {
 								labelSelectionBox.getChildren().remove(lv);
 								continue NEXT_ITEM;
 							}
-				}
+			}
+		});
+
+		labelFilter.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (newValue.isEmpty()) {
+					labelSelectionBox.getChildren().clear();
+					for (Label l : LABEL_LIST.get())
+						labelSelectionBox.getChildren().add(labelViewObtainer.apply(l));
+				} else if (newValue.contains(oldValue))
+					for (Iterator<Node> iterator = labelSelectionBox.getChildren().iterator(); iterator.hasNext();) {
+						Node n = iterator.next();
+						if (n instanceof LabelView)
+							if (!fits(((LabelView) n).getLabel().getName(), newValue))
+								iterator.remove();
+					}
+				else
+					NEXT_LABEL: for (Label l : LABEL_LIST.get()) {
+						boolean fits = fits(l.getName(), newValue);
+						if (fits) {
+							for (Node n : labelSelectionBox.getChildren())
+								if (n instanceof LabelView && ((LabelView) n).getLabel() == l)
+									continue NEXT_LABEL;
+							labelSelectionBox.getChildren().add(labelViewObtainer.apply(l));
+						} else
+							for (Node n : labelSelectionBox.getChildren())
+								if (n instanceof LabelView && ((LabelView) n).getLabel() == l) {
+									labelSelectionBox.getChildren().remove(n);
+									break;
+								}
+					}
 			}
 		});
 
 		taskView.setItems(taskList);
 
+	}
+
+	private static boolean fits(String name, String query) {
+		return name.toLowerCase().contains(query.toLowerCase());
+	}
+
+	private static final Effect SELECTED_LABEL_EFFECT = new Glow(1);
+
+	private final ObjectProperty<LabelView> selectedLabel = new SimpleObjectProperty<>();
+	{
+		selectedLabel.addListener((ChangeListener<LabelView>) (observable, oldValue, newValue) -> {
+			if (oldValue != null)
+				oldValue.setEffect(null);
+			if (newValue != null)
+				newValue.setEffect(SELECTED_LABEL_EFFECT);
+		});
 	}
 
 	static class NameNotFoundException extends Exception {
