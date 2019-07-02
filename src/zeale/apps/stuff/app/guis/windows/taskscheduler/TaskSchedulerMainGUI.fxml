@@ -44,6 +44,7 @@
                 <MenuItem mnemonicParsing="false" onAction="#showEditLabelGUI" text="Edit" />
                   <MenuItem mnemonicParsing="false" onAction="#showCreateLabelGUI" text="Create" />
                   <MenuItem mnemonicParsing="false" onAction="#showLabelManagerWindow" text="View" />
+                  <CheckMenuItem fx:id="showLabels" mnemonicParsing="false" text="Show" />
               </items>
             </Menu>
 			</menus>

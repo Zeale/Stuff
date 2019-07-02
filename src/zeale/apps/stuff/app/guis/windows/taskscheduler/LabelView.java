@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 
 class LabelView extends javafx.scene.control.Label {
 	private static final BorderWidths DEFAULT_BORDER_WIDTH = new BorderWidths(2);
-	private static final CornerRadii DEFAULT_BORDER_RADIUS = new CornerRadii(4);
+	private static final CornerRadii DEFAULT_BORDER_RADIUS = null;
 	private static final double DEFAULT_BRIGHTNESS_THRESHOLD = 0.7, DEFAULT_OPACITY_THRESHOLD = 0.5;
 
 	private final Label label;
@@ -25,7 +25,7 @@ class LabelView extends javafx.scene.control.Label {
 	}
 
 	{
-		setPadding(new Insets(10));
+		setPadding(new Insets(2));
 	}
 
 	public LabelView(Label label) {

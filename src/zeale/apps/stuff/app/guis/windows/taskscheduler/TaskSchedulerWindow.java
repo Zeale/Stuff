@@ -56,6 +56,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -174,8 +175,7 @@ public class TaskSchedulerWindow extends Window {
 		}
 	};
 
-	final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(
-			true) {
+	final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(true) {
 
 		@Override
 		protected ObservableList<Task> generate() {
@@ -272,6 +272,8 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML DatePicker createDueDate, editDueDate;
 	private @FXML CheckBox createComplete, editComplete, createUrgent, editUrgent, editSync1, editSync2, editSync3;
 	private @FXML Button editFlush;
+
+	private @FXML CheckMenuItem showLabels;
 
 	private @FXML TableView<Task> taskView;
 
@@ -507,7 +509,21 @@ public class TaskSchedulerWindow extends Window {
 				t -> BindingTools.mask(t.getValue().dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY::to));
 
 		/* ~PROPERTIES */
-		nameColumn.setCellFactory(__ -> new BasicCell<>());
+		nameColumn.setCellFactory(__ -> new BasicCell<String>() {
+			{
+				showLabels.selectedProperty().addListener(new ChangeListener<Boolean>() {
+
+					@Override
+					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+							Boolean newValue) {
+						if (newValue) {
+							HBox box = new HBox(2);
+							setGraphic(box);
+						}
+					}
+				});
+			}
+		});
 		descriptionColumn.setCellFactory(__ -> new BasicCell<>());
 		urgentColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.urgentProperty()));
 		completeColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.completedProperty()));
