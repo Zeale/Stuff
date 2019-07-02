@@ -118,7 +118,7 @@ public class ModuleWindow extends Window {
 	}
 
 	private static boolean fits(String name, String query) {
-		return query.isEmpty() || name.toLowerCase().contains(query.toLowerCase());
+		return name.toLowerCase().contains(query.toLowerCase());
 	}
 
 	private final static PhoenixReference<File> MODULE_INSTALLATION_DIRECTORY = PhoenixReference
