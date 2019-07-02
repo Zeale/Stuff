@@ -119,8 +119,8 @@
                                           </Button>
                                           <VBox layoutY="200.0" spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0">
                                              <children>
-                                                <TextField promptText="Search for a Label..." />
-                                                <FlowPane id="LabelSelectionBox" hgap="10.0" vgap="10.0" VBox.vgrow="SOMETIMES" />
+                                                <TextField fx:id="labelFilter" promptText="Search for a Label..." />
+                                                <FlowPane id="LabelSelectionBox" fx:id="labelSelectionBox" hgap="10.0" vgap="10.0" VBox.vgrow="SOMETIMES" />
                                              </children>
                                              <padding>
                                                 <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />

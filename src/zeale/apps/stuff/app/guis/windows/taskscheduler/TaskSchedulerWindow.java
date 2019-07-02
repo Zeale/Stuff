@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -14,6 +15,7 @@ import java.util.function.Supplier;
 import org.alixia.javalibrary.javafx.bindings.BindingTools;
 import org.alixia.javalibrary.javafx.bindings.BindingTools.FilterBinding;
 import org.alixia.javalibrary.javafx.bindings.BindingTools.PipewayBinding;
+import org.alixia.javalibrary.javafx.bindings.ListListener;
 import org.alixia.javalibrary.util.Box;
 import org.alixia.javalibrary.util.Gateway;
 
@@ -29,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -47,6 +50,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -274,6 +278,9 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML TabPane layoutTabPane;
 
 	private @FXML CheckMenuItem filterComplete, filterUrgent;
+
+	private @FXML FlowPane labelSelectionBox;
+	private @FXML TextField labelFilter;
 
 	private ReadOnlyObjectProperty<Task> selectedTask;
 
@@ -519,8 +526,32 @@ public class TaskSchedulerWindow extends Window {
 			}
 
 		}
+		for (Label l : LABEL_LIST.get())
+			labelSelectionBox.getChildren().add(new LabelView(l));
 		filterComplete.selectedProperty().addListener(new FilterSelectedListener(t -> !t.isCompleted()));
 		filterUrgent.selectedProperty().addListener(new FilterSelectedListener(t -> !t.isUrgent()));
+
+		LABEL_LIST.get().addListener(new ListListener<Label>() {
+
+			@Override
+			public void added(List<? extends Label> items, int startpos) {
+				for (Label l : items)
+					if (l.getName().toLowerCase().contains(labelFilter.getText().toLowerCase()))
+						labelSelectionBox.getChildren().add(new LabelView(l));
+			}
+
+			@Override
+			public void removed(List<? extends Label> items, int startpos) {
+				NEXT_ITEM: for (Label l : items) {
+					if (l.getName().toLowerCase().contains(labelFilter.getText().toLowerCase()))
+						for (Node lv : labelSelectionBox.getChildren())
+							if (lv instanceof LabelView && ((LabelView) lv).getLabel() == l) {
+								labelSelectionBox.getChildren().remove(lv);
+								continue NEXT_ITEM;
+							}
+				}
+			}
+		});
 
 		taskView.setItems(taskList);
 
