@@ -50,8 +50,8 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -409,7 +409,6 @@ public class TaskSchedulerWindow extends Window {
 					task.descriptionProperty().bindBidirectional(editDescription.textProperty());
 					binding.value = new PipewayBinding<>(task.dueDateProperty(), editDueDate.valueProperty(),
 							INSTANT_TO_LOCALDATE_GATEWAY, Logging::err);
-					// TODO Label setup.
 				}
 			} else {
 				AnchorPane.setBottomAnchor(editDescription, 200d);
@@ -624,7 +623,7 @@ public class TaskSchedulerWindow extends Window {
 		return name.toLowerCase().contains(query.toLowerCase());
 	}
 
-	private static final Effect SELECTED_LABEL_EFFECT = new Glow(1);
+	private static final Effect SELECTED_LABEL_EFFECT = new DropShadow();
 
 	private final ObjectProperty<LabelView> selectedLabel = new SimpleObjectProperty<>();
 	{
@@ -906,6 +905,11 @@ public class TaskSchedulerWindow extends Window {
 			DIRTY_OBJECTS.get().clear();
 	}
 
+	static void save() {
+		if (DIRTY_OBJECTS.exists())
+			DIRTY_OBJECTS.get().flushList();
+	}
+
 	@Override
 	public void destroy() {
 		if (selectedTask.get() != null && editSync1.isSelected()) {
@@ -919,8 +923,6 @@ public class TaskSchedulerWindow extends Window {
 				Logging.err(e);
 			}
 		}
-		if (DIRTY_OBJECTS.exists())
-			DIRTY_OBJECTS.get().flushList();
 	}
 
 	@Override

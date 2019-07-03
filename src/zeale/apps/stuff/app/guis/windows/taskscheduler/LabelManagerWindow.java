@@ -2,6 +2,8 @@ package zeale.apps.stuff.app.guis.windows.taskscheduler;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -24,15 +26,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow.NameNotFoundException;
 import zeale.apps.tools.console.std.BindingConversion;
 
 class LabelManagerWindow extends Window {
 
-	private ObjectProperty<LabelView> selectedLabel = new SimpleObjectProperty<>();
+	private final ObjectProperty<LabelView> selectedLabel = new SimpleObjectProperty<>();
 
 	private @FXML SplitPane splitPaneWrapper;
 	private Divider split;
@@ -64,15 +68,37 @@ class LabelManagerWindow extends Window {
 		});
 	}
 
+	private @FXML void goHome() {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Failed to show the home window.");
+			Logging.err(e);
+		}
+	}
+
+	private @FXML void goTasks() {
+		try {
+			Stuff.displayWindow(new TaskSchedulerWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Failed to show the Todo List window.");
+			Logging.err(e);
+		}
+	}
+
+	private final Map<Label, LabelView> views = new WeakHashMap<>();
+
 	private final LabelView getView(Label label) {
+		if (views.containsKey(label))
+			return views.get(label);
 		LabelView view = new LabelView(label);
+		views.put(label, view);
 		MenuItem item = new MenuItem();
 		ContextMenu rightClickMenu = new ContextMenu(item);
 		item.setText("Delete");
 		item.setOnAction(e -> {
-			for (Task t : TaskSchedulerWindow.TASK_LIST.get()) {
+			for (Task t : TaskSchedulerWindow.TASK_LIST.get())
 				t.getLabels().remove(label);
-			}
 			if (TaskSchedulerWindow.LABEL_LIST.exists())
 				TaskSchedulerWindow.LABEL_LIST.get().remove(label);
 			label.deleteFile();
@@ -81,8 +107,10 @@ class LabelManagerWindow extends Window {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				selectedLabel.set(selectedLabel.get() == view ? null : view);
 				event.consume();
-			} else if (event.getButton() == MouseButton.SECONDARY)
+			} else if (event.getButton() == MouseButton.SECONDARY) {
 				rightClickMenu.show(labelView, event.getScreenX(), event.getScreenY());
+				event.consume();
+			}
 		});
 
 		return view;
@@ -139,7 +167,7 @@ class LabelManagerWindow extends Window {
 
 	@Override
 	public void destroy() {
-
+		TaskSchedulerWindow.save();
 	}
 
 	@Override
