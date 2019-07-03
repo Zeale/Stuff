@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -65,7 +66,6 @@ import javafx.stage.Stage;
 import zeale.applicationss.notesss.utilities.Utilities;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
-import zeale.apps.stuff.api.files.data.Datapiece;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
@@ -73,105 +73,33 @@ import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class TaskSchedulerWindow extends Window {
 
-	private final static PhoenixReference<File> TASK_SCHEDULER_DATA_DIR = PhoenixReference
-			.create((Supplier<File>) () -> new File(Stuff.INSTALLATION_DIRECTORY, "App Data/Task Scheduler/")),
-			TASK_DATA_DIR = PhoenixReference
-					.create((Supplier<File>) () -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Tasks")),
-			LABEL_DATA_DIR = PhoenixReference
-					.create((Supplier<File>) () -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Labels"));
+	final static PhoenixReference<File> TASK_SCHEDULER_DATA_DIR = PhoenixReference
+			.create((Supplier<File>) () -> new File(Stuff.INSTALLATION_DIRECTORY, "App Data/Task Scheduler/"));
 
-	private final static class FlushList<E extends Datapiece> extends ArrayList<E> {
-		/**
-		 * SUID
-		 */
-		private static final long serialVersionUID = 1L;
-		private final Function<? super E, String> msgGetter;
+	private final static PhoenixReference<File> TASK_DATA_DIR = PhoenixReference
+			.create((Supplier<File>) () -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Tasks"));
 
-		public FlushList(Function<? super E, String> msgGetter) {
-			this.msgGetter = msgGetter;
-		}
+	private static final PhoenixReference<List<Task>> DIRTY_TASKS = new PhoenixReference<List<Task>>() {
 
 		@Override
-		protected void finalize() throws Throwable {
-			Throwable exception = null;
-			try {
-				super.finalize();
-			} catch (Throwable e) {
-				exception = e;
-			} finally {
-				try {
-					flush();
-				} catch (Throwable e) {
-					Logging.err("(To Do List) There was an error while saving data to the file...");
-					Logging.err(e);
-				}
-				if (exception != null)
-					throw exception;
-			}
-		}
+		protected List<Task> generate() {
+			return new ArrayList<Task>() {
 
-		public synchronized void flushList() {
-			flush();
-			clear();
-		}
+				/**
+				 * SUID
+				 */
+				private static final long serialVersionUID = 1L;
 
-		private void flush() {
-			for (E e : this)
-				try {
-					e.flush();
-				} catch (FileNotFoundException err) {
-					Logging.err(msgGetter.apply(e));
-				}
-		}
-
-	}
-
-	private static final PhoenixReference<FlushList<Datapiece>> DIRTY_OBJECTS = new PhoenixReference<FlushList<Datapiece>>() {
-
-		@Override
-		protected FlushList<Datapiece> generate() {
-			return new FlushList<>(a -> {
-				return a instanceof Task
-						? "Failed to write the Task, \"" + ((Task) a).getName() + "\" to its file:" + a.getData()
-						: a instanceof Label
-								? "Failed to write the label, \"" + ((Task) a).getName() + "\" to its file:"
-										+ a.getData()
-								: "Failed to write an object to the file: " + a.getData();
-			});
-		}
-
-	};
-
-	final static PhoenixReference<ObservableList<Label>> LABEL_LIST = new PhoenixReference<ObservableList<Label>>() {
-
-		@Override
-		protected ObservableList<Label> generate() {
-			LABEL_DATA_DIR.get().mkdirs();
-			ObservableList<Label> list = FXCollections.observableArrayList();
-			File[] files = LABEL_DATA_DIR.get().listFiles();
-			if (files == null) {
-				Logging.err("Failed to load the Labels from the disk; the label storage directory is not a directory: "
-						+ LABEL_DATA_DIR.get().getAbsolutePath());
-			} else
-				for (File f : files) {
-					Label lbl;
-					try {
-						lbl = Label.load(f);
-					} catch (Exception e) {
-						Logging.err("Failed to load a Label from the file: " + f.getAbsolutePath());
-						continue;
+				protected void finalize() {
+					for (Task t : this) {
+						try {
+							t.flush();
+						} catch (FileNotFoundException e) {
+							Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
+						}
 					}
-					InvalidationListener dirtyMarker = __ -> markDirty(lbl);
-
-					/* ~LABEL.PROPERTIES */
-					lbl.colorProperty().addListener(dirtyMarker);
-					lbl.nameProperty().addListener(dirtyMarker);
-					lbl.opacityProperty().addListener(dirtyMarker);
-					lbl.descriptionProperty().addListener(dirtyMarker);
-
-					list.add(lbl);
 				}
-			return list;
+			};
 		}
 	};
 
@@ -188,8 +116,14 @@ public class TaskSchedulerWindow extends Window {
 			else
 				for (File f : listFiles) {
 					Task task;
+					Collection<Label> loadedLabels = LabelManagerWindow.LABEL_LIST.get();
 					try {
-						task = Task.load(f, LABEL_OBTAINER.get());
+						task = Task.load(f, t -> {
+							for (Label l : loadedLabels)
+								if (l.getId().equals(t))
+									return l;
+							return Label.getNullLabel(t);
+						});
 					} catch (Exception e) {
 						Logging.err("Failed to load a Task from the file: " + f.getAbsolutePath());
 						continue;
@@ -210,58 +144,9 @@ public class TaskSchedulerWindow extends Window {
 		}
 	};
 
-	private static final PhoenixReference<Function<String, Label>> LABEL_OBTAINER = new PhoenixReference<Function<String, Label>>() {
-
-		@Override
-		protected Function<String, Label> generate() {
-			return t -> {
-				Label label = getLabel(t);
-				if (label == null)
-					try {
-						label = createLabel();
-					} catch (FileNotFoundException e) {
-						Logging.err("Failed to find a feasible file for a Label.");
-						Logging.err(e);
-						throw new RuntimeException("Failed to create a file for a label with the ID, \"" + t + "\".",
-								e);
-					} catch (NameNotFoundException e) {
-						Logging.err("Failed to find a feasible id for a Label.");
-						Logging.err(e);
-						throw new RuntimeException(e);
-					}
-				return label;
-			};
-		}
-	};
-
-	static void markDirty(Datapiece dp) {
-		if (!(DIRTY_OBJECTS.exists() && DIRTY_OBJECTS.get().contains(dp)))
-			DIRTY_OBJECTS.get().add(dp);
-	}
-
-	static final Label createLabel() throws NameNotFoundException, FileNotFoundException {
-		String uuid = findFeasibleName(s -> getLabel(s) != null);
-		Label label = new Label(findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), uuid);
-
-		InvalidationListener invalidationListener = __ -> markDirty(label);
-
-		/* ~LABEL.PROPERTIES */
-		label.colorProperty().addListener(invalidationListener);
-		label.nameProperty().addListener(invalidationListener);
-		label.descriptionProperty().addListener(invalidationListener);
-		label.opacityProperty().addListener(invalidationListener);
-
-		label.flush();
-		return label;
-	}
-
-	static final Label getLabel(String id) {
-		if (LABEL_LIST.exists())
-			for (Label l : LABEL_LIST.get()) {
-				if (l.getId().equals(id))
-					return l;
-			}
-		return null;
+	static void markDirty(Task dp) {
+		if (!(DIRTY_TASKS.exists() && DIRTY_TASKS.get().contains(dp)))
+			DIRTY_TASKS.get().add(dp);
 	}
 
 	private static final Border SELECTED_ROW_DEFAULT_BORDER = Utilities.getBorderFromColor(Color.GOLD, 1),
@@ -468,8 +353,8 @@ public class TaskSchedulerWindow extends Window {
 				// TODO Label setup.
 				try {
 					task.flush();
-					if (DIRTY_OBJECTS.exists())
-						DIRTY_OBJECTS.get().remove(task);
+					if (DIRTY_TASKS.exists())
+						DIRTY_TASKS.get().remove(task);
 				} catch (FileNotFoundException e) {
 					Logging.err("Failed to save the task, \"" + task.getName() + "\" to the file:"
 							+ selectedTask.get().getData().getAbsolutePath());
@@ -482,8 +367,8 @@ public class TaskSchedulerWindow extends Window {
 			if (editSync1.isSelected() && !newValue && selectedTask.get() != null) {
 				try {
 					selectedTask.get().flush();
-					if (DIRTY_OBJECTS.exists())
-						DIRTY_OBJECTS.get().remove(selectedTask.get());
+					if (DIRTY_TASKS.exists())
+						DIRTY_TASKS.get().remove(selectedTask.get());
 				} catch (FileNotFoundException e) {
 					Logging.err("Failed to save the task, \"" + selectedTask.get().getName() + "\" to the file: "
 							+ selectedTask.get().getData().getAbsolutePath());
@@ -559,9 +444,10 @@ public class TaskSchedulerWindow extends Window {
 			return e;
 		};
 
-		for (Label l : LABEL_LIST.get())
+		Collection<Label> labelList = LabelManagerWindow.LABEL_LIST.get();
+		for (Label l : labelList)
 			labelSelectionBox.getChildren().add(labelViewObtainer.apply(l));
-		LABEL_LIST.get().addListener(new ListListener<Label>() {
+		LabelManagerWindow.LABEL_LIST.get().addListener(new ListListener<Label>() {
 
 			@Override
 			public void added(List<? extends Label> items, int startpos) {
@@ -588,7 +474,7 @@ public class TaskSchedulerWindow extends Window {
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				if (newValue.isEmpty()) {
 					labelSelectionBox.getChildren().clear();
-					for (Label l : LABEL_LIST.get())
+					for (Label l : labelList)
 						labelSelectionBox.getChildren().add(labelViewObtainer.apply(l));
 				} else if (newValue.contains(oldValue))
 					for (Iterator<Node> iterator = labelSelectionBox.getChildren().iterator(); iterator.hasNext();) {
@@ -598,7 +484,7 @@ public class TaskSchedulerWindow extends Window {
 								iterator.remove();
 					}
 				else
-					NEXT_LABEL: for (Label l : LABEL_LIST.get()) {
+					NEXT_LABEL: for (Label l : labelList) {
 						boolean fits = fits(l.getName(), newValue);
 						if (fits) {
 							for (Node n : labelSelectionBox.getChildren())
@@ -644,7 +530,16 @@ public class TaskSchedulerWindow extends Window {
 
 	}
 
-	private static String findFeasibleName(Function<String, Boolean> existenceChecker) throws NameNotFoundException {
+	/**
+	 * Finds a feasible name using UUIDs and the given {@link Function}.
+	 * 
+	 * @param existenceChecker This should return <code>true</code> if the name that
+	 *                         it's given is taken, and false otherwise.
+	 * @return A feasible name, or a {@link NameNotFoundException} if no name was
+	 *         available.
+	 * @throws NameNotFoundException In case no feasible name could be found.
+	 */
+	static String findFeasibleName(Function<String, Boolean> existenceChecker) throws NameNotFoundException {
 		String uuid = UUID.randomUUID().toString();
 		if (existenceChecker.apply(uuid)) {
 			int val = 0;
@@ -656,7 +551,7 @@ public class TaskSchedulerWindow extends Window {
 		return uuid;
 	}
 
-	private static final File findFeasibleFile(File location, String extension) throws FileNotFoundException {
+	static final File findFeasibleFile(File location, String extension) throws FileNotFoundException {
 		String uuid = UUID.randomUUID().toString();
 		File file = new File(location, uuid);
 		if (file.exists()) {
@@ -685,7 +580,13 @@ public class TaskSchedulerWindow extends Window {
 			Logging.err("Failed to find a feasible file for the Task, \"" + createName.getText() + "\".");
 			return;
 		}
-		Task task = new Task(file, LABEL_OBTAINER.get());
+		Collection<Label> loadedLabels = LabelManagerWindow.LABEL_LIST.get();
+		Task task = new Task(file, t -> {
+			for (Label l : loadedLabels)
+				if (l.getId().equals(t))
+					return l;
+			return Label.getNullLabel(t);
+		});
 		task.setCompleted(createComplete.isSelected());
 		task.setUrgent(createUrgent.isSelected());
 		task.setDescription(createDescription.getText());
@@ -855,10 +756,9 @@ public class TaskSchedulerWindow extends Window {
 
 	private @FXML void reload() {
 		TASK_LIST.regenerate();
-		LABEL_LIST.regenerate();
-		if (DIRTY_OBJECTS.exists())
-			synchronized (DIRTY_OBJECTS.get()) {
-				DIRTY_OBJECTS.get().clear();
+		if (DIRTY_TASKS.exists())
+			synchronized (DIRTY_TASKS.get()) {
+				DIRTY_TASKS.get().clear();
 			}
 	}
 
@@ -873,17 +773,8 @@ public class TaskSchedulerWindow extends Window {
 							"Failed to update the Task, \"" + t.getName() + "\" from its file: " + t.getData() + ".");
 					Logging.err(e);
 				}
-		if (LABEL_LIST.exists())
-			for (Label l : LABEL_LIST.get())
-				try {
-					l.update();
-				} catch (FileNotFoundException e) {
-					Logging.err(
-							"Failed to update the Label, \"" + l.getName() + "\" from its file: " + l.getData() + ".");
-					Logging.err(e);
-				}
-		if (DIRTY_OBJECTS.exists())
-			DIRTY_OBJECTS.get().clear();
+		if (DIRTY_TASKS.exists())
+			DIRTY_TASKS.get().clear();
 	}
 
 	private @FXML void flush() {
@@ -894,20 +785,8 @@ public class TaskSchedulerWindow extends Window {
 				} catch (FileNotFoundException e) {
 					Logging.err("Failed to write the Task, \"" + t.getName() + "\" to its file:" + t.getData());
 				}
-		if (LABEL_LIST.exists())
-			for (Label l : LABEL_LIST.get())
-				try {
-					l.flush();
-				} catch (FileNotFoundException e) {
-					Logging.err("Failed to write the Label, \"" + l.getName() + "\" to its file:" + l.getData());
-				}
-		if (DIRTY_OBJECTS.exists())
-			DIRTY_OBJECTS.get().clear();
-	}
-
-	static void save() {
-		if (DIRTY_OBJECTS.exists())
-			DIRTY_OBJECTS.get().flushList();
+		if (DIRTY_TASKS.exists())
+			DIRTY_TASKS.get().clear();
 	}
 
 	@Override
@@ -915,8 +794,8 @@ public class TaskSchedulerWindow extends Window {
 		if (selectedTask.get() != null && editSync1.isSelected()) {
 			try {
 				selectedTask.get().flush();
-				if (DIRTY_OBJECTS.exists())
-					DIRTY_OBJECTS.get().remove(selectedTask.get());
+				if (DIRTY_TASKS.exists())
+					DIRTY_TASKS.get().remove(selectedTask.get());
 			} catch (FileNotFoundException e) {
 				Logging.err("Failed to write the task: \"" + selectedTask.get().getName() + "\" to the file: "
 						+ selectedTask.get().getData().getAbsolutePath());

@@ -44,7 +44,10 @@ class Task extends Datapiece {
 	 * Creates a new {@link Task} in memory. No writing or reading operations occur
 	 * when this is called.
 	 * 
-	 * @param data The location of this {@link Task}.
+	 * @param data          The location of this {@link Task}.
+	 * @param labelObtainer The label obtainer, used to obtain loaded labels that
+	 *                      are specified in this {@link Task}'s datafile when this
+	 *                      {@link Task} is updated from the disk.
 	 */
 	Task(File data, Function<? super String, ? extends Label> labelObtainer) {
 		super(data);

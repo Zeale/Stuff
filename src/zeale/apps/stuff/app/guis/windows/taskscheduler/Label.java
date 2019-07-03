@@ -55,6 +55,20 @@ class Label extends Datapiece {
 		super(data);
 	}
 
+	public static Label getNullLabel(String id) {
+		Label label = new Label(null, id);
+		label.setName("Unknown");
+		label.setColor(Color.WHITE);
+		label.setDescription(
+				"This is a label that replaces other labels, referenced by tasks, which could not be resolved. If a task has a label applied, then that label is deleted externally, the task will still think it has that label applied, but when the program tries to load that task, it won't find the label, so the program will show this label instead. If the label comes back into being later on (i.e., the program finds the label again), then the ghost label will disappear.");
+		return label;
+	}
+
+	public static final Label NULL_LABEL = new Label(null);
+	static {
+		NULL_LABEL.setName("Unknown...");
+	}
+
 	public final StringProperty nameProperty() {
 		return this.name;
 	}

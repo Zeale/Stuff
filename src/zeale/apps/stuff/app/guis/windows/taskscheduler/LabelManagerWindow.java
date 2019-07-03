@@ -1,13 +1,20 @@
 package zeale.apps.stuff.app.guis.windows.taskscheduler;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.function.Supplier;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -32,6 +39,7 @@ import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow.NameNotFoundException;
+import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 import zeale.apps.tools.console.std.BindingConversion;
 
 class LabelManagerWindow extends Window {
@@ -68,6 +76,38 @@ class LabelManagerWindow extends Window {
 		});
 	}
 
+	private static boolean idTaken(String id) {
+		for (Label l : LABEL_LIST.get())
+			if (l.getId().equals(id))
+				return true;
+		return false;
+	}
+
+//	static final Label getCreatedLabel(String id) {
+//		if (LABEL_LIST.exists())
+//			for (Label l : LABEL_LIST.get()) {
+//				if (l.getId().equals(id))
+//					return l;
+//			}
+//		return null;
+//	}
+
+	static final Label createNewLabel() throws NameNotFoundException, FileNotFoundException {
+		String uuid = TaskSchedulerWindow.findFeasibleName(LabelManagerWindow::idTaken);
+		Label label = new Label(TaskSchedulerWindow.findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), uuid);
+
+		InvalidationListener invalidationListener = __ -> markDirty(label);
+
+		/* ~LABEL.PROPERTIES */
+		label.colorProperty().addListener(invalidationListener);
+		label.nameProperty().addListener(invalidationListener);
+		label.descriptionProperty().addListener(invalidationListener);
+		label.opacityProperty().addListener(invalidationListener);
+
+		label.flush();
+		return label;
+	}
+
 	private @FXML void goHome() {
 		try {
 			Stuff.displayWindow(new HomeWindow());
@@ -88,6 +128,72 @@ class LabelManagerWindow extends Window {
 
 	private final Map<Label, LabelView> views = new WeakHashMap<>();
 
+	private final static PhoenixReference<File> LABEL_DATA_DIR = PhoenixReference
+			.create((Supplier<File>) () -> new File(TaskSchedulerWindow.TASK_SCHEDULER_DATA_DIR.get(), "Labels"));
+
+	final static PhoenixReference<List<Label>> DIRTY_LABELS = new PhoenixReference<List<Label>>() {
+
+		@Override
+		protected List<Label> generate() {
+			return new ArrayList<Label>() {
+
+				/**
+				 * SUID
+				 */
+				private static final long serialVersionUID = 1L;
+
+				protected void finalize() {
+					for (Label l : this) {
+						try {
+							l.flush();
+						} catch (FileNotFoundException e) {
+							Logging.err(
+									"Failed to write the label, \"" + l.getName() + "\" to its file:" + l.getData());
+						}
+					}
+				}
+			};
+		}
+	};
+
+	final static PhoenixReference<ObservableList<Label>> LABEL_LIST = new PhoenixReference<ObservableList<Label>>() {
+
+		@Override
+		protected ObservableList<Label> generate() {
+			LABEL_DATA_DIR.get().mkdirs();
+			ObservableList<Label> list = FXCollections.observableArrayList();
+			File[] files = LABEL_DATA_DIR.get().listFiles();
+			if (files == null) {
+				Logging.err("Failed to load the Labels from the disk; the label storage directory is not a directory: "
+						+ LABEL_DATA_DIR.get().getAbsolutePath());
+			} else
+				for (File f : files) {
+					Label lbl;
+					try {
+						lbl = Label.load(f);
+					} catch (Exception e) {
+						Logging.err("Failed to load a Label from the file: " + f.getAbsolutePath());
+						continue;
+					}
+					InvalidationListener dirtyMarker = __ -> markDirty(lbl);
+
+					/* ~LABEL.PROPERTIES */
+					lbl.colorProperty().addListener(dirtyMarker);
+					lbl.nameProperty().addListener(dirtyMarker);
+					lbl.opacityProperty().addListener(dirtyMarker);
+					lbl.descriptionProperty().addListener(dirtyMarker);
+
+					list.add(lbl);
+				}
+			return list;
+		}
+	};
+
+	private static void markDirty(Label label) {
+		if (!DIRTY_LABELS.get().contains(label))
+			DIRTY_LABELS.get().add(label);
+	}
+
 	private final LabelView getView(Label label) {
 		if (views.containsKey(label))
 			return views.get(label);
@@ -99,8 +205,8 @@ class LabelManagerWindow extends Window {
 		item.setOnAction(e -> {
 			for (Task t : TaskSchedulerWindow.TASK_LIST.get())
 				t.getLabels().remove(label);
-			if (TaskSchedulerWindow.LABEL_LIST.exists())
-				TaskSchedulerWindow.LABEL_LIST.get().remove(label);
+			if (LABEL_LIST.exists())
+				LABEL_LIST.get().remove(label);
 			label.deleteFile();
 		});
 		view.setOnMouseClicked(event -> {
@@ -117,7 +223,7 @@ class LabelManagerWindow extends Window {
 	}
 
 	private @FXML void initialize() {
-		BindingConversion.bind(TaskSchedulerWindow.LABEL_LIST.get(), this::getView, labelView.getChildren());
+		BindingConversion.bind(LABEL_LIST.get(), this::getView, labelView.getChildren());
 		split = splitPaneWrapper.getDividers().get(0);
 	}
 
@@ -128,11 +234,11 @@ class LabelManagerWindow extends Window {
 		}
 
 		try {
-			Label lbl = TaskSchedulerWindow.createLabel();
+			Label lbl = createNewLabel();
 			lbl.setColor(createColor.getValue());
 			lbl.setDescription(createDesc.getText());
 			lbl.setName(createName.getText());
-			TaskSchedulerWindow.LABEL_LIST.get().add(lbl);
+			LABEL_LIST.get().add(lbl);
 			lbl.flush();
 		} catch (FileNotFoundException e) {
 			Logging.err("Failed to create the Label. An unused file to save the Label to, could not be found.");
@@ -167,7 +273,13 @@ class LabelManagerWindow extends Window {
 
 	@Override
 	public void destroy() {
-		TaskSchedulerWindow.save();
+		if (DIRTY_LABELS.exists())
+			for (Label l : DIRTY_LABELS.get())
+				try {
+					l.flush();
+				} catch (FileNotFoundException e) {
+					Logging.err("Failed to write the label, \"" + l.getName() + "\" to its file:" + l.getData());
+				}
 	}
 
 	@Override
