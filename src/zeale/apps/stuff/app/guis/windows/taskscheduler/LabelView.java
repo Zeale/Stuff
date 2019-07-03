@@ -4,6 +4,7 @@ import org.alixia.javalibrary.javafx.bindings.BindingTools;
 
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -17,6 +18,11 @@ class LabelView extends javafx.scene.control.Label {
 	private static final BorderWidths DEFAULT_BORDER_WIDTH = new BorderWidths(2);
 	private static final CornerRadii DEFAULT_BORDER_RADIUS = null;
 	private static final double DEFAULT_BRIGHTNESS_THRESHOLD = 0.7, DEFAULT_OPACITY_THRESHOLD = 0.5;
+
+	private final DropShadow effect = new DropShadow();
+	{
+		effect.setRadius(15);
+	}
 
 	private final Label label;
 
@@ -43,6 +49,19 @@ class LabelView extends javafx.scene.control.Label {
 						v -> new Border(new BorderStroke(Color.color(v.getRed(), v.getGreen(), v.getBlue(), 1),
 								BorderStrokeStyle.SOLID, DEFAULT_BORDER_RADIUS, DEFAULT_BORDER_WIDTH)),
 						borderProperty());
+		effect.colorProperty().bind(label.colorProperty());
+	}
+
+	public void select() {
+		setEffect(effect);
+	}
+
+	public void deselect() {
+		setEffect(null);
+	}
+
+	public boolean isSelected() {
+		return getEffect() != null;
 	}
 
 }
