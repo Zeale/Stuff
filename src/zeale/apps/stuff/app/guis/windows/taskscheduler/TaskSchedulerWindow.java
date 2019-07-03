@@ -22,10 +22,8 @@ import org.alixia.javalibrary.util.Box;
 import org.alixia.javalibrary.util.Gateway;
 
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -51,13 +49,10 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -155,7 +150,7 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML TextField createName, editName;
 	private @FXML TextArea createDescription, editDescription;
 	private @FXML DatePicker createDueDate, editDueDate;
-	private @FXML CheckBox createComplete, editComplete, createUrgent, editUrgent, editSync1, editSync2, editSync3;
+	private @FXML CheckBox createComplete, editComplete, createUrgent, editUrgent, editSync1, editSync2;
 	private @FXML Button editFlush;
 
 	private @FXML CheckMenuItem showLabels;
@@ -165,6 +160,7 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML TableColumn<Task, String> nameColumn, descriptionColumn;
 	private @FXML TableColumn<Task, Boolean> urgentColumn, completeColumn;
 	private @FXML TableColumn<Task, LocalDate> dueDateColumn;
+	private @FXML TableColumn<Task, ObservableList<Label>> labelColumn;
 
 	private @FXML Tab viewTasksTab;
 	private @FXML TabPane layoutTabPane;
@@ -281,7 +277,6 @@ public class TaskSchedulerWindow extends Window {
 		final Box<PipewayBinding<?, ?, ?, ?>> binding = new Box<>();
 
 		editSync1.selectedProperty().bindBidirectional(editSync2.selectedProperty());
-		editSync1.selectedProperty().bindBidirectional(editSync3.selectedProperty());
 		editSync1.selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
 			if (newValue) {
 				AnchorPane.setBottomAnchor(editDescription, 50d);
@@ -306,31 +301,75 @@ public class TaskSchedulerWindow extends Window {
 					task.descriptionProperty().unbindBidirectional(editDescription.textProperty());
 					if (binding.value != null)
 						binding.value.unbind();
-					// TODO Label setup.
 				}
 			}
 		});
 
+		Box<ListListener<? super Label>> taskLabelListListener = new Box<>();
 		selectedTask.addListener((ChangeListener<Task>) (observable, oldValue, newValue) -> {
+			// TODO Fix IFs.
+			if (oldValue != null)
+				oldValue.getLabels().removeListener(taskLabelListListener.value);
 			if (newValue != null) {/* ~PROPERTIES */
 				editComplete.setSelected(newValue.isCompleted());
 				editUrgent.setSelected(newValue.isUrgent());
 				editName.setText(newValue.getName());
 				editDescription.setText(newValue.getDescription());
 				editDueDate.setValue(INSTANT_TO_LOCALDATE_GATEWAY.to(newValue.getDueDate()));
-				// TODO Label setup.
-			}
+
+				for (Node n : labelSelectionBox.getChildren())
+					if (n instanceof LabelView) {
+						LabelView view = (LabelView) n;
+						if (newValue.getLabels().contains(view.getLabel()))
+							view.select();
+						else
+							view.deselect();
+					}
+
+				newValue.getLabels().addListener(taskLabelListListener.value = new ListListener<Label>() {
+
+					@Override
+					public void added(List<? extends Label> items, int startpos) {
+						NEXT_LABEL: for (Label l : items)
+							for (Node n : labelSelectionBox.getChildren())
+								if (n instanceof LabelView) {
+									LabelView view = (LabelView) n;
+									if (view.getLabel() == l) {
+										view.select();
+										continue NEXT_LABEL;
+									}
+								}
+					}
+
+					@Override
+					public void removed(List<? extends Label> items, int startpos) {
+						NEXT_LABEL: for (Label l : items)
+							for (Node n : labelSelectionBox.getChildren())
+								if (n instanceof LabelView) {
+									LabelView view = (LabelView) n;
+									if (view.getLabel() == l) {
+										view.deselect();
+										continue NEXT_LABEL;
+									}
+								}
+					}
+				});
+			} else
+				for (Node n : labelSelectionBox.getChildren())
+					if (n instanceof LabelView)
+						((LabelView) n).deselect();
 			if (!editSync1.isSelected())
 				return;
-			if (oldValue != null) {/* ~PROPERTIES */
+			if (oldValue != null) {
+				/* ~PROPERTIES */
 				oldValue.completedProperty().unbindBidirectional(editComplete.selectedProperty());
 				oldValue.urgentProperty().unbindBidirectional(editUrgent.selectedProperty());
 				oldValue.nameProperty().unbindBidirectional(editName.textProperty());
 				oldValue.descriptionProperty().unbindBidirectional(editDescription.textProperty());
 				if (binding.value != null)
 					binding.value.unbind();
-				// TODO Label setup.
-			}
+			} else if (!editSync1.isSelected())
+				return;
 			if (newValue != null) {/* ~PROPERTIES */
 				newValue.completedProperty().bindBidirectional(editComplete.selectedProperty());
 				newValue.urgentProperty().bindBidirectional(editUrgent.selectedProperty());
@@ -338,7 +377,6 @@ public class TaskSchedulerWindow extends Window {
 				newValue.descriptionProperty().bindBidirectional(editDescription.textProperty());
 				binding.value = new PipewayBinding<>(newValue.dueDateProperty(), editDueDate.valueProperty(),
 						INSTANT_TO_LOCALDATE_GATEWAY, Logging::err);
-				// TODO Label setup.
 			}
 		});
 
@@ -350,7 +388,6 @@ public class TaskSchedulerWindow extends Window {
 				task.setUrgent(editUrgent.isSelected());
 				task.setCompleted(editComplete.isSelected());
 				task.setDueDate(INSTANT_TO_LOCALDATE_GATEWAY.from(editDueDate.getValue()));
-				// TODO Label setup.
 				try {
 					task.flush();
 					if (DIRTY_TASKS.exists())
@@ -382,7 +419,6 @@ public class TaskSchedulerWindow extends Window {
 		editUrgent.focusedProperty().addListener(syncListener);
 		editComplete.focusedProperty().addListener(syncListener);
 		editDueDate.focusedProperty().addListener(syncListener);
-		// TODO Label setup.
 
 		/* ~PROPERTIES */
 		nameColumn.setCellValueFactory(t -> t.getValue().nameProperty());
@@ -393,21 +429,7 @@ public class TaskSchedulerWindow extends Window {
 				t -> BindingTools.mask(t.getValue().dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY::to));
 
 		/* ~PROPERTIES */
-		nameColumn.setCellFactory(__ -> new BasicCell<String>() {
-			{
-				showLabels.selectedProperty().addListener(new ChangeListener<Boolean>() {
-
-					@Override
-					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-							Boolean newValue) {
-						if (newValue) {
-							HBox box = new HBox(2);
-							setGraphic(box);
-						}
-					}
-				});
-			}
-		});
+		nameColumn.setCellFactory(__ -> new BasicCell<String>());
 		descriptionColumn.setCellFactory(__ -> new BasicCell<>());
 		urgentColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.urgentProperty()));
 		completeColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.completedProperty()));
@@ -438,8 +460,14 @@ public class TaskSchedulerWindow extends Window {
 		Function<Label, LabelView> labelViewObtainer = l -> {
 			LabelView e = new LabelView(l);
 			e.setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.PRIMARY)
-					selectedLabel.set(selectedLabel.get() == e ? null : e);
+				if (event.getButton() == MouseButton.PRIMARY && selectedTask.get() != null)
+					if (e.isSelected()) {
+						e.deselect();
+						selectedTask.get().removeLabel(l);
+					} else {
+						e.select();
+						selectedTask.get().addLabel(l);
+					}
 			});
 			return e;
 		};
@@ -507,18 +535,6 @@ public class TaskSchedulerWindow extends Window {
 
 	private static boolean fits(String name, String query) {
 		return name.toLowerCase().contains(query.toLowerCase());
-	}
-
-	private static final Effect SELECTED_LABEL_EFFECT = new DropShadow();
-
-	private final ObjectProperty<LabelView> selectedLabel = new SimpleObjectProperty<>();
-	{
-		selectedLabel.addListener((ChangeListener<LabelView>) (observable, oldValue, newValue) -> {
-			if (oldValue != null)
-				oldValue.setEffect(null);
-			if (newValue != null)
-				newValue.setEffect(SELECTED_LABEL_EFFECT);
-		});
 	}
 
 	static class NameNotFoundException extends Exception {

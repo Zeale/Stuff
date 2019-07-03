@@ -27,8 +27,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
@@ -55,12 +53,10 @@ class LabelManagerWindow extends Window {
 	private @FXML ColorPicker createColor, modColor;
 	private @FXML TextArea createDesc, modDesc;
 
-	private static final Effect SELECTED_EFFECT = new Glow(1);
-
 	{
 		selectedLabel.addListener((ChangeListener<LabelView>) (observable, oldValue, newValue) -> {
 			if (oldValue != null)
-				oldValue.setEffect(null);
+				oldValue.deselect();
 			if (newValue == null) {
 				modName.setText("");
 				modID.setText("");
@@ -71,7 +67,7 @@ class LabelManagerWindow extends Window {
 				modID.setText(newValue.getLabel().getId());
 				modColor.setValue(newValue.getLabel().getColor());
 				modDesc.setText(newValue.getLabel().getDescription());
-				newValue.setEffect(SELECTED_EFFECT);
+				newValue.select();
 			}
 		});
 	}
@@ -83,16 +79,7 @@ class LabelManagerWindow extends Window {
 		return false;
 	}
 
-//	static final Label getCreatedLabel(String id) {
-//		if (LABEL_LIST.exists())
-//			for (Label l : LABEL_LIST.get()) {
-//				if (l.getId().equals(id))
-//					return l;
-//			}
-//		return null;
-//	}
-
-	static final Label createNewLabel() throws NameNotFoundException, FileNotFoundException {
+	private static final Label createNewLabel() throws NameNotFoundException, FileNotFoundException {
 		String uuid = TaskSchedulerWindow.findFeasibleName(LabelManagerWindow::idTaken);
 		Label label = new Label(TaskSchedulerWindow.findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), uuid);
 
