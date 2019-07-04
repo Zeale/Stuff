@@ -69,7 +69,7 @@
                               <TableColumn fx:id="completeColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Complete" />
                               <TableColumn fx:id="urgentColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Urgent" />
                               <TableColumn fx:id="dueDateColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" text="Due Date" />
-                              <TableColumn maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="250.0" text="Labels" />
+                              <TableColumn fx:id="labelColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="250.0" text="Labels" />
                           </columns>
                         </TableView>
                         <TabPane minHeight="600.0" minWidth="450.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">

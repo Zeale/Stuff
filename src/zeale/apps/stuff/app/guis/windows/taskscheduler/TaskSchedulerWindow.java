@@ -24,9 +24,11 @@ import org.alixia.javalibrary.util.Gateway;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -53,6 +55,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -434,6 +437,51 @@ public class TaskSchedulerWindow extends Window {
 		urgentColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.urgentProperty()));
 		completeColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.completedProperty()));
 		dueDateColumn.setCellFactory(__ -> new BasicCell<>());
+		// TODO Label Column
+		labelColumn.setCellValueFactory(
+				param -> new SimpleObjectProperty<ObservableList<Label>>(param.getValue().getLabels()));
+		labelColumn.setCellFactory(param -> new BasicCell<ObservableList<Label>>() {
+			private final HBox hbox = new HBox();
+			private final ListChangeListener<Label> listener = new ListListener<Label>() {
+
+				@Override
+				public void added(List<? extends Label> items, int startpos) {
+					for (Label l : items)
+						hbox.getChildren().add(new LabelView(l));
+				}
+
+				@Override
+				public void removed(List<? extends Label> items, int startpos) {
+					for (Label l : items)
+						for (Iterator<Node> iterator = hbox.getChildren().iterator(); iterator.hasNext();) {
+							Node n = iterator.next();
+							if (n instanceof LabelView && ((LabelView) n).getLabel() == l)
+								iterator.remove();
+						}
+				}
+			};
+
+			{
+				setGraphic(hbox);
+				hbox.setSpacing(5);
+				hbox.setAlignment(Pos.CENTER);
+				setAlignment(Pos.CENTER);
+			}
+
+			public void emptied() {
+			}
+
+			protected void update(ObservableList<Label> item) {
+				if (!isEmpty() && getItem() != null) {
+					getItem().removeListener(listener);
+					hbox.getChildren().clear();
+				}
+				for (Label l : item)
+					hbox.getChildren().add(new LabelView(l));
+				item.addListener(listener);
+			};
+
+		});
 
 		ObservableList<Task> taskList = FXCollections.observableArrayList();
 		FilterBinding<Task> filteredBinding = BindingTools.filterBind(TASK_LIST.get(), taskList);
@@ -496,37 +544,33 @@ public class TaskSchedulerWindow extends Window {
 			}
 		});
 
-		labelFilter.textProperty().addListener(new ChangeListener<String>() {
-
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (newValue.isEmpty()) {
-					labelSelectionBox.getChildren().clear();
-					for (Label l : labelList)
-						labelSelectionBox.getChildren().add(labelViewObtainer.apply(l));
-				} else if (newValue.contains(oldValue))
-					for (Iterator<Node> iterator = labelSelectionBox.getChildren().iterator(); iterator.hasNext();) {
-						Node n = iterator.next();
-						if (n instanceof LabelView)
-							if (!fits(((LabelView) n).getLabel().getName(), newValue))
-								iterator.remove();
-					}
-				else
-					NEXT_LABEL: for (Label l : labelList) {
-						boolean fits = fits(l.getName(), newValue);
-						if (fits) {
-							for (Node n : labelSelectionBox.getChildren())
-								if (n instanceof LabelView && ((LabelView) n).getLabel() == l)
-									continue NEXT_LABEL;
-							labelSelectionBox.getChildren().add(labelViewObtainer.apply(l));
-						} else
-							for (Node n : labelSelectionBox.getChildren())
-								if (n instanceof LabelView && ((LabelView) n).getLabel() == l) {
-									labelSelectionBox.getChildren().remove(n);
-									break;
-								}
-					}
-			}
+		labelFilter.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+			if (newValue.isEmpty()) {
+				labelSelectionBox.getChildren().clear();
+				for (Label l1 : labelList)
+					labelSelectionBox.getChildren().add(labelViewObtainer.apply(l1));
+			} else if (newValue.contains(oldValue))
+				for (Iterator<Node> iterator = labelSelectionBox.getChildren().iterator(); iterator.hasNext();) {
+					Node n1 = iterator.next();
+					if (n1 instanceof LabelView)
+						if (!fits(((LabelView) n1).getLabel().getName(), newValue))
+							iterator.remove();
+				}
+			else
+				NEXT_LABEL: for (Label l2 : labelList) {
+					boolean fits = fits(l2.getName(), newValue);
+					if (fits) {
+						for (Node n2 : labelSelectionBox.getChildren())
+							if (n2 instanceof LabelView && ((LabelView) n2).getLabel() == l2)
+								continue NEXT_LABEL;
+						labelSelectionBox.getChildren().add(labelViewObtainer.apply(l2));
+					} else
+						for (Node n3 : labelSelectionBox.getChildren())
+							if (n3 instanceof LabelView && ((LabelView) n3).getLabel() == l2) {
+								labelSelectionBox.getChildren().remove(n3);
+								break;
+							}
+				}
 		});
 
 		taskView.setItems(taskList);
@@ -734,12 +778,10 @@ public class TaskSchedulerWindow extends Window {
 				return;
 			if (!isEmpty() && getItem() != null && (empty || item == null))
 				emptied();
-			else {
-				if (!(empty || item == null)) {
-					if (isEmpty() || getItem() == null)
-						populated();
-					update(item);
-				}
+			else if (!(empty || item == null)) {
+				if (isEmpty() || getItem() == null)
+					populated();
+				update(item);
 			}
 			super.updateItem(item, empty);
 		}
