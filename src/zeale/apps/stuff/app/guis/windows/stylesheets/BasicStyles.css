@@ -110,6 +110,13 @@ Text {
 	-fx-text-fill: -stuff-hover-fill;
 }
 
+.tab-pane .tab-header-area .control-buttons-tab .tab-down-button {
+	-fx-background-color: black;
+}
+.tab-pane .tab-header-area .control-buttons-tab .tab-down-button .arrow {
+	-fx-background-color: -stuff-text-fill;
+}
+
 /* MenuBars */
 /* These style specs aren't comprehensive of nested menus (I believe). Specifically in terms of hovering and focusing nested menus. This may need to be covered by a separate stylesheet (or by this one) when the problem shows up. */
 .menu-bar {
@@ -163,7 +170,8 @@ Text {
 .menu-item:focused .label {
 	-fx-text-fill: -stuff-hover-fill;
 }
-.check-menu-item {
+.menu-item, .check-menu-item {
+	/* Adding '.menu-item' covers check menu items in TabPane control button dropdowns. */
 	-fx-mark-color: -stuff-text-fill;
 	-fx-focused-mark-color: -stuff-hover-fill;
 }
@@ -247,11 +255,16 @@ Text {
 	-fx-background-color: -stuff-text-fill;
 }
 
-/* DatePickers */
-.date-picker {
+/* DatePickers, ColorPickers */
+.date-picker, .color-picker {
 	-fx-background-color: -stuff-dark;
 	-fx-background-radius: 0;
 }
+.date-picker .arrow-button .arrow, .color-picker .arrow-button .arrow {
+	-fx-background-color: -stuff-text-fill;
+}
+
+/* DatePickers */
 .date-picker .date-picker-display-node {
 	-fx-text-fill: -stuff-text-fill;
 }
@@ -259,6 +272,35 @@ Text {
 	-fx-background-color: black;
 	-fx-background-radius: 0;
 }
-.date-picker .arrow-button .arrow {
+
+/* Color Pickers */
+.color-picker .color-picker-label {
+	-fx-text-fill: gold;
+}
+
+.color-picker .color-picker-label .picker-color .picker-color-rect, .color-picker .color-picker-label .picker-color {
+	-fx-border-width: 0;
+}
+
+/* Scroll Bars */
+.scroll-bar {
+	-fx-background-color: -stuff-dark;
+	-fx-border-color: -stuff-dark;
+}
+
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+	-fx-background-color: transparent;
+}
+.scroll-bar .increment-button .increment-arrow, .scroll-bar .decrement-button .decrement-arrow {
 	-fx-background-color: -stuff-text-fill;
+	-fx-border-color: transparent;
+}
+.scroll-bar .increment-button:hover .increment-arrow, .scroll-bar .decrement-button:hover .decrement-arrow {
+	-fx-background-color: -stuff-hover-fill;
+}
+
+.scroll-bar .thumb {
+	-fx-background-color: -stuff-light;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0em;
 }

@@ -1,144 +1,68 @@
 package zeale.apps.stuff.app.guis.windows.taskscheduler;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.time.Instant;
+import java.util.function.Function;
 
 import org.alixia.javalibrary.util.Gateway;
 import org.alixia.javalibrary.util.StringGateway;
 
-import branch.alixia.unnamed.Datamap;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import zeale.apps.tools.api.data.files.filesystem.storage.FileStorage.Data;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import zeale.apps.stuff.api.files.data.Datapiece;
 
-class Task {
-	private static final StringGateway<Boolean> BOOLEAN_STRING_GATEWAY = Boolean::valueOf;
-	private final Datamap datamap;
-
-	private StringProperty property(String name) {
-		SimpleStringProperty prop = new SimpleStringProperty(this, name);
-		prop.addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-			if (newValue == null)
-				rem(name);
-			else
-				put(name, newValue);
-		});
-		if (datamap.containsKey(name))
-			prop.set(datamap.get(name));
-		return prop;
+class Task extends Datapiece {
+	public static Task load(File file, Function<? super String, ? extends Label> labelObtainer)
+			throws FileNotFoundException {
+		Task task = new Task(file, labelObtainer);
+		task.update();
+		return task;
 	}
 
-	private BooleanProperty bprop(String name, Gateway<String, Boolean> gateway) {
-		BooleanProperty prop = new SimpleBooleanProperty(this, name);
-		prop.addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
-			if (newValue == null)
-				rem(name);
-			else
-				put(name, gateway.to(newValue));
-		});
-		if (datamap.containsKey(name))
-			prop.set(gateway.from(datamap.get(name)));
-		return prop;
+	private final StringProperty name = property("name"), description = property("description");
+	private final BooleanProperty completed = bprop("completed"), urgent = bprop("urgent");
+	private final ObjectProperty<Instant> dueDate = oprop("due-date", (StringGateway<Instant>) Instant::parse);
+	private final ObservableList<Label> labels;
+
+	public ObservableList<Label> getLabels() {
+		return labels;
 	}
 
-	private <T> ObjectProperty<T> oprop(String name, Gateway<String, T> gateway) {
-		ObjectProperty<T> prop = new SimpleObjectProperty<>(this, name);
-		prop.addListener((ChangeListener<T>) (observable, oldValue, newValue) -> {
-			if (newValue == null)
-				rem(name);
-			else
-				put(name, gateway.to(newValue));
-		});
-		if (datamap.containsKey(name))
-			prop.set(gateway.from(datamap.get(name)));
-		return prop;
+	public void addLabel(Label label) {
+		labels.add(label);
 	}
 
-	private BooleanProperty bprop(String name) {
-		return bprop(name, BOOLEAN_STRING_GATEWAY);
-	}
-
-	public static Task load(File file) throws FileNotFoundException {
-		return new Task(Datamap.readLax(new FileInputStream(file)), file);
-	}
-
-	public static void save(Task task) throws FileNotFoundException {
-		Datamap.save(task.datamap, new FileOutputStream(task.data));
-	}
-
-	private final StringProperty name, description;
-	private final BooleanProperty completed, urgent;
-	private final ObjectProperty<Instant> dueDate;
-
-	private void rem(String key) {
-		datamap.remove(key);
-	}
-
-	private void put(String key, String value) {
-		datamap.put(key, value);
-	}
-
-	private Task(Datamap datamap, File data) {
-		this.datamap = datamap;
-		this.data = data;
-		name = property("name");
-		description = property("description");
-		completed = bprop("completed");
-		urgent = bprop("urgent");
-		dueDate = oprop("due-date", (StringGateway<Instant>) Instant::parse);
-	}
-
-	private final File data;
-
-	public File getData() {
-		return data;
+	public void removeLabel(Label label) {
+		labels.remove(label);
 	}
 
 	/**
-	 * Clears this {@link Task}'s data and then calls {@link #update()}. This
-	 * effectively discards any data in this {@link Task} and then loads in any data
-	 * from the file.
+	 * Creates a new {@link Task} in memory. No writing or reading operations occur
+	 * when this is called.
 	 * 
-	 * @throws FileNotFoundException In case {@link #update()} throws a
-	 *                               {@link FileNotFoundException}.
+	 * @param data          The location of this {@link Task}.
+	 * @param labelObtainer The label obtainer, used to obtain loaded labels that
+	 *                      are specified in this {@link Task}'s datafile when this
+	 *                      {@link Task} is updated from the disk.
 	 */
-	public void reload() throws FileNotFoundException {
-		datamap.clear();
-		update();
-	}
+	Task(File data, Function<? super String, ? extends Label> labelObtainer) {
+		super(data);
+		labels = lprop("labels", new Gateway<String, Label>() {
 
-	/**
-	 * Loads any new key-value pairs of data in this {@link Task}'s
-	 * {@link #getData() Data object} but not contained by this {@link Task}'s
-	 * {@link #datamap} already, into this {@link Task}'s {@link #datamap}.
-	 * 
-	 * @throws FileNotFoundException In case reading from the {@link #getData()
-	 *                               data} object fails.
-	 */
-	public void update() throws FileNotFoundException {
-		datamap.update(new FileInputStream(data));
-	}
+			@Override
+			public Label to(String value) {
+				return labelObtainer.apply(value);
+			}
 
-	/**
-	 * Writes this {@link Task} out to its {@link Data} file.
-	 * 
-	 * @throws FileNotFoundException In case the {@link Data} for this {@link Task}
-	 *                               could not be written to.
-	 */
-	public void flush() throws FileNotFoundException {
-		Datamap.save(datamap, new FileOutputStream(data));
-	}
-
-	Task(File data) {
-		this(new Datamap(), data);
+			@Override
+			public String from(Label value) {
+				return value.getId();
+			}
+		}, FXCollections.observableArrayList());
 	}
 
 	public final StringProperty nameProperty() {
