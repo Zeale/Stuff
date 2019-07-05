@@ -281,3 +281,26 @@ Text {
 .color-picker .color-picker-label .picker-color .picker-color-rect, .color-picker .color-picker-label .picker-color {
 	-fx-border-width: 0;
 }
+
+/* Scroll Bars */
+.scroll-bar {
+	-fx-background-color: -stuff-dark;
+	-fx-border-color: -stuff-dark;
+}
+
+.scroll-bar .increment-button, .scroll-bar .decrement-button {
+	-fx-background-color: transparent;
+}
+.scroll-bar .increment-button .increment-arrow, .scroll-bar .decrement-button .decrement-arrow {
+	-fx-background-color: -stuff-text-fill;
+	-fx-border-color: transparent;
+}
+.scroll-bar .increment-button:hover .increment-arrow, .scroll-bar .decrement-button:hover .decrement-arrow {
+	-fx-background-color: -stuff-hover-fill;
+}
+
+.scroll-bar .thumb {
+	-fx-background-color: -stuff-light;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0em;
+}
