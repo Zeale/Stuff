@@ -180,6 +180,8 @@ public class Datapiece {
 						item.append(c);
 					escaped = false;
 				}
+				if (item.length() != 0)
+					list.add(gateway.to(item.toString()));
 			}
 		});
 		converters.put(name, () -> Datapiece.toString(list, gateway.to()));
