@@ -849,17 +849,15 @@ public class TaskSchedulerWindow extends Window {
 
 	@Override
 	public void destroy() {
-		if (selectedTask.get() != null && editSync1.isSelected()) {
-			try {
-				selectedTask.get().flush();
-				if (DIRTY_TASKS.exists())
-					DIRTY_TASKS.get().remove(selectedTask.get());
-			} catch (FileNotFoundException e) {
-				Logging.err("Failed to write the task: \"" + selectedTask.get().getName() + "\" to the file: "
-						+ selectedTask.get().getData().getAbsolutePath());
-				Logging.err(e);
-			}
-		}
+		if (DIRTY_TASKS.exists())
+			for (Task t : DIRTY_TASKS.get())
+				try {
+					t.flush();
+				} catch (FileNotFoundException e1) {
+					Logging.err("Failed to write the task: \"" + selectedTask.get().getName() + "\" to the file: "
+							+ selectedTask.get().getData().getAbsolutePath());
+					Logging.err(e1);
+				}
 	}
 
 	@Override
