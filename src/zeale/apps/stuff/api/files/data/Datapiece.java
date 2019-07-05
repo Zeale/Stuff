@@ -45,9 +45,9 @@ public class Datapiece {
 
 		@Override
 		protected void write(PrintWriter writer) {
-			super.write(writer);
-			for (Entry<String, Supplier<String>> e : converters.entrySet())
-				write(writer, e.getKey(), e.getValue().get());
+			for (Entry<String, String> e : entrySet())
+				write(writer, e.getKey(),
+						converters.containsKey(e.getKey()) ? converters.get(e.getKey()).get() : e.getValue());
 		}
 
 	}
