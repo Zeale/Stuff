@@ -79,6 +79,7 @@ public class Stuff extends Application {
 				event.consume();
 			}
 		});
+		stage.setTitle("Stuff");
 	}
 
 	/**
