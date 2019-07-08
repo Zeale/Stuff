@@ -262,16 +262,13 @@ public class TaskSchedulerWindow extends Window {
 				});
 				rightClickMenu.getItems().add(item);
 
+				setContextMenu(rightClickMenu);
+
 				setOnMouseEntered(event -> setTextFill(Color.RED));
 				setOnMouseExited(event -> setTextFill(Color.GOLD));
 				setOnMouseClicked(event -> {
-					if ((isEmpty() || getItem() == null)) {
-						if (event.getButton() == MouseButton.PRIMARY)
-							taskView.getSelectionModel().clearSelection();
-					} else if (event.getButton() == MouseButton.SECONDARY) {
-						rightClickMenu.show(this, event.getScreenX(), event.getScreenY());
-						event.consume();
-					}
+					if ((isEmpty() || getItem() == null) && event.getButton() == MouseButton.PRIMARY)
+						taskView.getSelectionModel().clearSelection();
 				});
 				setTextFill(Color.GOLD);
 			}
