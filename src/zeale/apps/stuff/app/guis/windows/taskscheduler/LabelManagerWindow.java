@@ -188,6 +188,9 @@ class LabelManagerWindow extends Window {
 		views.put(label, view);
 		MenuItem item = new MenuItem();
 		ContextMenu rightClickMenu = new ContextMenu(item);
+
+		view.setContextMenu(rightClickMenu);
+
 		item.setText("Delete");
 		item.setOnAction(e -> {
 			for (Task t : TaskSchedulerWindow.TASK_LIST.get())
@@ -199,9 +202,6 @@ class LabelManagerWindow extends Window {
 		view.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				selectedLabel.set(selectedLabel.get() == view ? null : view);
-				event.consume();
-			} else if (event.getButton() == MouseButton.SECONDARY) {
-				rightClickMenu.show(labelView, event.getScreenX(), event.getScreenY());
 				event.consume();
 			}
 		});
