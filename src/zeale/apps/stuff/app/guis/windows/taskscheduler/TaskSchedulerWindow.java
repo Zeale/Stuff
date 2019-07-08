@@ -469,6 +469,8 @@ public class TaskSchedulerWindow extends Window {
 			}
 
 			public void emptied() {
+				getItem().removeListener(listener);
+				hbox.getChildren().clear();
 			}
 
 			protected void update(ObservableList<Label> item) {
