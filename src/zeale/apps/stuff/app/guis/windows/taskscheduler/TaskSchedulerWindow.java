@@ -774,9 +774,7 @@ public class TaskSchedulerWindow extends Window {
 
 		@Override
 		protected void updateItem(T item, boolean empty) {
-			if (empty && isEmpty() || item == getItem())
-				return;
-			if (item != null && item.equals(getItem()))
+			if (empty && isEmpty() || item == getItem() || item != null && item.equals(getItem()))
 				return;
 			if (!isEmpty() && getItem() != null && (empty || item == null))
 				emptied();
