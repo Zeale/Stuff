@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,9 +46,16 @@ public class Datapiece {
 
 		@Override
 		protected void write(PrintWriter writer) {
+			Collection<String> coveredKeys = new HashSet<>();
 			for (Entry<String, String> e : entrySet())
-				write(writer, e.getKey(),
-						converters.containsKey(e.getKey()) ? converters.get(e.getKey()).get() : e.getValue());
+				if (converters.containsKey(e.getKey())) {
+					write(writer, e.getKey(), converters.get(e.getKey()).get());
+					coveredKeys.add(e.getKey());
+				} else
+					write(writer, e.getKey(), e.getValue());
+			for (Entry<String, Supplier<String>> e : converters.entrySet())
+				if (!coveredKeys.contains(e.getKey()))
+					write(writer, e.getKey(), e.getValue().get());
 		}
 
 	}
