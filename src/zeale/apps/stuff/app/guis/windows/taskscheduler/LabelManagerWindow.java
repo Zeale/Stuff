@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
+
+import org.alixia.javalibrary.javafx.bindings.ListListener;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
@@ -17,6 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ContextMenu;
@@ -38,7 +43,6 @@ import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow.NameNotFoundException;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
-import zeale.apps.tools.console.std.BindingConversion;
 
 class LabelManagerWindow extends Window {
 
@@ -210,8 +214,62 @@ class LabelManagerWindow extends Window {
 	}
 
 	private @FXML void initialize() {
-		BindingConversion.bind(LABEL_LIST.get(), this::getView, labelView.getChildren());
+		LabelManagerWindow.LABEL_LIST.get().addListener(new ListListener<Label>() {
+
+			@Override
+			public void added(List<? extends Label> items, int startpos) {
+				for (Label l : items)
+					if (l.getName().toLowerCase().contains(labelSearch.getText().toLowerCase()))
+						labelView.getChildren().add(getView(l));
+			}
+
+			@Override
+			public void removed(List<? extends Label> items, int startpos) {
+				NEXT_ITEM: for (Label l : items)
+					if (l.getName().toLowerCase().contains(labelSearch.getText().toLowerCase()))
+						for (Node lv : labelView.getChildren())
+							if (lv instanceof LabelView && ((LabelView) lv).getLabel() == l) {
+								labelView.getChildren().remove(lv);
+								continue NEXT_ITEM;
+							}
+			}
+		});
+		Collection<Label> labelList = LABEL_LIST.get();
+		labelSearch.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+			if (newValue.isEmpty()) {
+				labelView.getChildren().clear();
+				for (Label l1 : labelList)
+					labelView.getChildren().add(getView(l1));
+			} else if (newValue.contains(oldValue))
+				for (Iterator<Node> iterator = labelView.getChildren().iterator(); iterator.hasNext();) {
+					Node n1 = iterator.next();
+					if (n1 instanceof LabelView)
+						if (!fits(((LabelView) n1).getLabel().getName(), newValue))
+							iterator.remove();
+				}
+			else
+				NEXT_LABEL: for (Label l2 : labelList) {
+					boolean fits = fits(l2.getName(), newValue);
+					if (fits) {
+						for (Node n2 : labelView.getChildren())
+							if (n2 instanceof LabelView && ((LabelView) n2).getLabel() == l2)
+								continue NEXT_LABEL;
+						labelView.getChildren().add(getView(l2));
+					} else
+						for (Node n3 : labelView.getChildren())
+							if (n3 instanceof LabelView && ((LabelView) n3).getLabel() == l2) {
+								labelView.getChildren().remove(n3);
+								break;
+							}
+				}
+		});
+		for(Label l:labelList)
+			labelView.getChildren().add(getView(l));
 		split = splitPaneWrapper.getDividers().get(0);
+	}
+
+	private static boolean fits(String name, String query) {
+		return name.toLowerCase().contains(query.toLowerCase());
 	}
 
 	private @FXML void createLabel() {
