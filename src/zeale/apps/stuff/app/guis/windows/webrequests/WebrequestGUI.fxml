@@ -177,8 +177,8 @@
          </children></StackPane>
    </bottom>
    <stylesheets>
-      <URL value="@../stylesheets/Pop%20Button.css" />
-      <URL value="@../stylesheets/BasicStyles.css" />
+      <URL value="@../../../../api/guis/windows/stylesheets/Pop%20Button.css" />
+      <URL value="@../../../../api/guis/windows/stylesheets/BasicStyles.css" />
       <URL value="@Webrequests.css" />
    </stylesheets>
 </BorderPane>

@@ -31,8 +31,8 @@
       </MenuBar>
    </top>
    <stylesheets>
-      <URL value="@../stylesheets/Pop%20Button.css" />
-      <URL value="@../stylesheets/BasicStyles.css" />
+      <URL value="@../../../../api/guis/windows/stylesheets/Pop%20Button.css" />
+      <URL value="@../../../../api/guis/windows/stylesheets/BasicStyles.css" />
    </stylesheets>
    <center>
       <SplitPane fx:id="splitPaneWrapper" dividerPositions="0.98" style="-fx-padding: 0;" BorderPane.alignment="CENTER">

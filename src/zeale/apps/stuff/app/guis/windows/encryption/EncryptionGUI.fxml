@@ -22,7 +22,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
 <BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
       <GridPane hgap="1.0" style="-fx-background-color: -stuff-dark;" vgap="1.0">
@@ -118,11 +117,6 @@
          </children>
       </GridPane>
    </center>
-   <stylesheets>
-      <URL value="@../stylesheets/Pop%20Button.css" />
-      <URL value="@../stylesheets/BasicStyles.css" />
-      <URL value="@Encryption.css" />
-   </stylesheets>
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -137,4 +131,9 @@
          </BorderPane.margin>
       </MenuBar>
    </top>
+   <stylesheets>
+      <URL value="@../../../../api/guis/windows/stylesheets/Pop%20Button.css" />
+      <URL value="@../../../../api/guis/windows/stylesheets/BasicStyles.css" />
+      <URL value="@Encryption.css" />
+   </stylesheets>
 </BorderPane>
