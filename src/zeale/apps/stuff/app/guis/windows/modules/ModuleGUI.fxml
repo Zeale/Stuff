@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -70,8 +69,4 @@
         </menus>
       </MenuBar>
    </top>
-   <stylesheets>
-      <URL value="@../../../../api/guis/windows/stylesheets/Pop%20Button.css" />
-      <URL value="@../../../../api/guis/windows/stylesheets/BasicStyles.css" />
-   </stylesheets>
 </BorderPane>

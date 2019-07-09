@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -133,10 +134,10 @@ public class InstallSetupWindow1 extends Window {
 
 		});
 
+
+		box.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
 		Scene scene = new Scene(box);
 		stage.setScene(scene);
-		scene.getStylesheets().add("zeale/apps/stuff/api/guis/windows/stylesheets/Pop%20Button.css");
-		scene.getStylesheets().add("zeale/apps/stuff/api/guis/windows/stylesheets/BasicStyles.css");
 
 		stage.setMinHeight(300);
 		stage.setMinWidth(200);

@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -288,7 +289,9 @@ public class ModuleWindow extends Window {
 		FXMLLoader loader = new FXMLLoader(ModuleWindow.class.getResource("ModuleGUI.fxml"));
 		loader.setController(this);
 		try {
-			stage.setScene(new Scene(loader.load()));
+			Parent root = loader.load();
+			stage.setScene(new Scene(root));
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
 		} catch (IOException e) {
 			Logging.err("Failed to show the Module window.");
 			Logging.err(e);

@@ -36,6 +36,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -862,7 +863,10 @@ public class TaskSchedulerWindow extends Window {
 		FXMLLoader loader = new FXMLLoader(TaskSchedulerWindow.class.getResource("TaskSchedulerMainGUI.fxml"));
 		loader.setController(this);
 		try {
-			stage.setScene(new Scene(loader.load()));
+			Parent root = loader.load();
+			stage.setScene(new Scene(root));
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
+					"zeale/apps/stuff/app/guis/windows/taskscheduler/TaskSchedulerStyles.css");
 		} catch (IOException e) {
 			Logging.err("Failed to load the Task Scheduler window's main GUI.");
 			Logging.err(e);

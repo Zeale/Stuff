@@ -9,6 +9,7 @@ import javax.crypto.BadPaddingException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.RadioButton;
@@ -35,7 +36,10 @@ public class EncryptionWindow extends Window {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("EncryptionGUI.fxml"));
 		loader.setController(this);
 		try {
-			stage.setScene(new Scene(loader.load()));
+			Parent root = loader.load();
+			stage.setScene(new Scene(root));
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
+					"zeale/apps/stuff/app/guis/windows/encryption/Encryption.css");
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the UI for the Encryption Window.", e);
 		}

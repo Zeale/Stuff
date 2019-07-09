@@ -123,11 +123,8 @@ public class InstallSetupWindow2 extends Window {
 
 		VBox box = new VBox(20, prompt, checkBoxBox, continueButton);
 
-		Scene scene = new Scene(box);
-		scene.getStylesheets().add("zeale/apps/stuff/api/guis/windows/stylesheets/Pop%20Button.css");
-		scene.getStylesheets().add("zeale/apps/stuff/api/guis/windows/stylesheets/BasicStyles.css");
-
-		stage.setScene(scene);
+		box.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
+		stage.setScene(new Scene(box));
 		stage.show();
 
 		stage.setMinHeight(300);

@@ -22,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ContextMenu;
@@ -332,7 +333,9 @@ class LabelManagerWindow extends Window {
 		FXMLLoader loader = new FXMLLoader(LabelManagerWindow.class.getResource("LabelManagerGUI.fxml"));
 		loader.setController(this);
 		try {
-			stage.setScene(new Scene(loader.load()));
+			Parent root = loader.load();
+			stage.setScene(new Scene(root));
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
 		} catch (IOException e) {
 			Logging.err("Failed to load the label manipulation window.");
 			Logging.err(e);
