@@ -1,10 +1,7 @@
 package zeale.apps.stuff.api.guis.windows;
 
-import org.alixia.javalibrary.util.KeyMap;
-
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import zeale.applicationss.notesss.utilities.colors.ColorList;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 
 /**
@@ -16,8 +13,7 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 public abstract class Window {
 
 	public static final ApplicationProperties DEFAULT_APPLICATION_PROPERTIES = new ApplicationProperties();
-	protected static final KeyMap<Object>.Key<ColorList<?>> WINDOW_COLORS = DEFAULT_APPLICATION_PROPERTIES
-			.put(ColorList.ORANGE_BLUE_BLACK);
+	
 
 	private static final Object STAGE_WINDOW_KEY = new Object();
 
