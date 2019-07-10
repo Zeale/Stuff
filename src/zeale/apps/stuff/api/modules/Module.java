@@ -8,4 +8,7 @@ public abstract class Module {
 	 * @throws Exception In case an exception occurs.
 	 */
 	public abstract void launch() throws Exception;
+
+	public static final String STUFF_MODULE_INTERNAL_MANIFEST_LOCATION = "STUFF-MODULE-MANIFEST/Manifest.mf",
+			ICON_MANIFEST_KEY = "icon", LAUNCH_CLASS_MANIFEST_KEY = "launch-class", NAME_MANIFEST_KEY = "name";
 }
