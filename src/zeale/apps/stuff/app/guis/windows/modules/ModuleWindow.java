@@ -15,6 +15,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -82,16 +83,20 @@ public class ModuleWindow extends Window {
 			getChildren().addAll(icon = new ImageView(module.getIcon()), title);
 			title.setStyle("-fx-font-size: 1.4em;");
 			setOnMouseClicked(event -> {
-				try {
-					module.load().launch();
-				} catch (ModuleLoadException e1) {
-					Logging.err("Failed to launch the module: \"" + module.getName() + "\".");
-					Logging.err(e1);
-				} catch (Exception e2) {
-					Logging.err("An unexpected error occurred while trying to launch the module: \"" + module.getName()
-							+ "\".");
-					Logging.err(e2);
-				}
+				if (event.getButton() == MouseButton.SECONDARY) {
+					rightClickMenu.show(this, event.getScreenX(), event.getScreenY());
+					event.consume();
+				} else if (event.getButton() == MouseButton.PRIMARY)
+					try {
+						module.load().launch();
+					} catch (ModuleLoadException e1) {
+						Logging.err("Failed to launch the module: \"" + module.getName() + "\".");
+						Logging.err(e1);
+					} catch (Exception e2) {
+						Logging.err("An unexpected error occurred while trying to launch the module: \""
+								+ module.getName() + "\".");
+						Logging.err(e2);
+					}
 			});
 			setOnMouseEntered(__ -> icon.setEffect(DEFAULT_MODULE_HOVER_EFFECT));
 			setOnMouseExited(__ -> icon.setEffect(null));
@@ -102,12 +107,6 @@ public class ModuleWindow extends Window {
 			if (fits(getName(), searchField.getText()))
 				moduleBox.getChildren().add(this);
 
-			setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.SECONDARY) {
-					rightClickMenu.show(this, event.getScreenX(), event.getScreenY());
-					event.consume();
-				}
-			});
 			deleteModule.setOnAction(__ -> delete());
 
 		}
