@@ -15,7 +15,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -79,8 +78,11 @@ public class ModuleWindow extends Window {
 		private final ImageView icon;
 
 		public ModuleItem(Module module) {
+			getStyleClass().add("module-item");
 			Text title = new Text(module.getName());
+			title.getStyleClass().add("text");
 			getChildren().addAll(icon = new ImageView(module.getIcon()), title);
+			icon.getStyleClass().add("image-view");
 			title.setStyle("-fx-font-size: 1.4em;");
 			setOnMouseClicked(event -> {
 				if (event.getButton() == MouseButton.SECONDARY) {
@@ -98,8 +100,6 @@ public class ModuleWindow extends Window {
 						Logging.err(e2);
 					}
 			});
-			setOnMouseEntered(__ -> icon.setEffect(DEFAULT_MODULE_HOVER_EFFECT));
-			setOnMouseExited(__ -> icon.setEffect(null));
 
 			icon.setPreserveRatio(true);
 			icon.setFitWidth(128);
@@ -290,7 +290,8 @@ public class ModuleWindow extends Window {
 		try {
 			Parent root = loader.load();
 			stage.setScene(new Scene(root));
-			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
+					"zeale/apps/stuff/app/guis/windows/modules/ModuleWindow.css");
 		} catch (IOException e) {
 			Logging.err("Failed to show the Module window.");
 			Logging.err(e);
