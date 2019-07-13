@@ -14,6 +14,7 @@ import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.app.console.StuffBasicConsoleLogic;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow1;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow2;
@@ -24,6 +25,10 @@ import zeale.apps.tools.console.std.StandardConsole.StandardConsoleView;
 public class Stuff extends Application {
 
 	public static final StandardConsole PROGRAM_CONSOLE = new StandardConsole();
+	
+	{
+		PROGRAM_CONSOLE.applyLogic(new StuffBasicConsoleLogic());
+	}
 
 	private static final PhoenixReference<Image> windowIcon = new PhoenixReference<Image>() {
 		@Override
