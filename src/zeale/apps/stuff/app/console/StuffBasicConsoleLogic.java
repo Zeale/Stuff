@@ -55,6 +55,14 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 				println("Cleanup complete. Freed: " + res + " bytes.");
 			}
 		};
+
+		new StuffCmd("clear", "cls", "clear-screen") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				console.clear();
+			}
+		};
 	}
 
 	private boolean printCaret;
