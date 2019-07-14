@@ -26,7 +26,7 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 	private static void printCmdErrMessage(StyledPrintable console) {
 		console.print("Command not found. Type ", RED);
 		console.print("help", GOLD);
-		console.print(" for a list of commands.", RED);
+		console.println(" for a list of commands.", RED);
 	}
 
 	private static void printCmdErrMessage(StyledPrintable console, String cmd) {
@@ -34,7 +34,7 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 		console.print(cmd, GOLD);
 		console.print(", not found. Type ", RED);
 		console.print("help", GOLD);
-		console.print(" for a list of commands.", RED);
+		console.println(" for a list of commands.", RED);
 	}
 
 	private final StringCommandParser parser = new StringCommandParser("");
