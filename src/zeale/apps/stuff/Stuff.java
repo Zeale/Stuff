@@ -25,9 +25,9 @@ import zeale.apps.tools.console.std.StandardConsole.StandardConsoleView;
 public class Stuff extends Application {
 
 	public static final StandardConsole PROGRAM_CONSOLE = new StandardConsole();
-	
-	{
-		PROGRAM_CONSOLE.applyLogic(new StuffBasicConsoleLogic());
+
+	static {
+		PROGRAM_CONSOLE.applyLogic(new StuffBasicConsoleLogic(PROGRAM_CONSOLE));
 	}
 
 	private static final PhoenixReference<Image> windowIcon = new PhoenixReference<Image>() {
