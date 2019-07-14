@@ -42,6 +42,21 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 
 	}
 
+	{
+		// Commands don't start with a newline
+		new StuffCmd("gc", "garbage-collect", "clean", "cleanup") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				println("Performing program cleanup...");
+				long bytes = Runtime.getRuntime().freeMemory();
+				System.gc();
+				long res = Runtime.getRuntime().freeMemory() - bytes;
+				println("Cleanup complete. Freed: " + res + " bytes.");
+			}
+		};
+	}
+
 	private boolean printCaret;
 
 	private final StandardConsole console;
