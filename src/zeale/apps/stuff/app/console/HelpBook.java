@@ -55,6 +55,9 @@ class HelpBook {
 				break;
 			}
 		}
+	}
 
+	public void print(StyledPrintable printable, String command, boolean allowAliases) {
+		// TODO
 	}
 }

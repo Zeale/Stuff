@@ -11,6 +11,7 @@ import org.alixia.javalibrary.commands.processing.StringCommandParser;
 import org.alixia.javalibrary.strings.matching.Matching;
 
 import javafx.scene.paint.Color;
+import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.tools.console.logic.ConsoleLogic;
 import zeale.apps.tools.console.std.StandardConsole;
 import zeale.apps.tools.console.std.StandardConsole.StandardConsoleUserInput;
@@ -63,6 +64,32 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 				console.clear();
 			}
 		};
+
+		new StuffCmd("help", "?") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				int page = 1;
+				FIRST_ARG: if (data.getArgs().length == 1) {
+					String arg;
+					if (!data.getArgs()[0].startsWith("\\")) {
+						arg = data.getArgs()[0].substring(1);
+						try {
+							page = Integer.parseInt(data.getArgs()[0]);
+							break FIRST_ARG;
+						} catch (NumberFormatException e) {
+						}
+					} else {
+						arg = data.getArgs()[0];
+					}
+
+					// TODO Print command help.
+					return;
+				} else if (data.getArgs().length > 1)
+					err("Illegal number of arguments for command: " + data.cmd());
+				// TODO Print page help.
+			}
+		};
 	}
 
 	private boolean printCaret;
@@ -71,6 +98,14 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 
 	public StuffBasicConsoleLogic(StandardConsole console) {
 		this.console = console;
+	}
+
+	private void err(String error) {
+		Logging.err(error);
+	}
+
+	private void wrn(String warning) {
+		Logging.wrn(warning);
 	}
 
 	private void printCmdErrMessage() {
