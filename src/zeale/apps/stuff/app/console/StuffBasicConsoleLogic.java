@@ -1,6 +1,5 @@
 package zeale.apps.stuff.app.console;
 
-import static javafx.scene.paint.Color.BLUE;
 import static javafx.scene.paint.Color.GOLD;
 import static javafx.scene.paint.Color.RED;
 
@@ -20,6 +19,7 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 
 	private final GenericCommandManager<StandardConsoleUserInput> inputHandler = new GenericCommandManager<>();
 	private final StringCommandManager commandHandler = new StringCommandManager("");
+	private final HelpBook helpBook = new HelpBook();
 
 	private static final Color DEFAULT_RESPONSE_COLOR = Color.BLACK;
 
@@ -44,7 +44,38 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 	}
 
 	{
-		// Commands don't start with a newline
+		helpBook.addCommand("help", "Lists available commands with information about them.",
+				"help [page|[\\]command-name]", "?");
+		new StuffCmd("help", "?") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				int page = 1;
+				FIRST_ARG: if (data.getArgs().length == 1) {
+					String arg;
+					if (!data.getArgs()[0].startsWith("\\")) {
+						try {
+							page = Integer.parseInt(data.getArgs()[0]);
+							break FIRST_ARG;
+						} catch (NumberFormatException e) {
+							arg = data.getArgs()[0];
+						}
+					} else
+						arg = data.getArgs()[0].substring(1);
+					helpBook.print(StuffBasicConsoleLogic.this, arg, true);
+					return;
+				} else if (data.getArgs().length > 1)
+					err("Illegal number of arguments for command: " + data.cmd());
+				try {
+					helpBook.print(StuffBasicConsoleLogic.this, page);
+				} catch (HelpPageException e) {
+					err("Invalid page specified: " + e.page + ". The last page is " + e.maxPage + ".");
+				}
+			}
+		};
+
+		helpBook.addCommand("garbage-collect", "Attempts to free RAM being used by the application.", "garbage-collect",
+				"gc", "clean", "cleanup");
 		new StuffCmd("gc", "garbage-collect", "clean", "cleanup") {
 
 			@Override
@@ -57,37 +88,12 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 			}
 		};
 
+		helpBook.addCommand("clear-screen", "Clears the console.", "clear-screen", "cls", "clear");
 		new StuffCmd("clear", "cls", "clear-screen") {
 
 			@Override
 			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
 				console.clear();
-			}
-		};
-
-		new StuffCmd("help", "?") {
-
-			@Override
-			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
-				int page = 1;
-				FIRST_ARG: if (data.getArgs().length == 1) {
-					String arg;
-					if (!data.getArgs()[0].startsWith("\\")) {
-						arg = data.getArgs()[0].substring(1);
-						try {
-							page = Integer.parseInt(data.getArgs()[0]);
-							break FIRST_ARG;
-						} catch (NumberFormatException e) {
-						}
-					} else {
-						arg = data.getArgs()[0];
-					}
-
-					// TODO Print command help.
-					return;
-				} else if (data.getArgs().length > 1)
-					err("Illegal number of arguments for command: " + data.cmd());
-				// TODO Print page help.
 			}
 		};
 	}
@@ -131,9 +137,9 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 		if (input.text.isEmpty())
 			printCmdErrMessage();
 		else {
-			console.println(input.text);
+			console.println(input.text.trim());
 			if (!inputHandler.run(input)) {// Run raw input through raw input handlers.
-				StringCommand parsedCmd = parser.parse(input.text);// Attempt to parse the cmd.
+				StringCommand parsedCmd = parser.parse(input.text.trim());// Attempt to parse the cmd.
 				if (parsedCmd == null)// If cmd couldn't be parsed, we can't send it to the cmd handlers, so show
 										// unknown cmd err msg.
 					printCmdErrMessage();
