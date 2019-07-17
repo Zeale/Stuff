@@ -48,7 +48,7 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 
 	{
 		helpBook.addCommand("help", "Lists available commands with information about them.",
-				"help [page|[\\]command-name]", "?");
+				"help [page|['\\']command-name]", "?");
 		new StuffCmd("help", "?") {
 
 			@Override
@@ -97,6 +97,31 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 			@Override
 			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
 				console.clear();
+			}
+		};
+
+		helpBook.addCommand("open-window", "Opens the specified window.",
+				"open-window (['~']alias|absolute-window-reference)");
+		new StuffCmd("open-window") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				if (data.getArgs().length != 1)
+					err("Illegal number of arguments for command: " + data.cmd());
+				else {
+					try {
+						Stuff.displayWindow((Window) Class.forName(data.getArgs()[0]).newInstance());
+						print("The task completed successfully.");
+					} catch (InstantiationException e) {
+						err("Failed to create the new window.");
+					} catch (IllegalAccessException e) {
+						err("That window cannot be created by this means.");
+					} catch (ClassNotFoundException e) {
+						err("That window couldn't be found.");
+					} catch (WindowLoadFailureException e) {
+						err("An error occurred while launching that window.");
+					}
+				}
 			}
 		};
 	}
