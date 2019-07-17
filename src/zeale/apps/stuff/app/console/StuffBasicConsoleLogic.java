@@ -1,6 +1,7 @@
 package zeale.apps.stuff.app.console;
 
-import static javafx.scene.paint.Color.*;
+import static javafx.scene.paint.Color.DARKORANGE;
+import static javafx.scene.paint.Color.GOLD;
 
 import org.alixia.chatroom.api.printables.StyledPrintable;
 import org.alixia.javalibrary.commands.GenericCommandManager;
@@ -13,6 +14,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.app.console.HelpBook.CommandHelp;
 import zeale.apps.tools.console.logic.ConsoleLogic;
 import zeale.apps.tools.console.std.StandardConsole;
 import zeale.apps.tools.console.std.StandardConsole.StandardConsoleUserInput;
@@ -47,8 +49,8 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 	}
 
 	{
-		helpBook.addCommand("help", "Lists available commands with information about them.",
-				"help [page|['\\']command-name]", "?");
+		CommandHelp helpCommandHelp = helpBook.addCommand("help",
+				"Lists available commands with information about them.", "help [page|['\\']command-name]", "?");
 		new StuffCmd("help", "?") {
 
 			@Override
@@ -65,10 +67,14 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 						}
 					} else
 						arg = data.getArgs()[0].substring(1);
-					helpBook.print(StuffBasicConsoleLogic.this, arg, true);
+					if (!helpBook.print(StuffBasicConsoleLogic.this, arg, true, true))
+						err("No command with the name or alias: \"" + arg + "\" was found.");
 					return;
-				} else if (data.getArgs().length > 1)
+				} else if (data.getArgs().length > 1) {
 					err("Illegal number of arguments for command: " + data.cmd());
+					helpBook.print(StuffBasicConsoleLogic.this, helpCommandHelp);
+					return;
+				}
 				try {
 					helpBook.print(StuffBasicConsoleLogic.this, page);
 				} catch (HelpPageException e) {
