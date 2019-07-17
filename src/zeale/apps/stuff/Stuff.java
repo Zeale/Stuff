@@ -98,7 +98,8 @@ public class Stuff extends Application {
 	 * need to be made later.
 	 */
 	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
-			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat");
+			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
+			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data");
 
 	private static Stage stage;
 

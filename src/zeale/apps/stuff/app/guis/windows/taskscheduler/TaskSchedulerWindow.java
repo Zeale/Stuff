@@ -73,7 +73,7 @@ import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 public class TaskSchedulerWindow extends Window {
 
 	final static PhoenixReference<File> TASK_SCHEDULER_DATA_DIR = PhoenixReference
-			.create((Supplier<File>) () -> new File(Stuff.INSTALLATION_DIRECTORY, "App Data/Task Scheduler/"));
+			.create((Supplier<File>) () -> new File(Stuff.APPLICATION_DATA, "Task Scheduler"));
 
 	private final static PhoenixReference<File> TASK_DATA_DIR = PhoenixReference
 			.create((Supplier<File>) () -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Tasks"));
