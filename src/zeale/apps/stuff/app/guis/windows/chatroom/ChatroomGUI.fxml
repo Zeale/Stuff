@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
@@ -14,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.SVGPath?>
 
-<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane stylesheets="@ChatroomGUI.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <left>
       <ScrollPane fx:id="serverList" fitToWidth="true" minWidth="300.0" BorderPane.alignment="CENTER">
          <content>
@@ -43,11 +42,6 @@
    <center>
       <TabPane fx:id="chatPane" minHeight="600.0" minWidth="500.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" />
    </center>
-   <stylesheets>
-      <URL value="@../stylesheets/Pop%20Button.css" />
-      <URL value="@../stylesheets/BasicStyles.css" />
-      <URL value="@ChatroomGUI.css" />
-   </stylesheets>
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
