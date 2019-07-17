@@ -45,11 +45,14 @@ class HelpBook {
 
 	public void print(StyledPrintable printable, int page) throws HelpPageException {
 		int item = (page - 1) * 3;
+		int maxPage = (helps.size() + 2) / 3;
 		if (item < 0 || item > helps.size())
-			throw new HelpPageException(page, (helps.size() + 2) / 3);
+			throw new HelpPageException(page, maxPage);
 
 		printable.print("Showing page ", systemColor, true, false);
 		printable.print(page + "", messageColor, true, false);
+		printable.print(" of ", systemColor, true, false);
+		printable.print(maxPage + "", messageColor, true, false);
 		printable.print(" of help.", systemColor, true, false);
 		printable.println();
 		for (int i = item; i < item + 3;) {
@@ -59,7 +62,6 @@ class HelpBook {
 				return;
 			}
 		}
-		int maxPage = (helps.size() + 2) / 3;
 		if (page < maxPage) {
 			printable.print("Type ", systemColor, true, false);
 			printable.print("help " + (page + 1), messageColor, true, false);
