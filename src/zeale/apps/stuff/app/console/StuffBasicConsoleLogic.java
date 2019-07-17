@@ -130,6 +130,33 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 				}
 			}
 		};
+
+		helpBook.addCommand("echo",
+				"Prints each given argument back to the console. This command is primarily meant for debugging.",
+				"echo (argument)...", "print", "write");
+		new StuffCmd("echo", "print", "write") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				if (data.getArgs().length == 0)
+					err("Please include at least one argument when invoking this command.");
+				else {
+					for (String s : data.getArgs())
+						print(s);
+					println();
+				}
+			}
+		};
+
+		helpBook.addCommand("echo-raw", "Prints the command invocation of this command back to the console.",
+				"echo-raw[*]", "print-raw", "write-raw");
+		new StuffCmd("echo-raw", "print-raw", "write-raw") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				println(data.input());
+			}
+		};
 	}
 
 	private boolean printCaret;
