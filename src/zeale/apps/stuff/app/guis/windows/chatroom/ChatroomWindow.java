@@ -1,7 +1,11 @@
 package zeale.apps.stuff.app.guis.windows.chatroom;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import branch.alixia.unnamed.Datamap;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -11,12 +15,43 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
+import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class ChatroomWindow extends Window {
-	
-	public static void launch() {
-		
-	}
+
+	private final PhoenixReference<File> CHATROOM_STORAGE_DIRECTORY = new PhoenixReference<File>() {
+
+		@Override
+		protected File generate() {
+			File file = new File(Stuff.APPLICATION_DATA, "Chatroom");
+			file.mkdirs();
+			return file;
+		}
+	};
+	private final PhoenixReference<File> CACHED_LOGIN_FILE = new PhoenixReference<File>() {
+
+		@Override
+		protected File generate() {
+			File file = new File(CHATROOM_STORAGE_DIRECTORY.get(), "cached-login.dat");
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			return file;
+		}
+	};
+	private final PhoenixReference<Datamap> CACHED_LOGIN_CREDENTIALS = new PhoenixReference<Datamap>() {
+
+		@Override
+		protected Datamap generate() {
+			try {
+				return Datamap.readLax(new FileInputStream(CACHED_LOGIN_FILE.get()));
+			} catch (FileNotFoundException e) {
+				throw new RuntimeException(e);
+			}
+		}
+	};
 
 	@Override
 	public void destroy() {
