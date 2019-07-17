@@ -45,7 +45,12 @@ public class Stuff extends Application {
 
 		@Override
 		protected StandardConsoleView generate() {
-			return PROGRAM_CONSOLE.getView(makeStage());
+			Stage stage = makeStage();
+			stage.setHeight(800);
+			stage.setWidth(1000);
+			stage.setMinHeight(650);
+			stage.setMinWidth(800);
+			return PROGRAM_CONSOLE.getView(stage);
 		}
 
 	};
