@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+	<top>
+		<MenuBar BorderPane.alignment="CENTER">
+			<menus>
+				<Menu mnemonicParsing="false" text="Commands">
+					<items>
+						<MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
+					</items>
+				</Menu>
+            <Menu mnemonicParsing="false" text="Tasks">
+              <items>
+                  <CheckMenuItem fx:id="filterComplete" mnemonicParsing="false" text="Filter Complete" />
+                  <CheckMenuItem fx:id="filterUrgent" mnemonicParsing="false" text="Filter Urgent" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Labels">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#showEditLabelGUI" text="Edit" />
+                  <MenuItem mnemonicParsing="false" onAction="#showCreateLabelGUI" text="Create" />
+                  <MenuItem mnemonicParsing="false" onAction="#showLabelManagerWindow" text="View" />
+                  <CheckMenuItem fx:id="showLabels" mnemonicParsing="false" text="Show" />
+              </items>
+            </Menu>
+			</menus>
+		</MenuBar>
+	</top>
+   <center>
+      <TabPane fx:id="layoutTabPane" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab fx:id="viewTasksTab" text="View">
+            <content>
+                  <SplitPane dividerPositions="0.8">
+                     <items>
+                        <TableView fx:id="taskView" minWidth="400.0" prefWidth="500.0">
+                          <columns>
+                            <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" text="Name" />
+                            <TableColumn fx:id="descriptionColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="250.0" text="Description" />
+                              <TableColumn fx:id="completeColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Complete" />
+                              <TableColumn fx:id="urgentColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Urgent" />
+                              <TableColumn fx:id="dueDateColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" text="Due Date" />
+                              <TableColumn fx:id="labelColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="350.0" text="Labels" />
+                          </columns>
+                        </TableView>
+                        <TabPane minHeight="600.0" minWidth="450.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Information">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TextField fx:id="editName" layoutX="150.0" layoutY="74.0" promptText="Name" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="75.0" />
+                                          <TextArea fx:id="editDescription" layoutX="50.0" layoutY="204.0" promptText="Description" wrapText="true" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="200.0" />
+                                          <CheckBox fx:id="editSync1" layoutX="388.0" layoutY="14.0" mnemonicParsing="false" text="Sync" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+                                          <StackPane layoutX="158.0" layoutY="435.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                             <children>
+                                                <Button fx:id="editFlush" mnemonicParsing="false" styleClass="pop-button" text="Sync Changes" StackPane.alignment="CENTER" />
+                                             </children>
+                                          </StackPane>
+                                          <DatePicker fx:id="editDueDate" layoutX="137.0" layoutY="131.0" promptText="Due Date" AnchorPane.leftAnchor="137.0" AnchorPane.rightAnchor="137.0" />
+                                       </children></AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab text="Attributes">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <TilePane alignment="TOP_CENTER" hgap="20.0" layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="200.0" style="-fx-font-size: 1.6em;" tileAlignment="TOP_RIGHT" vgap="20.0" AnchorPane.bottomAnchor="300.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                             <children>
+                                                <CheckBox fx:id="editComplete" mnemonicParsing="false" text="Complete" />
+                                                <CheckBox fx:id="editUrgent" mnemonicParsing="false" text="Urgent" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                                             </padding>
+                                          </TilePane>
+                                          <CheckBox fx:id="editSync2" layoutX="398.0" layoutY="24.0" mnemonicParsing="false" text="Sync" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0" />
+                                       </children></AnchorPane>
+                              </content>
+                            </Tab>
+                              <Tab text="Labels">
+                                <content>
+                                  <AnchorPane>
+                                       <children>
+                                          <Button layoutX="372.0" layoutY="14.0" mnemonicParsing="false" onAction="#showEditLabelGUI" styleClass="pop-button" text="Edit" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                             <tooltip>
+                                                <Tooltip text="Edit available labels..." />
+                                             </tooltip>
+                                          </Button>
+                                          <VBox layoutY="200.0" spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0">
+                                             <children>
+                                                <TextField fx:id="labelFilter" promptText="Search for a Label..." />
+                                                <FlowPane id="LabelSelectionBox" fx:id="labelSelectionBox" hgap="20.0" vgap="20.0" VBox.vgrow="SOMETIMES" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
+                          </tabs>
+                        </TabPane>
+                     </items>
+                     <padding>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                     </padding>
+                  </SplitPane>
+            </content>
+          </Tab>
+          <Tab text="Create">
+            <content>
+                  <VBox alignment="CENTER" spacing="20.0">
+                     <children>
+                        <TextField fx:id="createName" promptText="Name" />
+                        <DatePicker fx:id="createDueDate" promptText="Due Date" />
+                        <SplitPane dividerPositions="0.752" VBox.vgrow="SOMETIMES">
+                           <items>
+                              <TextArea fx:id="createDescription" minHeight="200.0" minWidth="200.0" prefWidth="300.0" promptText="Description" wrapText="true" />
+                              <TilePane alignment="TOP_CENTER" hgap="20.0" minHeight="50.0" minWidth="200.0" prefWidth="350.0" style="-fx-font-size: 1.6em; -fx-border-color: -stuff-dark;" vgap="20.0">
+                                 <padding>
+                                    <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                                 </padding>
+                                 <children>
+                                    <CheckBox fx:id="createComplete" mnemonicParsing="false" text="Complete" />
+                                    <CheckBox fx:id="createUrgent" mnemonicParsing="false" text="Urgent" />
+                                 </children>
+                              </TilePane>
+                           </items>
+                        </SplitPane>
+                        <Button mnemonicParsing="false" onAction="#createNewTab" styleClass="pop-button" text="Create" />
+                     </children>
+                     <padding>
+                        <Insets bottom="50.0" left="50.0" right="50.0" top="100.0" />
+                     </padding>
+                  </VBox>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </center>
+</BorderPane>

@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -53,6 +54,10 @@ public class InstallSetupWindow1 extends Window {
 		Button fileChooseButton = new Button("..."), defaultButton = new Button(""),
 				continueButton = new Button("Continue");
 
+		fileChooseButton.getStyleClass().add("pop-button");
+		defaultButton.getStyleClass().add("pop-button");
+		continueButton.getStyleClass().add("pop-button");
+
 		DirectoryChooser saveFileChooser = new DirectoryChooser();
 		saveFileChooser.initialDirectoryProperty()
 				.bind(Bindings.createObjectBinding(() -> new File(input.getText()), input.textProperty()));
@@ -92,8 +97,7 @@ public class InstallSetupWindow1 extends Window {
 					try {
 
 						File executable = new File(to, currFile.getName());
-						Files.copy(currFile.toPath(), executable.toPath(),
-								StandardCopyOption.REPLACE_EXISTING);
+						Files.copy(currFile.toPath(), executable.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
 						box.getChildren().remove(inputBox);
 						info.setText("Finished setting installation directory. Press continue to continue.");
@@ -101,8 +105,8 @@ public class InstallSetupWindow1 extends Window {
 						continueButton.setOnAction(event1 -> {
 							try {
 								Runtime.getRuntime()
-										.exec(executable.getAbsolutePath() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
-												+ currFile.getAbsolutePath() + "\" "
+										.exec(executable.getAbsolutePath() + " " + ProgramArguments.INSTALLATION_CLEANUP
+												+ "=\"" + currFile.getAbsolutePath() + "\" "
 												+ ProgramArguments.INSTALLATION_STAGE_2, null, to);
 								Platform.exit();
 							} catch (IOException e) {
@@ -130,7 +134,10 @@ public class InstallSetupWindow1 extends Window {
 
 		});
 
-		stage.setScene(new Scene(box));
+
+		box.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
+		Scene scene = new Scene(box);
+		stage.setScene(scene);
 
 		stage.setMinHeight(300);
 		stage.setMinWidth(200);
