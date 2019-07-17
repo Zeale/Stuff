@@ -1,7 +1,6 @@
 package zeale.apps.stuff.app.console;
 
-import static javafx.scene.paint.Color.GOLD;
-import static javafx.scene.paint.Color.RED;
+import static javafx.scene.paint.Color.*;
 
 import org.alixia.chatroom.api.printables.StyledPrintable;
 import org.alixia.javalibrary.commands.GenericCommandManager;
@@ -10,6 +9,9 @@ import org.alixia.javalibrary.commands.processing.StringCommandParser;
 import org.alixia.javalibrary.strings.matching.Matching;
 
 import javafx.scene.paint.Color;
+import zeale.apps.stuff.Stuff;
+import zeale.apps.stuff.api.guis.windows.Window;
+import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.tools.console.logic.ConsoleLogic;
 import zeale.apps.tools.console.std.StandardConsole;
@@ -19,9 +21,10 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 
 	private final GenericCommandManager<StandardConsoleUserInput> inputHandler = new GenericCommandManager<>();
 	private final StringCommandManager commandHandler = new StringCommandManager("");
-	private final HelpBook helpBook = new HelpBook();
+	private final HelpBook helpBook = new HelpBook(DEFAULT_SYSTEM_MESSAGE_COLOR, DEFAULT_VALUE_COLOR);
 
-	private static final Color DEFAULT_RESPONSE_COLOR = Color.BLACK;
+	private static final Color DEFAULT_RESPONSE_COLOR = Color.BLACK, DEFAULT_SYSTEM_MESSAGE_COLOR = DARKORANGE,
+			DEFAULT_VALUE_COLOR = GOLD;
 
 	private abstract class StuffCmd extends zeale.apps.stuff.app.console.StringCommand<StandardConsoleUserInput> {
 
@@ -110,22 +113,18 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 		Logging.err(error);
 	}
 
-	private void wrn(String warning) {
-		Logging.wrn(warning);
-	}
-
 	private void printCmdErrMessage() {
-		print("Command not found. Type ", RED);
-		print("help", GOLD);
-		println(" for a list of commands.", RED);
+		print("Command not found. Type ", DEFAULT_SYSTEM_MESSAGE_COLOR);
+		print("help", DEFAULT_VALUE_COLOR);
+		println(" for a list of commands.", DEFAULT_SYSTEM_MESSAGE_COLOR);
 	}
 
 	private void printCmdErrMessage(String cmd) {
-		print("Command, ", RED);
-		print(cmd, GOLD);
-		print(", not found. Type ", RED);
-		print("help", GOLD);
-		println(" for a list of commands.", RED);
+		print("Command, ", DEFAULT_SYSTEM_MESSAGE_COLOR);
+		print(cmd, DEFAULT_VALUE_COLOR);
+		print(", not found. Type ", DEFAULT_SYSTEM_MESSAGE_COLOR);
+		print("help", DEFAULT_VALUE_COLOR);
+		println(" for a list of commands.", DEFAULT_SYSTEM_MESSAGE_COLOR);
 	}
 
 	private final StringCommandParser parser = new StringCommandParser("");

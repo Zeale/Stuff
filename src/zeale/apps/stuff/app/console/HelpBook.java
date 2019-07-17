@@ -23,6 +23,17 @@ class HelpBook {
 
 	}
 
+	private Color systemColor, messageColor;
+
+	public HelpBook(Color systemColor, Color messageColor) {
+		this.systemColor = systemColor;
+		this.messageColor = messageColor;
+	}
+	
+	public HelpBook() {
+		this(Color.RED, Color.GOLD);
+	}
+
 	public void addCommand(CommandHelp help) {
 		helps.add(help);
 	}
@@ -36,41 +47,41 @@ class HelpBook {
 		if (item < 0 || item > helps.size())
 			throw new HelpPageException(page, (helps.size() + 2) / 3);
 
-		printable.print("Showing page ", Color.RED, true, false);
-		printable.print(page + "", Color.GOLD, true, false);
-		printable.print(" of help.", Color.RED, true, false);
+		printable.print("Showing page ", systemColor, true, false);
+		printable.print(page + "", messageColor, true, false);
+		printable.print(" of help.", systemColor, true, false);
 		printable.println();
 		for (int i = item; i < item + 3;) {
 			CommandHelp commandHelp = helps.get(i);
 
-			printable.print("Command: ", Color.RED);
-			printable.print(commandHelp.name, Color.GOLD, true, false);
+			printable.print("Command: ", systemColor);
+			printable.print(commandHelp.name, messageColor, true, false);
 			printable.println();
-			printable.print("   - Description: ", Color.RED);
-			printable.print(commandHelp.description, Color.GOLD, false, true);
+			printable.print("   - Description: ", systemColor);
+			printable.print(commandHelp.description, messageColor, false, true);
 			printable.println();
-			printable.print("   - Usage: ", Color.RED);
-			printable.print(commandHelp.usage, Color.GOLD);
+			printable.print("   - Usage: ", systemColor);
+			printable.print(commandHelp.usage, messageColor);
 			printable.println();
 			if (commandHelp.aliases.length > 0) {
-				printable.print("   - Aliases: ", Color.RED);
-				printable.print(commandHelp.aliases[0], Color.GOLD);
+				printable.print("   - Aliases: ", systemColor);
+				printable.print(commandHelp.aliases[0], messageColor);
 				for (int j = 1; j < commandHelp.aliases.length; j++) {
-					printable.print(", ", Color.RED);
-					printable.print(commandHelp.aliases[j], Color.GOLD);
+					printable.print(", ", systemColor);
+					printable.print(commandHelp.aliases[j], messageColor);
 				}
 				printable.println();
 			}
 			if (++i >= helps.size()) {
-				printable.print("End of help reached.", Color.RED, true, false);
+				printable.print("End of help reached.", systemColor, true, false);
 				return;
 			}
 		}
 		int maxPage = (helps.size() + 2) / 3;
 		if (page < maxPage) {
-			printable.print("Type ", Color.RED, true, false);
-			printable.print("help " + (page + 1), Color.GOLD, true, false);
-			printable.print(" to view the next page.", Color.RED, true, false);
+			printable.print("Type ", systemColor, true, false);
+			printable.print("help " + (page + 1), messageColor, true, false);
+			printable.print(" to view the next page.", systemColor, true, false);
 			printable.println();
 		}
 
