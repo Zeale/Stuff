@@ -20,7 +20,6 @@ class HelpBook {
 			this.usage = usage;
 			this.aliases = aliases;
 		}
-
 	}
 
 	private Color systemColor, messageColor;
@@ -29,7 +28,7 @@ class HelpBook {
 		this.systemColor = systemColor;
 		this.messageColor = messageColor;
 	}
-	
+
 	public HelpBook() {
 		this(Color.RED, Color.GOLD);
 	}
@@ -38,8 +37,10 @@ class HelpBook {
 		helps.add(help);
 	}
 
-	public void addCommand(String name, String description, String usage, String... aliases) {
-		helps.add(new CommandHelp(name, description, usage, aliases));
+	public CommandHelp addCommand(String name, String description, String usage, String... aliases) {
+		CommandHelp help = new CommandHelp(name, description, usage, aliases);
+		addCommand(help);
+		return help;
 	}
 
 	public void print(StyledPrintable printable, int page) throws HelpPageException {
@@ -52,26 +53,7 @@ class HelpBook {
 		printable.print(" of help.", systemColor, true, false);
 		printable.println();
 		for (int i = item; i < item + 3;) {
-			CommandHelp commandHelp = helps.get(i);
-
-			printable.print("Command: ", systemColor);
-			printable.print(commandHelp.name, messageColor, true, false);
-			printable.println();
-			printable.print("   - Description: ", systemColor);
-			printable.print(commandHelp.description, messageColor, false, true);
-			printable.println();
-			printable.print("   - Usage: ", systemColor);
-			printable.print(commandHelp.usage, messageColor);
-			printable.println();
-			if (commandHelp.aliases.length > 0) {
-				printable.print("   - Aliases: ", systemColor);
-				printable.print(commandHelp.aliases[0], messageColor);
-				for (int j = 1; j < commandHelp.aliases.length; j++) {
-					printable.print(", ", systemColor);
-					printable.print(commandHelp.aliases[j], messageColor);
-				}
-				printable.println();
-			}
+			printCommandHelp(printable, helps.get(i));
 			if (++i >= helps.size()) {
 				printable.print("End of help reached.", systemColor, true, false);
 				return;
@@ -87,7 +69,74 @@ class HelpBook {
 
 	}
 
-	public void print(StyledPrintable printable, String command, boolean allowAliases) {
-		// TODO
+	private void printCommandHelp(StyledPrintable printable, CommandHelp help) {
+		printable.print("Command: ", systemColor);
+		printable.print(help.name, messageColor, true, false);
+		printable.println();
+		printable.print("   - Description: ", systemColor);
+		printable.print(help.description, messageColor, false, true);
+		printable.println();
+		printable.print("   - Usage: ", systemColor);
+		printable.print(help.usage, messageColor);
+		printable.println();
+		if (help.aliases.length > 0) {
+			printable.print("   - Aliases: ", systemColor);
+			printable.print(help.aliases[0], messageColor);
+			for (int j = 1; j < help.aliases.length; j++) {
+				printable.print(", ", systemColor);
+				printable.print(help.aliases[j], messageColor);
+			}
+			printable.println();
+		}
+	}
+
+	public boolean print(StyledPrintable printable, String command, boolean allowAliases, boolean ignoreCase) {
+		if (allowAliases) {
+			if (ignoreCase) {
+				for (CommandHelp ch : helps)
+					if (ch.name.equalsIgnoreCase(command)) {
+						print(printable, ch);
+						return true;
+					} else
+						for (String s : ch.aliases)
+							if (s.equalsIgnoreCase(command)) {
+								print(printable, ch);
+								return true;
+							}
+			} else
+				for (CommandHelp ch : helps)
+					if (ch.name.equals(command)) {
+						print(printable, ch);
+						return true;
+					} else
+						for (String s : ch.aliases)
+							if (s.equals(command)) {
+								print(printable, ch);
+								return true;
+							}
+		} else {
+			if (ignoreCase) {
+				for (CommandHelp ch : helps)
+					if (ch.name.equalsIgnoreCase(command)) {
+						print(printable, ch);
+						return true;
+					}
+			} else
+				for (CommandHelp ch : helps)
+					if (ch.name.equals(command)) {
+						print(printable, ch);
+						return true;
+					}
+		}
+		return false;
+	}
+
+	public void print(StyledPrintable printable, CommandHelp help) {
+		printable.print("Showing help for command: ", systemColor, true, false);
+		printable.print(help.name, messageColor, true, false);
+		printable.print(".", systemColor, true, false);
+		printable.println();
+
+		printCommandHelp(printable, help);
 	}
 }
