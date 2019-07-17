@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Accordion?>
@@ -169,7 +168,35 @@
                                           </ScrollPane>
                                        </content>
                                     </Tab>
-                                    <Tab text="Functions" />
+                                    <Tab text="Functions">
+                                       <content>
+                                          <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                                             <content>
+                                                <VBox spacing="30.0">
+                                                   <children>
+                                                      <TextField>
+                                                         <VBox.margin>
+                                                            <Insets left="20.0" right="20.0" />
+                                                         </VBox.margin>
+                                                      </TextField>
+                                                      <FlowPane hgap="40.0" vgap="50.0">
+                                                         <padding>
+                                                            <Insets left="30.0" right="30.0" />
+                                                         </padding>
+                                                         <children>
+                                                            <TaggedCalculatorButton onAction="#functionPushed" tag="Ceiling/Round Up" text="ceil" />
+                                                            <TaggedCalculatorButton onAction="#functionPushed" tag="Floor/Round Down" text="floor" />
+                                                            <TaggedCalculatorButton onAction="#functionPushed" tag="Floor/Round Down" text="round" />
+                                                         </children>
+                                                      </FlowPane>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="30.0" top="30.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </content>
+                                          </ScrollPane>
+                                       </content></Tab>
                                     <Tab text="Extended Functionality">
                                        <content>
                                           <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
@@ -298,9 +325,4 @@
          </top>
       </BorderPane>
    </children>
-   <stylesheets>
-      <URL value="@../stylesheets/Pop%20Button.css" />
-      <URL value="@../stylesheets/BasicStyles.css" />
-      <URL value="@CalculatorGUI.css" />
-   </stylesheets>
 </AnchorPane>

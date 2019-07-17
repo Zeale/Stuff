@@ -11,56 +11,46 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public enum StandardWebRequestMethods implements WebRequestMethod {
-	GET {
-		@Override
-		public String preview(String url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
-			URL url0;
-			try {
-				url0 = new URL(url);
-			} catch (MalformedURLException e) {
-				throw new WebRequestException(e);
-			}
+	GET, POST {
 
-			return preview(url0, userAgent, params, body);
+		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
+			String path = url.getPath(),
+					result = "POST " + (path.isEmpty() ? "/" : path) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
+			result += "\r\n";
+			String query = url.getQuery();
+			if (query != null)
+				result += query;
+
+			return result;
+
 		}
 
-		private String preview(URL url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
-			String result = "GET ";
-			String query = url.getQuery();
-			result += "/" + url.getPath() + (query == null ? "" : query) + " HTTP/1.1\r\n";
-
-			if (userAgent != null && !userAgent.isEmpty())
-				result += "User-Agent: " + userAgent + "\r\n";
-
-			if (params != null)
-				for (Entry<String, String> e : params.entrySet())
-					result += e.getKey() + ": " + e.getValue() + "\r\n";
+	},
+	HEAD, DELETE, PUT {
+		@Override
+		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
+			String query = url.getQuery(), path = url.getPath(), result = "PUT " + (path.isEmpty() ? "/" : path)
+					+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
 
 			if (body != null && !body.isEmpty())
 				result += "\r\n" + body;
-
 			return result;
 		}
-
+	},
+	TRACE {
 		@Override
-		public String send(String url, String userAgent, Map<String, String> params, String body)
-				throws WebRequestException {
+		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
+			String query = url.getQuery(), path = url.getPath(), result = "PUT " + (path.isEmpty() ? "/" : path)
+					+ (query == null ? "" : query) + "\r\n" + addExtras(userAgent, params);
 
-			URL url0;
-			try {
-				url0 = new URL(url);
-			} catch (MalformedURLException e) {
-				throw new WebRequestException(e);
-			}
-
-			return send(url0.getHost(), 80, preview(url0, userAgent, params, body));
+			if (body != null && !body.isEmpty())
+				result += "\r\n" + body;
+			return result;
 		}
 	},
-	POST, HEAD, DELETE, PUT, CONNECT, OPTIONS, TRACE, PATCH;
+	PATCH;
 
-	String send(String address, int port, String text) throws WebRequestException {
+	static String send(String address, int port, String text) throws WebRequestException {
 		try (Socket socket = new Socket(address, port)) {
 			PrintWriter output = new PrintWriter(socket.getOutputStream());
 			output.println(text);
@@ -83,18 +73,45 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 		}
 	}
 
+	private static String addExtras(String userAgent, Map<String, String> params) throws WebRequestException {
+		String result = "";
+		if (userAgent != null && !userAgent.isEmpty())
+			result += "User-Agent: " + userAgent + "\r\n";
+		if (params != null)
+			for (Entry<String, String> e : params.entrySet())
+				result += e.getKey() + ": " + e.getValue() + "\r\n";
+		return result;
+	}
+
+	String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
+		String query = url.getQuery(), path = url.getPath(), result = name() + " " + (path.isEmpty() ? "/" : path)
+				+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
+
+		if (body != null && !body.isEmpty())
+			result += "\r\n" + body;
+
+		return result;
+	}
+
+	private static URL url(String url) throws WebRequestException {
+		try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			throw new WebRequestException(e);
+		}
+	}
+
 	@Override
 	public String preview(String url, String userAgent, Map<String, String> params, String body)
 			throws WebRequestException {
-		// TODO Auto-generated method stub
-		return null;
+		return preview(url(url), userAgent, params, body);
 	}
 
 	@Override
 	public String send(String url, String userAgent, Map<String, String> params, String body)
 			throws WebRequestException {
-		// TODO Auto-generated method stub
-		return null;
+		URL url0 = url(url);
+		return send(url0.getHost(), 80, preview(url0, userAgent, params, body));
 	}
 
 }

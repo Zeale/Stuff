@@ -5,12 +5,16 @@ import java.io.File;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.app.console.StuffBasicConsoleLogic;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow1;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow2;
@@ -21,6 +25,10 @@ import zeale.apps.tools.console.std.StandardConsole.StandardConsoleView;
 public class Stuff extends Application {
 
 	public static final StandardConsole PROGRAM_CONSOLE = new StandardConsole();
+
+	static {
+		PROGRAM_CONSOLE.applyLogic(new StuffBasicConsoleLogic(PROGRAM_CONSOLE));
+	}
 
 	private static final PhoenixReference<Image> windowIcon = new PhoenixReference<Image>() {
 		@Override
@@ -37,7 +45,12 @@ public class Stuff extends Application {
 
 		@Override
 		protected StandardConsoleView generate() {
-			return PROGRAM_CONSOLE.getView(makeStage());
+			Stage stage = makeStage();
+			stage.setHeight(800);
+			stage.setWidth(1000);
+			stage.setMinHeight(650);
+			stage.setMinWidth(800);
+			return PROGRAM_CONSOLE.getView(stage);
 		}
 
 	};
@@ -62,8 +75,21 @@ public class Stuff extends Application {
 	 */
 	public static Stage makeStage() {
 		Stage stage = new Stage();
-		stage.getIcons().add(windowIcon.get());
+		prepareStage(stage);
 		return stage;
+	}
+
+	private static void prepareStage(Stage stage) {
+		stage.getIcons().add(windowIcon.get());
+		stage.setFullScreenExitHint("Press F11 to exit fullscreen mode.");
+		stage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+		stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+			if (event.getCode() == KeyCode.F11) {
+				stage.setFullScreen(!stage.isFullScreen());
+				event.consume();
+			}
+		});
+		stage.setTitle("Stuff");
 	}
 
 	/**
@@ -72,7 +98,8 @@ public class Stuff extends Application {
 	 * need to be made later.
 	 */
 	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
-			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat");
+			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
+			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data");
 
 	private static Stage stage;
 
@@ -90,8 +117,13 @@ public class Stuff extends Application {
 	}
 
 	@Override
+	public void stop() throws Exception {
+		Window.destroyStage(stage);
+	}
+
+	@Override
 	public void start(Stage primaryStage) throws Exception {
-		(stage = primaryStage).getIcons().add(windowIcon.get());
+		prepareStage(stage = primaryStage);
 		// When the primary window is closed, we shut down the application. (This
 		// behavior is very likely to change later.
 

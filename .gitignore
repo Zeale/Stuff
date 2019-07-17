@@ -3,3 +3,5 @@
 *.sed
 /libs/**/*.jar
 TEMP~*.fxml
+/App Data/
+/Modules/

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <GridPane hgap="1.0" style="-fx-background-color: -stuff-dark;" vgap="1.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints vgrow="SOMETIMES" />
+            <RowConstraints prefHeight="100.0" vgrow="NEVER" />
+         </rowConstraints>
+         <children>
+            <TabPane minHeight="300.0" minWidth="300.0" prefHeight="400.0" prefWidth="500.0" style="-fx-border-width: 0; -fx-background-color: -stuff-light;" tabClosingPolicy="UNAVAILABLE">
+               <tabs>
+                  <Tab text="Input">
+                     <content>
+                        <StackPane>
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                           <children>
+                              <TextArea fx:id="inputField" wrapText="true" />
+                           </children>
+                        </StackPane>
+                     </content>
+                  </Tab>
+                  <Tab text="Options">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: -stuff-dark;" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
+                                 <content>
+                                    <VBox alignment="TOP_CENTER" spacing="50.0" style="-fx-font-size: 18px;">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                             <children>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Key:" />
+                                                <TextField fx:id="keyField" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <VBox alignment="TOP_CENTER" spacing="5.0">
+                                             <VBox.margin>
+                                                <Insets />
+                                             </VBox.margin>
+                                             <children>
+                                                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithm" />
+                                                <TilePane id="AlgorithmSelectionPane" fx:id="algorithmSelectionPane" alignment="CENTER" hgap="10.0" style="-fx-border-color: -stuff-dark;" vgap="10.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                </TilePane>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </VBox>
+                                 </content>
+                                 <padding>
+                                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                 </padding>
+                              </ScrollPane>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+            <TabPane minHeight="300.0" minWidth="300.0" prefHeight="400.0" prefWidth="500.0" style="-fx-border-width: 0; -fx-background-color: -stuff-light;" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1">
+               <tabs>
+                  <Tab text="Output">
+                     <content>
+                        <StackPane>
+                           <padding>
+                              <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                           </padding>
+                           <children>
+                              <TextArea fx:id="outputField" wrapText="true" />
+                           </children>
+                        </StackPane>
+                     </content>
+                  </Tab>
+               </tabs>
+            </TabPane>
+            <StackPane style="-fx-background-color: -stuff-light;" GridPane.rowIndex="1">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#encryptInput" styleClass="pop-button" text="Encrypt" />
+               </children>
+            </StackPane>
+            <StackPane style="-fx-background-color: -stuff-light;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#decryptOutput" styleClass="pop-button" text="Decrypt" />
+               </children>
+            </StackPane>
+         </children>
+      </GridPane>
+   </center>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Commands">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
+            </items>
+          </Menu>
+        </menus>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+      </MenuBar>
+   </top>
+</BorderPane>
