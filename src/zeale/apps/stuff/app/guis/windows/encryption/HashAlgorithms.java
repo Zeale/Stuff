@@ -24,6 +24,7 @@ public enum HashAlgorithms implements HashAlgorithm {
 	 * @return <code>true</code> if this algorithm is available, <code>false</code>
 	 *         otherwise.
 	 */
+	@Override
 	public boolean available() {
 		return getDigest() != null;
 	}

@@ -21,6 +21,7 @@ public enum EncryptionAlgorithms implements EncryptionAlgorithm {
 		return name;
 	}
 
+	@Override
 	public boolean available() {
 		try {
 			getCipher();
@@ -30,6 +31,7 @@ public enum EncryptionAlgorithms implements EncryptionAlgorithm {
 		}
 	}
 
+	@Override
 	public Cipher getCipher() {
 		try {
 			return Cipher.getInstance(name);
@@ -38,6 +40,7 @@ public enum EncryptionAlgorithms implements EncryptionAlgorithm {
 		}
 	}
 
+	@Override
 	public byte[] encrypt(SecretKey key, byte... input) throws GeneralSecurityException {
 		Cipher cipher = getCipher();
 		cipher.init(Cipher.ENCRYPT_MODE, key);
@@ -45,6 +48,7 @@ public enum EncryptionAlgorithms implements EncryptionAlgorithm {
 		return cipher.doFinal(input);
 	}
 
+	@Override
 	public byte[] encryptRaw(byte[] unprocessedKeyBytes, byte... input) throws GeneralSecurityException {
 		int len = Cipher.getMaxAllowedKeyLength(algorithmName());
 		byte[] processedKeyBytes = EncryptionAlgorithm.processKeyBytes(unprocessedKeyBytes);
@@ -62,6 +66,7 @@ public enum EncryptionAlgorithms implements EncryptionAlgorithm {
 	 * @param input The input bytes to encrypt.
 	 * @throws GeneralSecurityException If a security exception is raised.
 	 */
+	@Override
 	public byte[] encrypt(byte... input) throws GeneralSecurityException {
 		KeyGenerator gen = getKeyGenerator();
 		gen.init(128);
@@ -72,6 +77,7 @@ public enum EncryptionAlgorithms implements EncryptionAlgorithm {
 		return KeyGenerator.getInstance(algorithmName());
 	}
 
+	@Override
 	public byte[] encrypt(byte[] processedKeyBytes, byte... input) throws GeneralSecurityException {
 		return encrypt(new SecretKeySpec(processedKeyBytes, algorithmName()), input);
 	}

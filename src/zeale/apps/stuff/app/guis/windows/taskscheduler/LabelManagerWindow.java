@@ -134,6 +134,7 @@ class LabelManagerWindow extends Window {
 				 */
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				protected void finalize() {
 					for (Label l : this) {
 						try {

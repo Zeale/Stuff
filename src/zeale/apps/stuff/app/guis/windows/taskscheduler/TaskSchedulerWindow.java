@@ -89,6 +89,7 @@ public class TaskSchedulerWindow extends Window {
 				 */
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				protected void finalize() {
 					for (Task t : this) {
 						try {
@@ -466,11 +467,13 @@ public class TaskSchedulerWindow extends Window {
 				setAlignment(Pos.CENTER);
 			}
 
+			@Override
 			public void emptied() {
 				getItem().removeListener(listener);
 				hbox.getChildren().clear();
 			}
 
+			@Override
 			protected void update(ObservableList<Label> item) {
 				if (!isEmpty() && getItem() != null) {
 					getItem().removeListener(listener);
@@ -706,14 +709,17 @@ public class TaskSchedulerWindow extends Window {
 			this.converter = converter;
 		}
 
+		@Override
 		protected void update(T item) {
 			checkBox.setSelected(converter.apply(item));
 		}
 
+		@Override
 		protected void emptied() {
 			setGraphic(null);
 		}
 
+		@Override
 		protected void populated() {
 			setGraphic(checkBox);
 		}
@@ -760,6 +766,7 @@ public class TaskSchedulerWindow extends Window {
 
 		}
 
+		@Override
 		protected void update(Boolean item) {
 		}
 	}
