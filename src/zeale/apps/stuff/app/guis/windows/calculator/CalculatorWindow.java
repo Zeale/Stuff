@@ -31,7 +31,6 @@ import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public final class CalculatorWindow extends Window {
 
-	private @FXML Button searchButton;
 	private @FXML TextField inputField;
 
 	private @FXML TextField extendedFunctionalitySearch;
@@ -76,14 +75,6 @@ public final class CalculatorWindow extends Window {
 			}
 		});
 
-		try {
-			ImageView searchIcon = new ImageView("/zeale/apps/stuff/rsrc/app/gui/windows/calculator/Search Icon.png");
-			searchIcon.setPreserveRatio(true);
-			searchIcon.setFitHeight(16);
-			searchButton.setGraphic(searchIcon);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
 	}
 
 	private @FXML void buttonPushed(ActionEvent event) {
@@ -145,7 +136,6 @@ public final class CalculatorWindow extends Window {
 	public void destroy() {
 	}
 
-	// TODO Add a checked exception for window loading failures.
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("CalculatorGUI.fxml"));
