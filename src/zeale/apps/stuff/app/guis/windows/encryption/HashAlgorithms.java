@@ -20,7 +20,7 @@ public enum HashAlgorithms implements HashAlgorithm {
 	 * Attempts to create a {@link MessageDigest} based off of this algorithm and
 	 * returns <code>false</code> if an underlying exception is thrown due to the
 	 * algorithm not being found.
-	 * 
+	 *
 	 * @return <code>true</code> if this algorithm is available, <code>false</code>
 	 *         otherwise.
 	 */
@@ -32,7 +32,7 @@ public enum HashAlgorithms implements HashAlgorithm {
 	/**
 	 * Returns a {@link MessageDigest}, which can be used for hashing, that hashes
 	 * with the algorithm represented by this
-	 * 
+	 *
 	 * @return A {@link MessageDigest} object used for hashing.
 	 * @throws UnsupportedOperationException In case this algorithm is unavailable
 	 *                                       on the current machine.

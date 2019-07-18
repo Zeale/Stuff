@@ -42,13 +42,6 @@ import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class ModuleWindow extends Window {
 
-	// TODO Add drag and drop functionality.
-	private static final DropShadow DEFAULT_MODULE_HOVER_EFFECT = new DropShadow();
-	static {
-		DEFAULT_MODULE_HOVER_EFFECT.setSpread(0.35);
-		DEFAULT_MODULE_HOVER_EFFECT.setRadius(35);
-	}
-
 	private final class ModuleItem extends VBox {
 
 		private final MenuItem deleteModule = new MenuItem("Delete");
@@ -60,19 +53,6 @@ public class ModuleWindow extends Window {
 			setAlignment(Pos.CENTER);
 			setFillWidth(true);
 			setPickOnBounds(true);
-		}
-
-		public void remove() {
-			synchronized (ModuleWindow.this) {
-				moduleBox.getChildren().remove(this);
-				moduleViewMapping.remove(module);
-			}
-		}
-
-		public void delete() {
-			if (LOADED_MODULES.exists())
-				LOADED_MODULES.get().remove(module);
-			module.delete();
 		}
 
 		private final ImageView icon;
@@ -111,14 +91,31 @@ public class ModuleWindow extends Window {
 
 		}
 
+		public void delete() {
+			if (LOADED_MODULES.exists())
+				LOADED_MODULES.get().remove(module);
+			module.delete();
+		}
+
 		public String getName() {
 			return module.getName();
 		}
 
+		public void remove() {
+			synchronized (ModuleWindow.this) {
+				moduleBox.getChildren().remove(this);
+				moduleViewMapping.remove(module);
+			}
+		}
+
 	}
 
-	private static boolean fits(String name, String query) {
-		return name.toLowerCase().contains(query.toLowerCase());
+	// TODO Add drag and drop functionality.
+	private static final DropShadow DEFAULT_MODULE_HOVER_EFFECT = new DropShadow();
+
+	static {
+		DEFAULT_MODULE_HOVER_EFFECT.setSpread(0.35);
+		DEFAULT_MODULE_HOVER_EFFECT.setRadius(35);
 	}
 
 	private final static PhoenixReference<File> MODULE_INSTALLATION_DIRECTORY = PhoenixReference
@@ -163,6 +160,65 @@ public class ModuleWindow extends Window {
 		}
 	};
 
+	private static boolean fits(String name, String query) {
+		return name.toLowerCase().contains(query.toLowerCase());
+	}
+
+	public static void loadModule(File module) {
+		File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), module.getName());
+		try {
+			if (newFile.exists()) {
+				Logging.err("The module: \"" + module.getAbsolutePath()
+						+ "\" could not be loaded because a module with the same file name already exists.");
+				return;
+			}
+			Files.copy(module.toPath(), newFile.toPath());
+			if (LOADED_MODULES.exists())
+				LOADED_MODULES.get().add(new Module(module));
+		} catch (IOException e) {
+			Logging.err("Failed to copy the module: " + module.getAbsolutePath()
+					+ " to the module directory, (which is at: " + MODULE_INSTALLATION_DIRECTORY.get().getAbsolutePath()
+					+ "), so that it can be loaded.");
+			Logging.err(e);
+		} catch (ModuleLoadException e) {
+			newFile.delete();
+			Logging.err("Failed to load the module: " + module.getAbsolutePath());
+			Logging.err(e);
+		}
+	}
+
+	public static void loadModules(Collection<File> modules) {
+		for (File f : modules)
+			if (f.getName().endsWith(".jar"))
+				loadModule(f);
+			else if (f.getName().endsWith(".zip"))
+				loadZip(f);
+	}
+
+	public static void loadPackage(File pckge) {
+		/* TODO */
+	}
+
+	private static void loadZip(File zip) {
+		loadPackage(zip);
+	}
+
+	private @FXML FlowPane moduleBox;
+	private @FXML TextField searchField;
+
+	private @FXML Text dragInfoText;
+
+	private @FXML StackPane dragBox;
+
+	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();// Strong reference uWu
+
+	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+	}
+
 	private @FXML void goHome() {
 		try {
 			Stuff.displayWindow(new HomeWindow());
@@ -172,16 +228,8 @@ public class ModuleWindow extends Window {
 		}
 	}
 
-	private @FXML FlowPane moduleBox;
-	private @FXML TextField searchField;
-	private @FXML Text dragInfoText;
-	private @FXML StackPane dragBox;
-	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();// Strong reference uWu
-
-	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
-
 	/**
-	 * 
+	 *
 	 */
 	private @FXML void initialize() {
 		for (Module m : loadedModules)
@@ -279,11 +327,6 @@ public class ModuleWindow extends Window {
 	}
 
 	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
 		FXMLLoader loader = new FXMLLoader(ModuleWindow.class.getResource("ModuleGUI.fxml"));
 		loader.setController(this);
@@ -296,46 +339,6 @@ public class ModuleWindow extends Window {
 			Logging.err("Failed to show the Module window.");
 			Logging.err(e);
 		}
-	}
-
-	public static void loadModules(Collection<File> modules) {
-		for (File f : modules) {
-			if (f.getName().endsWith(".jar"))
-				loadModule(f);
-			else if (f.getName().endsWith(".zip"))
-				loadZip(f);
-		}
-	}
-
-	public static void loadModule(File module) {
-		File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), module.getName());
-		try {
-			if (newFile.exists()) {
-				Logging.err("The module: \"" + module.getAbsolutePath()
-						+ "\" could not be loaded because a module with the same file name already exists.");
-				return;
-			}
-			Files.copy(module.toPath(), newFile.toPath());
-			if (LOADED_MODULES.exists())
-				LOADED_MODULES.get().add(new Module(module));
-		} catch (IOException e) {
-			Logging.err("Failed to copy the module: " + module.getAbsolutePath()
-					+ " to the module directory, (which is at: " + MODULE_INSTALLATION_DIRECTORY.get().getAbsolutePath()
-					+ "), so that it can be loaded.");
-			Logging.err(e);
-		} catch (ModuleLoadException e) {
-			newFile.delete();
-			Logging.err("Failed to load the module: " + module.getAbsolutePath());
-			Logging.err(e);
-		}
-	}
-
-	private static void loadZip(File zip) {
-		loadPackage(zip);
-	}
-
-	public static void loadPackage(File pckge) {
-		/* TODO */
 	}
 
 }

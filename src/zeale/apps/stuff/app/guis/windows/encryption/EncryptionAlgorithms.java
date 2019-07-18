@@ -32,12 +32,46 @@ public enum EncryptionAlgorithms implements EncryptionAlgorithm {
 	}
 
 	@Override
-	public Cipher getCipher() {
-		try {
-			return Cipher.getInstance(name);
-		} catch (GeneralSecurityException e) {
-			throw new UnsupportedOperationException("The cipher " + name + " is not available.");
-		}
+	public byte[] decrypt(byte[] processedKeyBytes, byte... encryptedInput) throws GeneralSecurityException {
+		return decrypt(new SecretKeySpec(processedKeyBytes, algorithmName()), encryptedInput);
+	}
+
+	@Override
+	public byte[] decrypt(SecretKey key, byte... encryptedInput) throws GeneralSecurityException {
+		Cipher cipher = getCipher();
+		cipher.init(Cipher.DECRYPT_MODE, key);
+
+		return cipher.doFinal(encryptedInput);
+	}
+
+	@Override
+	public byte[] decryptRaw(byte[] unprocessedKeyBytes, byte... encryptedInput) throws GeneralSecurityException {
+		int len = Cipher.getMaxAllowedKeyLength(algorithmName());
+		byte[] processedKeyBytes = EncryptionAlgorithm.processKeyBytes(unprocessedKeyBytes);
+		if (processedKeyBytes.length > len)
+			processedKeyBytes = Arrays.copyOf(processedKeyBytes, len);
+		return decrypt(processedKeyBytes, encryptedInput);
+	}
+
+	/**
+	 * Encrypts the specified input bytes using the algorithm specified by this
+	 * {@link EncryptionAlgorithms} object and a randomly generated key, (created
+	 * with
+	 * <code>{@link KeyGenerator KeyGenerator}.{@link KeyGenerator#getInstance(String) getInstance(}{@link EncryptionAlgorithms this}.{@link #algorithmName()}{@link KeyGenerator#getInstance(String) )}</code>).
+	 *
+	 * @param input The input bytes to encrypt.
+	 * @throws GeneralSecurityException If a security exception is raised.
+	 */
+	@Override
+	public byte[] encrypt(byte... input) throws GeneralSecurityException {
+		KeyGenerator gen = getKeyGenerator();
+		gen.init(128);
+		return encrypt(gen.generateKey(), input);
+	}
+
+	@Override
+	public byte[] encrypt(byte[] processedKeyBytes, byte... input) throws GeneralSecurityException {
+		return encrypt(new SecretKeySpec(processedKeyBytes, algorithmName()), input);
 	}
 
 	@Override
@@ -57,51 +91,17 @@ public enum EncryptionAlgorithms implements EncryptionAlgorithm {
 		return encrypt(processedKeyBytes, input);
 	}
 
-	/**
-	 * Encrypts the specified input bytes using the algorithm specified by this
-	 * {@link EncryptionAlgorithms} object and a randomly generated key, (created
-	 * with
-	 * <code>{@link KeyGenerator KeyGenerator}.{@link KeyGenerator#getInstance(String) getInstance(}{@link EncryptionAlgorithms this}.{@link #algorithmName()}{@link KeyGenerator#getInstance(String) )}</code>).
-	 * 
-	 * @param input The input bytes to encrypt.
-	 * @throws GeneralSecurityException If a security exception is raised.
-	 */
 	@Override
-	public byte[] encrypt(byte... input) throws GeneralSecurityException {
-		KeyGenerator gen = getKeyGenerator();
-		gen.init(128);
-		return encrypt(gen.generateKey(), input);
+	public Cipher getCipher() {
+		try {
+			return Cipher.getInstance(name);
+		} catch (GeneralSecurityException e) {
+			throw new UnsupportedOperationException("The cipher " + name + " is not available.");
+		}
 	}
 
 	public KeyGenerator getKeyGenerator() throws NoSuchAlgorithmException {
 		return KeyGenerator.getInstance(algorithmName());
-	}
-
-	@Override
-	public byte[] encrypt(byte[] processedKeyBytes, byte... input) throws GeneralSecurityException {
-		return encrypt(new SecretKeySpec(processedKeyBytes, algorithmName()), input);
-	}
-
-	@Override
-	public byte[] decrypt(SecretKey key, byte... encryptedInput) throws GeneralSecurityException {
-		Cipher cipher = getCipher();
-		cipher.init(Cipher.DECRYPT_MODE, key);
-
-		return cipher.doFinal(encryptedInput);
-	}
-
-	@Override
-	public byte[] decrypt(byte[] processedKeyBytes, byte... encryptedInput) throws GeneralSecurityException {
-		return decrypt(new SecretKeySpec(processedKeyBytes, algorithmName()), encryptedInput);
-	}
-
-	@Override
-	public byte[] decryptRaw(byte[] unprocessedKeyBytes, byte... encryptedInput) throws GeneralSecurityException {
-		int len = Cipher.getMaxAllowedKeyLength(algorithmName());
-		byte[] processedKeyBytes = EncryptionAlgorithm.processKeyBytes(unprocessedKeyBytes);
-		if (processedKeyBytes.length > len)
-			processedKeyBytes = Arrays.copyOf(processedKeyBytes, len);
-		return decrypt(processedKeyBytes, encryptedInput);
 	}
 
 }

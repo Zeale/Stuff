@@ -27,75 +27,14 @@ import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class EncryptionWindow extends Window {
 
-	@Override
-	public void destroy() {
-	}
-
-	@Override
-	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("EncryptionGUI.fxml"));
-		loader.setController(this);
-		try {
-			Parent root = loader.load();
-			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
-					"zeale/apps/stuff/app/guis/windows/encryption/Encryption.css");
-			stage.setScene(new Scene(root));
-		} catch (IOException e) {
-			throw new WindowLoadFailureException("Failed to load the UI for the Encryption Window.", e);
-		}
-	}
-
-	private @FXML void goHome(ActionEvent event) {
-		try {
-			Stuff.displayWindow(new HomeWindow());
-		} catch (WindowLoadFailureException e) {
-			Logging.err(e);
-		}
-	}
-
-	private @FXML TextArea inputField, outputField;
-	private @FXML TextField keyField;// TODO
-	private @FXML TilePane algorithmSelectionPane;
-	private final ToggleGroup algorithmSelectionToggleGroup = new ToggleGroup();
-
 	private final static Object RADIO_BUTTON_ALGORITHM_MAP_KEY = new Object();
 
-	private EncryptionAlgorithm getAlgorithm(Toggle toggle) {
-		return (EncryptionAlgorithm) toggle.getProperties().get(RADIO_BUTTON_ALGORITHM_MAP_KEY);
-	}
+	private @FXML TextArea inputField, outputField;
 
-	private @FXML void initialize() {
-		for (EncryptionAlgorithms ea : EncryptionAlgorithms.values()) {
-			RadioButton button = new RadioButton(ea.algorithmName());
-			button.getProperties().put(RADIO_BUTTON_ALGORITHM_MAP_KEY, ea);
-			algorithmSelectionToggleGroup.getToggles().add(button);
-			algorithmSelectionPane.getChildren().add(button);
-		}
-		algorithmSelectionToggleGroup.selectToggle(algorithmSelectionToggleGroup.getToggles().get(0));
-	}
+	private @FXML TextField keyField;// TODO
 
-	private @FXML void encryptInput() {
-		Toggle selectedToggle = algorithmSelectionToggleGroup.getSelectedToggle();
-		EncryptionAlgorithm algorithm = getAlgorithm(selectedToggle);
-		try {
-			outputField.setText(algorithm.hexEncrypt(keyField.getText(), inputField.getText()));
-		} catch (InvalidKeyException e) {
-			Logging.err("The " + (selectedToggle instanceof Labeled
-					? (algorithm instanceof EncryptionAlgorithms ? ((EncryptionAlgorithms) algorithm).algorithmName()
-							: ((Labeled) selectedToggle).getText())
-					: "currently selected encryption") + " algorithm can't be used with your Java installation.");
-		} catch (GeneralSecurityException e) {
-			Logging.err(e);
-		} catch (UnsupportedOperationException e) {
-			Logging.err(selectedToggle instanceof Labeled
-					? "The " + ((RadioButton) selectedToggle).getText()
-							+ " algorithm is not available with your Java installation."
-					: algorithm instanceof EncryptionAlgorithms
-							? "The " + ((EncryptionAlgorithms) algorithm).algorithmName()
-									+ " algorithm is not available with your Java installation."
-							: "The currently selected algorithm is not available with your Java installation.");
-		}
-	}
+	private @FXML TilePane algorithmSelectionPane;
+	private final ToggleGroup algorithmSelectionToggleGroup = new ToggleGroup();
 
 	private @FXML void decryptOutput() {
 		Toggle selectedToggle = algorithmSelectionToggleGroup.getSelectedToggle();
@@ -114,6 +53,69 @@ public class EncryptionWindow extends Window {
 							? "The " + ((EncryptionAlgorithms) algorithm).algorithmName()
 									+ " algorithm is not available with your Java installation."
 							: "The currently selected algorithm is not available with your Java installation.");
+		}
+	}
+
+	@Override
+	public void destroy() {
+	}
+
+	private @FXML void encryptInput() {
+		Toggle selectedToggle = algorithmSelectionToggleGroup.getSelectedToggle();
+		EncryptionAlgorithm algorithm = getAlgorithm(selectedToggle);
+		try {
+			outputField.setText(algorithm.hexEncrypt(keyField.getText(), inputField.getText()));
+		} catch (InvalidKeyException e) {
+			Logging.err("The " + (selectedToggle instanceof Labeled
+					? algorithm instanceof EncryptionAlgorithms ? ((EncryptionAlgorithms) algorithm).algorithmName()
+							: ((Labeled) selectedToggle).getText()
+					: "currently selected encryption") + " algorithm can't be used with your Java installation.");
+		} catch (GeneralSecurityException e) {
+			Logging.err(e);
+		} catch (UnsupportedOperationException e) {
+			Logging.err(selectedToggle instanceof Labeled
+					? "The " + ((RadioButton) selectedToggle).getText()
+							+ " algorithm is not available with your Java installation."
+					: algorithm instanceof EncryptionAlgorithms
+							? "The " + ((EncryptionAlgorithms) algorithm).algorithmName()
+									+ " algorithm is not available with your Java installation."
+							: "The currently selected algorithm is not available with your Java installation.");
+		}
+	}
+
+	private EncryptionAlgorithm getAlgorithm(Toggle toggle) {
+		return (EncryptionAlgorithm) toggle.getProperties().get(RADIO_BUTTON_ALGORITHM_MAP_KEY);
+	}
+
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
+		}
+	}
+
+	private @FXML void initialize() {
+		for (EncryptionAlgorithms ea : EncryptionAlgorithms.values()) {
+			RadioButton button = new RadioButton(ea.algorithmName());
+			button.getProperties().put(RADIO_BUTTON_ALGORITHM_MAP_KEY, ea);
+			algorithmSelectionToggleGroup.getToggles().add(button);
+			algorithmSelectionPane.getChildren().add(button);
+		}
+		algorithmSelectionToggleGroup.selectToggle(algorithmSelectionToggleGroup.getToggles().get(0));
+	}
+
+	@Override
+	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("EncryptionGUI.fxml"));
+		loader.setController(this);
+		try {
+			Parent root = loader.load();
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
+					"zeale/apps/stuff/app/guis/windows/encryption/Encryption.css");
+			stage.setScene(new Scene(root));
+		} catch (IOException e) {
+			throw new WindowLoadFailureException("Failed to load the UI for the Encryption Window.", e);
 		}
 	}
 

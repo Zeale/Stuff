@@ -31,128 +31,7 @@ public class Menu extends Window {
 
 	public static final Color DEFAULT_BACKGROUND_COLOR = new Color(0.22, 0.22, 0.22, 1);
 
-	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void addItem(Node item) {
-		scrollBox.getChildren().add(item);
-	}
-
-	public void removeItem(Node item) {
-		scrollBox.getChildren().remove(item);
-	}
-
-	public ObservableList<Node> getChildren() {
-		return scrollBox.getChildren();
-	}
-
-	public StackPane addImageNode(String imageURL, EventHandler<? super MouseEvent> onClick, String popup) {
-		return addImageNode(imageURL, onClick, new Label(popup));
-	}
-
-	public StackPane addImageNode(String imageURL, EventHandler<? super MouseEvent> onClick, Label popup) {
-		return addImageNode(new Image(imageURL, -1, 128, true, false), onClick, popup);
-	}
-
-	public StackPane addImageNode(Image image, Runnable onClick, Label popup) {
-		return addImageNode(image, a -> {
-			if (a.getButton() == MouseButton.PRIMARY)
-				onClick.run();
-		}, popup);
-	}
-
-	public StackPane addImageNode(Image image, Runnable onClick, String popup) {
-		return addImageNode(image, onClick, new Label(popup));
-	}
-
-	public StackPane addImageNode(String imageURL, Runnable onClick, Label popup) {
-		return addImageNode(imageURL, a -> {
-			if (a.getButton() == MouseButton.PRIMARY)
-				onClick.run();
-		}, popup);
-	}
-
-	public StackPane addImageNode(String imageURL, Runnable onClick, String popup) {
-		return addImageNode(imageURL, onClick, new Label(popup));
-	}
-
-	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, Label popup) {
-		return addImageNode(imageURL, a -> {
-			if (a.getButton() == MouseButton.PRIMARY)
-				try {
-					Stuff.displayWindow(windowSupplier.get());
-				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to open the window...\n");
-					Logging.err(e);
-				}
-			else if (a.getButton() == MouseButton.MIDDLE)
-				try {
-					Stage stage = Stuff.makeStage();
-					windowSupplier.get().display(stage);
-					stage.show();
-				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to open the window...\n");
-					Logging.err(e);
-				}
-		}, popup);
-	}
-
-	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, String popup) {
-		return addImageNode(imageURL, windowSupplier, new Label(popup));
-	}
-
-	public StackPane addImageNode(Image image, EventHandler<? super MouseEvent> onClick, Label popup) {
-		ImageView icon = new ImageView(image);
-		icon.setPreserveRatio(true);
-		icon.setFitHeight(128);
-		icon.setPickOnBounds(true);
-		StackPane box = new StackPane(icon);
-		box.setMinSize(128, 128);
-
-		box.setOnMouseClicked(onClick);
-
-		PopupHelper.applyInstantInfoPopup(box, PopupHelper.buildPopup(popup).popup);
-
-		scrollBox.getChildren().add(box);
-		return box;
-	}
-
-	public StackPane addImageNode(Image image, Supplier<? extends Window> windowSupplier, String popup) {
-		return addImageNode(image, windowSupplier, new Label(popup));
-	}
-
-	public StackPane addImageNode(Image image, Supplier<? extends Window> windowSupplier, Label popup) {
-		return addImageNode(image, a -> {
-			if (a.getButton() == MouseButton.PRIMARY)
-				try {
-					Stuff.displayWindow(windowSupplier.get());
-				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to open the window...\n");
-					Logging.err(e);
-				}
-			else if (a.getButton() == MouseButton.MIDDLE)
-				try {
-					Stage stage = Stuff.makeStage();
-					windowSupplier.get().display(stage);
-					stage.show();
-				} catch (WindowLoadFailureException e) {
-					Logging.err("Failed to open the window...\n");
-					Logging.err(e);
-				}
-		}, popup);
-	}
-
-	public static Image loadFormatted(String url, double size) {
-		return new Image(url, -1, size, true, false);
-	}
-
-	protected final HorizontalScrollBox scrollBox = new HorizontalScrollBox();
 	protected static final Glow hoverGlow = new Glow(1);
-	protected final VBox centerer = new VBox();
-	protected final AnchorPane anchorPane = new AnchorPane(centerer);
 
 	private static final Object CUSTOM_EFFECT_KEY = new Object();
 
@@ -160,9 +39,19 @@ public class Menu extends Window {
 		return (Effect) node.getProperties().getOrDefault(CUSTOM_EFFECT_KEY, hoverGlow);
 	}
 
+	public static Image loadFormatted(String url, double size) {
+		return new Image(url, -1, size, true, false);
+	}
+
 	protected static final void setCustomEffect(Node node, Effect effect) {
 		node.getProperties().put(CUSTOM_EFFECT_KEY, effect);
 	}
+
+	protected final HorizontalScrollBox scrollBox = new HorizontalScrollBox();
+
+	protected final VBox centerer = new VBox();
+
+	protected final AnchorPane anchorPane = new AnchorPane(centerer);
 
 	{
 		centerer.setFillWidth(true);
@@ -203,8 +92,122 @@ public class Menu extends Window {
 
 	private Scene scene;
 
+	public StackPane addImageNode(Image image, EventHandler<? super MouseEvent> onClick, Label popup) {
+		ImageView icon = new ImageView(image);
+		icon.setPreserveRatio(true);
+		icon.setFitHeight(128);
+		icon.setPickOnBounds(true);
+		StackPane box = new StackPane(icon);
+		box.setMinSize(128, 128);
+
+		box.setOnMouseClicked(onClick);
+
+		PopupHelper.applyInstantInfoPopup(box, PopupHelper.buildPopup(popup).popup);
+
+		scrollBox.getChildren().add(box);
+		return box;
+	}
+
+	public StackPane addImageNode(Image image, Runnable onClick, Label popup) {
+		return addImageNode(image, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				onClick.run();
+		}, popup);
+	}
+
+	public StackPane addImageNode(Image image, Runnable onClick, String popup) {
+		return addImageNode(image, onClick, new Label(popup));
+	}
+
+	public StackPane addImageNode(Image image, Supplier<? extends Window> windowSupplier, Label popup) {
+		return addImageNode(image, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				try {
+					Stuff.displayWindow(windowSupplier.get());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
+			else if (a.getButton() == MouseButton.MIDDLE)
+				try {
+					Stage stage = Stuff.makeStage();
+					windowSupplier.get().display(stage);
+					stage.show();
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
+		}, popup);
+	}
+
+	public StackPane addImageNode(Image image, Supplier<? extends Window> windowSupplier, String popup) {
+		return addImageNode(image, windowSupplier, new Label(popup));
+	}
+
+	public StackPane addImageNode(String imageURL, EventHandler<? super MouseEvent> onClick, Label popup) {
+		return addImageNode(new Image(imageURL, -1, 128, true, false), onClick, popup);
+	}
+
+	public StackPane addImageNode(String imageURL, EventHandler<? super MouseEvent> onClick, String popup) {
+		return addImageNode(imageURL, onClick, new Label(popup));
+	}
+
+	public StackPane addImageNode(String imageURL, Runnable onClick, Label popup) {
+		return addImageNode(imageURL, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				onClick.run();
+		}, popup);
+	}
+
+	public StackPane addImageNode(String imageURL, Runnable onClick, String popup) {
+		return addImageNode(imageURL, onClick, new Label(popup));
+	}
+
+	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, Label popup) {
+		return addImageNode(imageURL, a -> {
+			if (a.getButton() == MouseButton.PRIMARY)
+				try {
+					Stuff.displayWindow(windowSupplier.get());
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
+			else if (a.getButton() == MouseButton.MIDDLE)
+				try {
+					Stage stage = Stuff.makeStage();
+					windowSupplier.get().display(stage);
+					stage.show();
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to open the window...\n");
+					Logging.err(e);
+				}
+		}, popup);
+	}
+
+	public StackPane addImageNode(String imageURL, Supplier<Window> windowSupplier, String popup) {
+		return addImageNode(imageURL, windowSupplier, new Label(popup));
+	}
+
+	public void addItem(Node item) {
+		scrollBox.getChildren().add(item);
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public ObservableList<Node> getChildren() {
+		return scrollBox.getChildren();
+	}
+
 	protected final Scene getScene() {
 		return scene;
+	}
+
+	public void removeItem(Node item) {
+		scrollBox.getChildren().remove(item);
 	}
 
 	@Override

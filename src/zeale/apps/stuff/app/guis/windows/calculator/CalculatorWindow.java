@@ -35,6 +35,44 @@ public final class CalculatorWindow extends Window {
 	private @FXML TextField extendedFunctionalitySearch;
 	private @FXML Pane extendedFunctionalityFlowPane;
 
+	private @FXML void buttonPushed(ActionEvent event) {
+		Object source = event.getSource();
+		if (source instanceof Button)
+			inputField.appendText(((Button) source).getText());
+		else
+			Logging.wrn("A button was misconfigured. Please report this error to the author. (Button Error: " + source
+					+ "   " + source.getClass() + ".)");
+
+		int cp = inputField.getCaretPosition();
+		inputField.requestFocus();
+		inputField.positionCaret(cp);
+	}
+
+	private @FXML void clearInputField(ActionEvent event) {
+		inputField.clear();
+	}
+
+	@Override
+	public void destroy() {
+	}
+
+	private @FXML void functionPushed(ActionEvent event) {
+		Object source = event.getSource();
+		if (source instanceof Button)
+			inputField.appendText(((Button) source).getText() + "(");
+		else
+			Logging.wrn("A function button was misconfigured. Please report this error to the author. (Button Error: "
+					+ source + "   " + source.getClass() + ".)");
+	}
+
+	private @FXML void goHome(ActionEvent event) {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
+		}
+	}
+
 	private @FXML void initialize() {
 
 		List<TaggedCalculatorButton> buttons = new ArrayList<>(extendedFunctionalityFlowPane.getChildren().size());
@@ -43,10 +81,6 @@ public final class CalculatorWindow extends Window {
 				buttons.add((TaggedCalculatorButton) n);
 
 		extendedFunctionalitySearch.textProperty().addListener(new ChangeListener<String>() {
-
-			private boolean matches(String searchTerm, String itemName) {
-				return itemName.toLowerCase().contains(searchTerm.toLowerCase());
-			}
 
 			@Override
 			public synchronized void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -72,40 +106,12 @@ public final class CalculatorWindow extends Window {
 				}
 
 			}
+
+			private boolean matches(String searchTerm, String itemName) {
+				return itemName.toLowerCase().contains(searchTerm.toLowerCase());
+			}
 		});
 
-	}
-
-	private @FXML void buttonPushed(ActionEvent event) {
-		Object source = event.getSource();
-		if (source instanceof Button) {
-			inputField.appendText(((Button) source).getText());
-		} else {
-			Logging.wrn("A button was misconfigured. Please report this error to the author. (Button Error: " + source
-					+ "   " + source.getClass() + ".)");
-		}
-
-		int cp = inputField.getCaretPosition();
-		inputField.requestFocus();
-		inputField.positionCaret(cp);
-	}
-
-	private @FXML void goHome(ActionEvent event) {
-		try {
-			Stuff.displayWindow(new HomeWindow());
-		} catch (WindowLoadFailureException e) {
-			Logging.err(e);
-		}
-	}
-
-	private @FXML void functionPushed(ActionEvent event) {
-		Object source = event.getSource();
-		if (source instanceof Button) {
-			inputField.appendText(((Button) source).getText() + "(");
-		} else {
-			Logging.wrn("A function button was misconfigured. Please report this error to the author. (Button Error: "
-					+ source + "   " + source.getClass() + ".)");
-		}
 	}
 
 	private @FXML void inputFieldKeyEvent(KeyEvent event) {
@@ -113,26 +119,6 @@ public final class CalculatorWindow extends Window {
 			solve();
 			inputField.positionCaret(inputField.getLength());
 		}
-	}
-
-	private @FXML void clearInputField(ActionEvent event) {
-		inputField.clear();
-	}
-
-	private @FXML void solve(ActionEvent event) {
-		solve();
-	}
-
-	private void solve() {
-		try {
-			inputField.setText(Evaluator.solveToString(inputField.getText()));
-		} catch (Exception e) {
-			Logging.err(e.getMessage());
-		}
-	}
-
-	@Override
-	public void destroy() {
 	}
 
 	@Override
@@ -147,6 +133,18 @@ public final class CalculatorWindow extends Window {
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the UI for the Calculator Window.", e);
 		}
+	}
+
+	private void solve() {
+		try {
+			inputField.setText(Evaluator.solveToString(inputField.getText()));
+		} catch (Exception e) {
+			Logging.err(e.getMessage());
+		}
+	}
+
+	private @FXML void solve(ActionEvent event) {
+		solve();
 	}
 
 }

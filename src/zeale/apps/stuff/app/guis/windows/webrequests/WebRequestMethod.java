@@ -15,12 +15,12 @@ interface WebRequestMethod {
 			super();
 		}
 
-		public WebRequestException(String message, Throwable cause) {
-			super(message, cause);
-		}
-
 		public WebRequestException(String message) {
 			super(message);
+		}
+
+		public WebRequestException(String message, Throwable cause) {
+			super(message, cause);
 		}
 
 		public WebRequestException(Throwable cause) {

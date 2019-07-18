@@ -52,6 +52,17 @@ public class Stuff extends Application {
 		return PROGRAM_CONSOLE.getView(stage);
 	});
 
+	/**
+	 * The program's installation directory. This is laxly detected (as of now) by
+	 * simply getting the program's working directory. Some sort of storage API will
+	 * need to be made later.
+	 */
+	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
+			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
+			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data");
+
+	private static Stage stage;
+
 	public static void displayConsole() {
 		if (!Platform.isFxApplicationThread())
 			Platform.runLater(Stuff::displayConsole);
@@ -62,10 +73,23 @@ public class Stuff extends Application {
 		}
 	}
 
+	public static void displayWindow(Window window) throws WindowLoadFailureException {
+		window.display(stage);
+	}
+
+	public static void displayWindow(Window window, ApplicationProperties props) throws WindowLoadFailureException {
+		window.display(stage, props);
+	}
+
+	public static void main(String[] args) {
+		Platform.setImplicitExit(false);
+		launch(Stuff.class, args);
+	}
+
 	/**
 	 * Creates a new {@link Stage} and styles it to fit with the application. This
 	 * function must be called on the application thread.
-	 * 
+	 *
 	 * @return The newly created {@link Stage}.
 	 * @throws InterruptedException In case the thread is interrupted while the FX
 	 *                              Application thread makes the stage.
@@ -87,35 +111,6 @@ public class Stuff extends Application {
 			}
 		});
 		stage.setTitle("Stuff");
-	}
-
-	/**
-	 * The program's installation directory. This is laxly detected (as of now) by
-	 * simply getting the program's working directory. Some sort of storage API will
-	 * need to be made later.
-	 */
-	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
-			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
-			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data");
-
-	private static Stage stage;
-
-	public static void displayWindow(Window window) throws WindowLoadFailureException {
-		window.display(stage);
-	}
-
-	public static void displayWindow(Window window, ApplicationProperties props) throws WindowLoadFailureException {
-		window.display(stage, props);
-	}
-
-	public static void main(String[] args) {
-		Platform.setImplicitExit(false);
-		launch(Stuff.class, args);
-	}
-
-	@Override
-	public void stop() throws Exception {
-		Window.destroyStage(stage);
 	}
 
 	@Override
@@ -144,5 +139,10 @@ public class Stuff extends Application {
 		(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow1()
 				: args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_2) ? new InstallSetupWindow2()
 						: new HomeWindow()).display(primaryStage);
+	}
+
+	@Override
+	public void stop() throws Exception {
+		Window.destroyStage(stage);
 	}
 }

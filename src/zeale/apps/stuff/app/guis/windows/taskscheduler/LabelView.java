@@ -26,10 +26,6 @@ class LabelView extends javafx.scene.control.Label {
 
 	private final Label label;
 
-	public Label getLabel() {
-		return label;
-	}
-
 	{
 		setPadding(new Insets(2));
 	}
@@ -52,16 +48,20 @@ class LabelView extends javafx.scene.control.Label {
 		effect.colorProperty().bind(label.colorProperty());
 	}
 
-	public void select() {
-		setEffect(effect);
-	}
-
 	public void deselect() {
 		setEffect(null);
 	}
 
+	public Label getLabel() {
+		return label;
+	}
+
 	public boolean isSelected() {
 		return getEffect() != null;
+	}
+
+	public void select() {
+		setEffect(effect);
 	}
 
 }

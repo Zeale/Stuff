@@ -9,8 +9,6 @@ import javafx.scene.paint.Color;
 
 class HelpBook {
 
-	private final List<CommandHelp> helps = new ArrayList<>();
-
 	public final class CommandHelp {
 		private final String name, description, usage, aliases[];
 
@@ -22,15 +20,17 @@ class HelpBook {
 		}
 	}
 
+	private final List<CommandHelp> helps = new ArrayList<>();
+
 	private Color systemColor, messageColor;
+
+	public HelpBook() {
+		this(Color.RED, Color.GOLD);
+	}
 
 	public HelpBook(Color systemColor, Color messageColor) {
 		this.systemColor = systemColor;
 		this.messageColor = messageColor;
-	}
-
-	public HelpBook() {
-		this(Color.RED, Color.GOLD);
 	}
 
 	public void addCommand(CommandHelp help) {
@@ -41,6 +41,15 @@ class HelpBook {
 		CommandHelp help = new CommandHelp(name, description, usage, aliases);
 		addCommand(help);
 		return help;
+	}
+
+	public void print(StyledPrintable printable, CommandHelp help) {
+		printable.print("Showing help for command: ", systemColor, true, false);
+		printable.print(help.name, messageColor, true, false);
+		printable.print(".", systemColor, true, false);
+		printable.println();
+
+		printCommandHelp(printable, help);
 	}
 
 	public void print(StyledPrintable printable, int page) throws HelpPageException {
@@ -71,27 +80,6 @@ class HelpBook {
 
 	}
 
-	private void printCommandHelp(StyledPrintable printable, CommandHelp help) {
-		printable.print("Command: ", systemColor);
-		printable.print(help.name, messageColor, true, false);
-		printable.println();
-		printable.print("   - Description: ", systemColor);
-		printable.print(help.description, messageColor, false, true);
-		printable.println();
-		printable.print("   - Usage: ", systemColor);
-		printable.print(help.usage, messageColor);
-		printable.println();
-		if (help.aliases.length > 0) {
-			printable.print("   - Aliases: ", systemColor);
-			printable.print(help.aliases[0], messageColor);
-			for (int j = 1; j < help.aliases.length; j++) {
-				printable.print(", ", systemColor);
-				printable.print(help.aliases[j], messageColor);
-			}
-			printable.println();
-		}
-	}
-
 	public boolean print(StyledPrintable printable, String command, boolean allowAliases, boolean ignoreCase) {
 		if (allowAliases) {
 			if (ignoreCase) {
@@ -116,29 +104,39 @@ class HelpBook {
 								print(printable, ch);
 								return true;
 							}
-		} else {
-			if (ignoreCase) {
-				for (CommandHelp ch : helps)
-					if (ch.name.equalsIgnoreCase(command)) {
-						print(printable, ch);
-						return true;
-					}
-			} else
-				for (CommandHelp ch : helps)
-					if (ch.name.equals(command)) {
-						print(printable, ch);
-						return true;
-					}
-		}
+		} else if (ignoreCase) {
+			for (CommandHelp ch : helps)
+				if (ch.name.equalsIgnoreCase(command)) {
+					print(printable, ch);
+					return true;
+				}
+		} else
+			for (CommandHelp ch : helps)
+				if (ch.name.equals(command)) {
+					print(printable, ch);
+					return true;
+				}
 		return false;
 	}
 
-	public void print(StyledPrintable printable, CommandHelp help) {
-		printable.print("Showing help for command: ", systemColor, true, false);
+	private void printCommandHelp(StyledPrintable printable, CommandHelp help) {
+		printable.print("Command: ", systemColor);
 		printable.print(help.name, messageColor, true, false);
-		printable.print(".", systemColor, true, false);
 		printable.println();
-
-		printCommandHelp(printable, help);
+		printable.print("   - Description: ", systemColor);
+		printable.print(help.description, messageColor, false, true);
+		printable.println();
+		printable.print("   - Usage: ", systemColor);
+		printable.print(help.usage, messageColor);
+		printable.println();
+		if (help.aliases.length > 0) {
+			printable.print("   - Aliases: ", systemColor);
+			printable.print(help.aliases[0], messageColor);
+			for (int j = 1; j < help.aliases.length; j++) {
+				printable.print(", ", systemColor);
+				printable.print(help.aliases[j], messageColor);
+			}
+			printable.println();
+		}
 	}
 }

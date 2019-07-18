@@ -26,6 +26,8 @@ import zeale.apps.stuff.api.installation.ProgramArguments;
 
 public class InstallSetupWindow1 extends Window {
 
+	private Stage stage;
+
 	@Override
 	public void destroy() {
 		// Undo the modifications that this Window did to the Stage. (This doesn't
@@ -37,8 +39,6 @@ public class InstallSetupWindow1 extends Window {
 		stage.setMaxWidth(Double.MAX_VALUE);
 		stage.setAlwaysOnTop(false);
 	}
-
-	private Stage stage;
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
@@ -92,7 +92,7 @@ public class InstallSetupWindow1 extends Window {
 				File currFile = new File(
 						InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
 								.getAbsoluteFile();
-				if (!to.equals(Stuff.INSTALLATION_DIRECTORY)) {
+				if (!to.equals(Stuff.INSTALLATION_DIRECTORY))
 					try {
 
 						File executable = new File(to, currFile.getName());
@@ -116,7 +116,7 @@ public class InstallSetupWindow1 extends Window {
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 					}
-				} else {
+				else
 					try {
 						Runtime.getRuntime()
 								.exec(currFile.getName() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
@@ -127,12 +127,10 @@ public class InstallSetupWindow1 extends Window {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
 				running = false;
 			}
 
 		});
-
 
 		box.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
 		Scene scene = new Scene(box);

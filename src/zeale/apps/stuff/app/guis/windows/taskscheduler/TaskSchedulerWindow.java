@@ -72,6 +72,132 @@ import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class TaskSchedulerWindow extends Window {
 
+	private static class BasicCell<T> extends TableCell<Task, T> {
+
+		{
+			prepareCell(this);
+		}
+
+		protected void emptied() {
+			setText(null);
+			setGraphic(null);
+		}
+
+		/**
+		 * Called when an {@link #updateItem(Object, boolean)} call changed this cell
+		 * from being empty to having a value. Being "empty" is defined as this cell
+		 * having a {@link #getItem() value} of <code>null</code>, or as this cell being
+		 * {@link #isEmpty() empty}. This method is actually called before
+		 * {@link #update(Object)} is.
+		 */
+		protected void populated() {
+
+		}
+
+		protected String text(T item) {
+			return item.toString();
+		}
+
+		protected void update(T item) {
+			setText(text(item));
+		}
+
+		@Override
+		protected void updateItem(T item, boolean empty) {
+			if (empty && isEmpty() || item == getItem() || item != null && item.equals(getItem()))
+				return;
+			if (!isEmpty() && getItem() != null && (empty || item == null))
+				emptied();
+			else if (!(empty || item == null)) {
+				if (isEmpty() || getItem() == null)
+					populated();
+				update(item);
+			}
+			super.updateItem(item, empty);
+		}
+
+	}
+
+	private static class BasicCheckboxCell<T> extends BasicCell<T> {
+
+		protected final CheckBox checkBox = new CheckBox();
+		protected final Function<T, Boolean> converter;
+
+		public BasicCheckboxCell(Function<T, Boolean> converter) {
+			this.converter = converter;
+		}
+
+		@Override
+		protected void emptied() {
+			setGraphic(null);
+		}
+
+		@Override
+		protected void populated() {
+			setGraphic(checkBox);
+		}
+
+		@Override
+		protected void update(T item) {
+			checkBox.setSelected(converter.apply(item));
+		}
+
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static class BooleanCheckBoxCell extends BasicCheckboxCell<Boolean> {
+
+		protected final Function<Task, Property<Boolean>> propertyRetriever;
+
+		{
+
+			tableRowProperty().addListener(new ChangeListener<TableRow>() {
+
+				ChangeListener<Object> taskListener = new ChangeListener<Object>() {
+					@Override
+					public void changed(ObservableValue<? extends Object> observable1, Object oldValue1,
+							Object newValue1) {
+						if (oldValue1 != null)
+							checkBox.selectedProperty().unbindBidirectional(propertyRetriever.apply((Task) oldValue1));
+						if (newValue1 != null)
+							checkBox.selectedProperty().bindBidirectional(propertyRetriever.apply((Task) newValue1));
+					}
+				};
+
+				@Override
+				public void changed(ObservableValue<? extends TableRow> observable, TableRow oldValue,
+						TableRow newValue) {
+					if (oldValue != null)
+						oldValue.itemProperty().removeListener(taskListener);
+					if (newValue != null) {
+						newValue.itemProperty().addListener(taskListener);
+						taskListener.changed(newValue.itemProperty(), oldValue == null ? null : oldValue.getItem(),
+								newValue.getItem());
+					}
+				}
+			});
+
+		}
+
+		public BooleanCheckBoxCell(Function<Task, Property<Boolean>> propertyRetriever) {
+			super(null);
+			this.propertyRetriever = propertyRetriever;
+		}
+
+		@Override
+		protected void update(Boolean item) {
+		}
+	}
+
+	static class NameNotFoundException extends Exception {
+
+		/**
+		 * SUID
+		 */
+		private static final long serialVersionUID = 1L;
+
+	}
+
 	final static PhoenixReference<File> TASK_SCHEDULER_DATA_DIR = PhoenixReference
 			.create((Supplier<File>) () -> new File(Stuff.APPLICATION_DATA, "Task Scheduler"));
 
@@ -91,18 +217,16 @@ public class TaskSchedulerWindow extends Window {
 
 				@Override
 				protected void finalize() {
-					for (Task t : this) {
+					for (Task t : this)
 						try {
 							t.flush();
 						} catch (FileNotFoundException e) {
 							Logging.err("Failed to write the task, \"" + t.getName() + "\" to its file:" + t.getData());
 						}
-					}
 				}
 			};
 		}
 	};
-
 	final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(true) {
 
 		@Override
@@ -143,89 +267,198 @@ public class TaskSchedulerWindow extends Window {
 			return list;
 		}
 	};
+	private static final Border SELECTED_ROW_DEFAULT_BORDER = Utilities.getBorderFromColor(Color.GOLD, 1),
+			SELECTED_ROW_HOVER_BORDER = Utilities.getBorderFromColor(Color.RED, 1);
+	private static final Gateway<Instant, LocalDate> INSTANT_TO_LOCALDATE_GATEWAY = new Gateway<Instant, LocalDate>() {
+
+		@Override
+		public Instant from(LocalDate value) {
+			return value == null ? null : value.atStartOfDay(ZoneId.systemDefault()).toInstant();
+		}
+
+		@Override
+		public LocalDate to(Instant value) {
+			return value == null ? null : value.atZone(ZoneId.systemDefault()).toLocalDate();
+		}
+	};
+
+	static final File findFeasibleFile(File location, String extension) throws FileNotFoundException {
+		String uuid = UUID.randomUUID().toString();
+		File file = new File(location, uuid);
+		if (file.exists()) {
+			int val = 0;
+			while ((file = new File(location, uuid + "-" + val + extension)).exists())
+				if (++val == 0)
+					// If the user has 2^32 files in this directory each with the same UUID then
+					// wtf.
+					throw new FileNotFoundException();
+		}
+		return file;
+	}
+
+	/**
+	 * Finds a feasible name using UUIDs and the given {@link Function}.
+	 *
+	 * @param existenceChecker This should return <code>true</code> if the name that
+	 *                         it's given is taken, and false otherwise.
+	 * @return A feasible name, or a {@link NameNotFoundException} if no name was
+	 *         available.
+	 * @throws NameNotFoundException In case no feasible name could be found.
+	 */
+	static String findFeasibleName(Function<String, Boolean> existenceChecker) throws NameNotFoundException {
+		String uuid = UUID.randomUUID().toString();
+		if (existenceChecker.apply(uuid)) {
+			int val = 0;
+			while (existenceChecker.apply(uuid + "-" + val))
+				if (++val == 0)
+					throw new NameNotFoundException();
+			return uuid + "-" + val;
+		}
+		return uuid;
+	}
+
+	private static boolean fits(String name, String query) {
+		return name.toLowerCase().contains(query.toLowerCase());
+	}
 
 	static void markDirty(Task dp) {
 		if (!(DIRTY_TASKS.exists() && DIRTY_TASKS.get().contains(dp)))
 			DIRTY_TASKS.get().add(dp);
 	}
 
-	private static final Border SELECTED_ROW_DEFAULT_BORDER = Utilities.getBorderFromColor(Color.GOLD, 1),
-			SELECTED_ROW_HOVER_BORDER = Utilities.getBorderFromColor(Color.RED, 1);
+	@SuppressWarnings("rawtypes")
+	private static void prepareCell(TableCell<?, ?> cell) {
+		cell.tableRowProperty().addListener((ChangeListener<TableRow>) (observable, oldValue, newValue) -> {
+			if (oldValue != null) {
+				cell.textFillProperty().unbind();
+				cell.fontProperty().unbind();
+			}
+			if (newValue != null) {
+				BindingTools.bind(newValue.selectedProperty(),
+						a -> Font.font(null, a == null || !a ? null : FontWeight.BOLD, -1), cell.fontProperty());
+				cell.textFillProperty().bind(newValue.textFillProperty());
+			}
+		});
+		cell.setAlignment(Pos.CENTER);
+		cell.setTextAlignment(TextAlignment.CENTER);
+	}
 
 	private @FXML TextField createName, editName;
 	private @FXML TextArea createDescription, editDescription;
+
 	private @FXML DatePicker createDueDate, editDueDate;
 	private @FXML CheckBox createComplete, editComplete, createUrgent, editUrgent, editSync1, editSync2;
+
 	private @FXML Button editFlush;
 
 	private @FXML CheckMenuItem showLabels;
-
 	private @FXML TableView<Task> taskView;
 
 	private @FXML TableColumn<Task, String> nameColumn, descriptionColumn;
+
 	private @FXML TableColumn<Task, Boolean> urgentColumn, completeColumn;
+
 	private @FXML TableColumn<Task, LocalDate> dueDateColumn;
+
 	private @FXML TableColumn<Task, ObservableList<Label>> labelColumn;
 
 	private @FXML Tab viewTasksTab;
+
 	private @FXML TabPane layoutTabPane;
 
 	private @FXML CheckMenuItem filterComplete, filterUrgent;
 
 	private @FXML FlowPane labelSelectionBox;
+
 	private @FXML TextField labelFilter;
 
 	private ReadOnlyObjectProperty<Task> selectedTask;
+
+	private @FXML void createNewTab() {
+		Instant instant;
+		try {
+			instant = INSTANT_TO_LOCALDATE_GATEWAY.from(createDueDate.getValue());
+		} catch (Exception e) {
+			Logging.err("Could not convert " + createDueDate.getValue() + " to a time stamp.");
+			return;
+		}
+		File file;
+		try {
+			file = findFeasibleFile(TASK_DATA_DIR.get(), ".tsk");
+		} catch (FileNotFoundException e1) {
+			Logging.err("Failed to find a feasible file for the Task, \"" + createName.getText() + "\".");
+			return;
+		}
+		Collection<Label> loadedLabels = LabelManagerWindow.LABEL_LIST.get();
+		Task task = new Task(file, t -> {
+			for (Label l : loadedLabels)
+				if (l.getId().equals(t))
+					return l;
+			return Label.getNullLabel(t);
+		});
+		task.setCompleted(createComplete.isSelected());
+		task.setUrgent(createUrgent.isSelected());
+		task.setDescription(createDescription.getText());
+		task.setName(createName.getText());
+		task.setDueDate(instant);
+
+		InvalidationListener invalidationListener = __ -> markDirty(task);
+
+		/* ~PROPERTIES */
+		task.completedProperty().addListener(invalidationListener);
+		task.urgentProperty().addListener(invalidationListener);
+		task.nameProperty().addListener(invalidationListener);
+		task.descriptionProperty().addListener(invalidationListener);
+		task.dueDateProperty().addListener(invalidationListener);
+		task.getLabels().addListener(invalidationListener);
+
+		createComplete.setSelected(false);
+		createUrgent.setSelected(false);
+		createDescription.setText(null);
+		createName.setText(null);
+		createDueDate.setValue(null);
+
+		try {
+			task.flush();
+			TASK_LIST.get().add(task);
+			layoutTabPane.getSelectionModel().select(viewTasksTab);
+		} catch (FileNotFoundException e) {
+			Logging.err("Failed to write the task: \"" + task.getName() + "\" to its file: " + file.getAbsolutePath());
+			Logging.err(e);
+		}
+
+	}
+
+	@Override
+	public void destroy() {
+		if (DIRTY_TASKS.exists())
+			for (Task t : DIRTY_TASKS.get())
+				try {
+					t.flush();
+				} catch (FileNotFoundException e1) {
+					Logging.err("Failed to write the task: \"" + selectedTask.get().getName() + "\" to the file: "
+							+ selectedTask.get().getData().getAbsolutePath());
+					Logging.err(e1);
+				}
+	}
+
+	private @FXML void flush() {
+		if (TASK_LIST.exists())
+			for (Task t : TASK_LIST.get())
+				try {
+					t.flush();
+				} catch (FileNotFoundException e) {
+					Logging.err("Failed to write the Task, \"" + t.getName() + "\" to its file:" + t.getData());
+				}
+		if (DIRTY_TASKS.exists())
+			DIRTY_TASKS.get().clear();
+	}
 
 	private @FXML void goHome(ActionEvent event) {
 		try {
 			Stuff.displayWindow(new HomeWindow());
 		} catch (WindowLoadFailureException e) {
 			Logging.err("Encountered an error while attempting to display the home window.");
-			Logging.err(e);
-		}
-	}
-
-	private static final Gateway<Instant, LocalDate> INSTANT_TO_LOCALDATE_GATEWAY = new Gateway<Instant, LocalDate>() {
-
-		@Override
-		public LocalDate to(Instant value) {
-			return value == null ? null : value.atZone(ZoneId.systemDefault()).toLocalDate();
-		}
-
-		@Override
-		public Instant from(LocalDate value) {
-			return value == null ? null : value.atStartOfDay(ZoneId.systemDefault()).toInstant();
-		}
-	};
-
-	private @FXML void showEditLabelGUI() {
-		try {
-			LabelManagerWindow window = new LabelManagerWindow();
-			Stuff.displayWindow(window);
-			window.showEditMenu();
-		} catch (WindowLoadFailureException e) {
-			Logging.err("Failed to show the label editor window.");
-			Logging.err(e);
-		}
-	}
-
-	private @FXML void showCreateLabelGUI() {
-		try {
-			LabelManagerWindow window = new LabelManagerWindow();
-			Stuff.displayWindow(window);
-			window.showCreateMenu();
-		} catch (WindowLoadFailureException e) {
-			Logging.err("Failed to show the label creator window.");
-			Logging.err(e);
-		}
-	}
-
-	private @FXML void showLabelManagerWindow() {
-		try {
-			Stuff.displayWindow(new LabelManagerWindow());
-		} catch (WindowLoadFailureException e) {
-			Logging.err("Failed to show the label manager window.");
 			Logging.err(e);
 		}
 	}
@@ -403,7 +636,7 @@ public class TaskSchedulerWindow extends Window {
 		});
 
 		ChangeListener<Boolean> syncListener = (ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
-			if (editSync1.isSelected() && !newValue && selectedTask.get() != null) {
+			if (editSync1.isSelected() && !newValue && selectedTask.get() != null)
 				try {
 					selectedTask.get().flush();
 					if (DIRTY_TASKS.exists())
@@ -413,7 +646,6 @@ public class TaskSchedulerWindow extends Window {
 							+ selectedTask.get().getData().getAbsolutePath());
 					Logging.err(e);
 				}
-			}
 		};
 		/* ~PROPERTIES */
 		editName.focusedProperty().addListener(syncListener);
@@ -431,14 +663,13 @@ public class TaskSchedulerWindow extends Window {
 				t -> BindingTools.mask(t.getValue().dueDateProperty(), INSTANT_TO_LOCALDATE_GATEWAY::to));
 
 		/* ~PROPERTIES */
-		nameColumn.setCellFactory(__ -> new BasicCell<String>());
+		nameColumn.setCellFactory(__ -> new BasicCell<>());
 		descriptionColumn.setCellFactory(__ -> new BasicCell<>());
 		urgentColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.urgentProperty()));
 		completeColumn.setCellFactory(__ -> new BooleanCheckBoxCell(a -> a.completedProperty()));
 		dueDateColumn.setCellFactory(__ -> new BasicCell<>());
 		// TODO Label Column
-		labelColumn.setCellValueFactory(
-				param -> new SimpleObjectProperty<ObservableList<Label>>(param.getValue().getLabels()));
+		labelColumn.setCellValueFactory(param -> new SimpleObjectProperty<>(param.getValue().getLabels()));
 		labelColumn.setCellFactory(param -> new BasicCell<ObservableList<Label>>() {
 			private final HBox hbox = new HBox();
 			private final ListChangeListener<Label> listener = new ListListener<Label>() {
@@ -482,7 +713,7 @@ public class TaskSchedulerWindow extends Window {
 				for (Label l : item)
 					hbox.getChildren().add(new LabelView(l));
 				item.addListener(listener);
-			};
+			}
 
 		});
 
@@ -580,289 +811,12 @@ public class TaskSchedulerWindow extends Window {
 
 	}
 
-	private static boolean fits(String name, String query) {
-		return name.toLowerCase().contains(query.toLowerCase());
-	}
-
-	static class NameNotFoundException extends Exception {
-
-		/**
-		 * SUID
-		 */
-		private static final long serialVersionUID = 1L;
-
-	}
-
-	/**
-	 * Finds a feasible name using UUIDs and the given {@link Function}.
-	 * 
-	 * @param existenceChecker This should return <code>true</code> if the name that
-	 *                         it's given is taken, and false otherwise.
-	 * @return A feasible name, or a {@link NameNotFoundException} if no name was
-	 *         available.
-	 * @throws NameNotFoundException In case no feasible name could be found.
-	 */
-	static String findFeasibleName(Function<String, Boolean> existenceChecker) throws NameNotFoundException {
-		String uuid = UUID.randomUUID().toString();
-		if (existenceChecker.apply(uuid)) {
-			int val = 0;
-			while (existenceChecker.apply(uuid + "-" + val))
-				if (++val == 0)
-					throw new NameNotFoundException();
-			return uuid + "-" + val;
-		}
-		return uuid;
-	}
-
-	static final File findFeasibleFile(File location, String extension) throws FileNotFoundException {
-		String uuid = UUID.randomUUID().toString();
-		File file = new File(location, uuid);
-		if (file.exists()) {
-			int val = 0;
-			while ((file = new File(location, uuid + "-" + val + extension)).exists())
-				if (++val == 0)
-					// If the user has 2^32 files in this directory each with the same UUID then
-					// wtf.
-					throw new FileNotFoundException();
-		}
-		return file;
-	}
-
-	private @FXML void createNewTab() {
-		Instant instant;
-		try {
-			instant = INSTANT_TO_LOCALDATE_GATEWAY.from(createDueDate.getValue());
-		} catch (Exception e) {
-			Logging.err("Could not convert " + createDueDate.getValue() + " to a time stamp.");
-			return;
-		}
-		File file;
-		try {
-			file = findFeasibleFile(TASK_DATA_DIR.get(), ".tsk");
-		} catch (FileNotFoundException e1) {
-			Logging.err("Failed to find a feasible file for the Task, \"" + createName.getText() + "\".");
-			return;
-		}
-		Collection<Label> loadedLabels = LabelManagerWindow.LABEL_LIST.get();
-		Task task = new Task(file, t -> {
-			for (Label l : loadedLabels)
-				if (l.getId().equals(t))
-					return l;
-			return Label.getNullLabel(t);
-		});
-		task.setCompleted(createComplete.isSelected());
-		task.setUrgent(createUrgent.isSelected());
-		task.setDescription(createDescription.getText());
-		task.setName(createName.getText());
-		task.setDueDate(instant);
-
-		InvalidationListener invalidationListener = __ -> markDirty(task);
-
-		/* ~PROPERTIES */
-		task.completedProperty().addListener(invalidationListener);
-		task.urgentProperty().addListener(invalidationListener);
-		task.nameProperty().addListener(invalidationListener);
-		task.descriptionProperty().addListener(invalidationListener);
-		task.dueDateProperty().addListener(invalidationListener);
-		task.getLabels().addListener(invalidationListener);
-
-		createComplete.setSelected(false);
-		createUrgent.setSelected(false);
-		createDescription.setText(null);
-		createName.setText(null);
-		createDueDate.setValue(null);
-
-		try {
-			task.flush();
-			TASK_LIST.get().add(task);
-			layoutTabPane.getSelectionModel().select(viewTasksTab);
-		} catch (FileNotFoundException e) {
-			Logging.err("Failed to write the task: \"" + task.getName() + "\" to its file: " + file.getAbsolutePath());
-			Logging.err(e);
-		}
-
-	}
-
-	@SuppressWarnings("rawtypes")
-	private static void prepareCell(TableCell<?, ?> cell) {
-		cell.tableRowProperty().addListener((ChangeListener<TableRow>) (observable, oldValue, newValue) -> {
-			if (oldValue != null) {
-				cell.textFillProperty().unbind();
-				cell.fontProperty().unbind();
-			}
-			if (newValue != null) {
-				BindingTools.bind(newValue.selectedProperty(),
-						a -> Font.font(null, a == null || !a ? null : FontWeight.BOLD, -1), cell.fontProperty());
-				cell.textFillProperty().bind(newValue.textFillProperty());
-			}
-		});
-		cell.setAlignment(Pos.CENTER);
-		cell.setTextAlignment(TextAlignment.CENTER);
-	}
-
-	private static class BasicCheckboxCell<T> extends BasicCell<T> {
-
-		protected final CheckBox checkBox = new CheckBox();
-		protected final Function<T, Boolean> converter;
-
-		public BasicCheckboxCell(Function<T, Boolean> converter) {
-			this.converter = converter;
-		}
-
-		@Override
-		protected void update(T item) {
-			checkBox.setSelected(converter.apply(item));
-		}
-
-		@Override
-		protected void emptied() {
-			setGraphic(null);
-		}
-
-		@Override
-		protected void populated() {
-			setGraphic(checkBox);
-		}
-
-	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static class BooleanCheckBoxCell extends BasicCheckboxCell<Boolean> {
-
-		protected final Function<Task, Property<Boolean>> propertyRetriever;
-
-		public BooleanCheckBoxCell(Function<Task, Property<Boolean>> propertyRetriever) {
-			super(null);
-			this.propertyRetriever = propertyRetriever;
-		}
-
-		{
-
-			tableRowProperty().addListener(new ChangeListener<TableRow>() {
-
-				ChangeListener<Object> taskListener = new ChangeListener<Object>() {
-					@Override
-					public void changed(ObservableValue<? extends Object> observable1, Object oldValue1,
-							Object newValue1) {
-						if (oldValue1 != null)
-							checkBox.selectedProperty().unbindBidirectional(propertyRetriever.apply((Task) oldValue1));
-						if (newValue1 != null)
-							checkBox.selectedProperty().bindBidirectional(propertyRetriever.apply((Task) newValue1));
-					}
-				};
-
-				@Override
-				public void changed(ObservableValue<? extends TableRow> observable, TableRow oldValue,
-						TableRow newValue) {
-					if (oldValue != null)
-						oldValue.itemProperty().removeListener(taskListener);
-					if (newValue != null) {
-						newValue.itemProperty().addListener(taskListener);
-						taskListener.changed(newValue.itemProperty(), oldValue == null ? null : oldValue.getItem(),
-								newValue.getItem());
-					}
-				}
-			});
-
-		}
-
-		@Override
-		protected void update(Boolean item) {
-		}
-	}
-
-	private static class BasicCell<T> extends TableCell<Task, T> {
-
-		{
-			prepareCell(this);
-		}
-
-		@Override
-		protected void updateItem(T item, boolean empty) {
-			if (empty && isEmpty() || item == getItem() || item != null && item.equals(getItem()))
-				return;
-			if (!isEmpty() && getItem() != null && (empty || item == null))
-				emptied();
-			else if (!(empty || item == null)) {
-				if (isEmpty() || getItem() == null)
-					populated();
-				update(item);
-			}
-			super.updateItem(item, empty);
-		}
-
-		/**
-		 * Called when an {@link #updateItem(Object, boolean)} call changed this cell
-		 * from being empty to having a value. Being "empty" is defined as this cell
-		 * having a {@link #getItem() value} of <code>null</code>, or as this cell being
-		 * {@link #isEmpty() empty}. This method is actually called before
-		 * {@link #update(Object)} is.
-		 */
-		protected void populated() {
-
-		}
-
-		protected void emptied() {
-			setText(null);
-			setGraphic(null);
-		}
-
-		protected void update(T item) {
-			setText(text(item));
-		}
-
-		protected String text(T item) {
-			return item.toString();
-		}
-
-	}
-
 	private @FXML void reload() {
 		TASK_LIST.regenerate();
 		if (DIRTY_TASKS.exists())
 			synchronized (DIRTY_TASKS.get()) {
 				DIRTY_TASKS.get().clear();
 			}
-	}
-
-	private @FXML void update() {
-
-		if (TASK_LIST.exists())
-			for (Task t : TASK_LIST.get())
-				try {
-					t.update();
-				} catch (FileNotFoundException e) {
-					Logging.err(
-							"Failed to update the Task, \"" + t.getName() + "\" from its file: " + t.getData() + ".");
-					Logging.err(e);
-				}
-		if (DIRTY_TASKS.exists())
-			DIRTY_TASKS.get().clear();
-	}
-
-	private @FXML void flush() {
-		if (TASK_LIST.exists())
-			for (Task t : TASK_LIST.get())
-				try {
-					t.flush();
-				} catch (FileNotFoundException e) {
-					Logging.err("Failed to write the Task, \"" + t.getName() + "\" to its file:" + t.getData());
-				}
-		if (DIRTY_TASKS.exists())
-			DIRTY_TASKS.get().clear();
-	}
-
-	@Override
-	public void destroy() {
-		if (DIRTY_TASKS.exists())
-			for (Task t : DIRTY_TASKS.get())
-				try {
-					t.flush();
-				} catch (FileNotFoundException e1) {
-					Logging.err("Failed to write the task: \"" + selectedTask.get().getName() + "\" to the file: "
-							+ selectedTask.get().getData().getAbsolutePath());
-					Logging.err(e1);
-				}
 	}
 
 	@Override
@@ -878,6 +832,52 @@ public class TaskSchedulerWindow extends Window {
 			Logging.err("Failed to load the Task Scheduler window's main GUI.");
 			Logging.err(e);
 		}
+	}
+
+	private @FXML void showCreateLabelGUI() {
+		try {
+			LabelManagerWindow window = new LabelManagerWindow();
+			Stuff.displayWindow(window);
+			window.showCreateMenu();
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Failed to show the label creator window.");
+			Logging.err(e);
+		}
+	}
+
+	private @FXML void showEditLabelGUI() {
+		try {
+			LabelManagerWindow window = new LabelManagerWindow();
+			Stuff.displayWindow(window);
+			window.showEditMenu();
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Failed to show the label editor window.");
+			Logging.err(e);
+		}
+	}
+
+	private @FXML void showLabelManagerWindow() {
+		try {
+			Stuff.displayWindow(new LabelManagerWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err("Failed to show the label manager window.");
+			Logging.err(e);
+		}
+	}
+
+	private @FXML void update() {
+
+		if (TASK_LIST.exists())
+			for (Task t : TASK_LIST.get())
+				try {
+					t.update();
+				} catch (FileNotFoundException e) {
+					Logging.err(
+							"Failed to update the Task, \"" + t.getName() + "\" from its file: " + t.getData() + ".");
+					Logging.err(e);
+				}
+		if (DIRTY_TASKS.exists())
+			DIRTY_TASKS.get().clear();
 	}
 
 }

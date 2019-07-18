@@ -7,6 +7,10 @@ abstract class StringCommand<O> implements GenericCommand<ParsedObjectCommand<O>
 
 	private final Matching matching;
 
+	public StringCommand(boolean ignoreCase, String... matches) {
+		matching = ignoreCase ? Matching.ignoreCase(matches) : Matching.build(matches);
+	}
+
 	/**
 	 * @param matching The {@link Matching} that will match the
 	 *                 {@link ParsedObjectCommand}'s
@@ -16,15 +20,11 @@ abstract class StringCommand<O> implements GenericCommand<ParsedObjectCommand<O>
 		this.matching = matching;
 	}
 
-	public StringCommand(boolean ignoreCase, String... matches) {
-		matching = ignoreCase ? Matching.ignoreCase(matches) : Matching.build(matches);
-	}
-
 	/**
 	 * Creates a new {@link StringCommand} with the given strings as the matching
 	 * against the {@link ParsedObjectCommand}'s {@link ParsedObjectCommand#cmd()
 	 * cmd()}. Capitalization is ignored.
-	 * 
+	 *
 	 * @param matches
 	 */
 	public StringCommand(String... matches) {
