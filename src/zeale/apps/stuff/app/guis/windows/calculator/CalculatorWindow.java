@@ -26,7 +26,6 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public final class CalculatorWindow extends Window {
 
@@ -66,11 +65,7 @@ public final class CalculatorWindow extends Window {
 	}
 
 	private @FXML void goHome(ActionEvent event) {
-		try {
-			Stuff.displayWindow(new HomeWindow());
-		} catch (WindowLoadFailureException e) {
-			Logging.err(e);
-		}
+		Stuff.displayHome();
 	}
 
 	private @FXML void initialize() {

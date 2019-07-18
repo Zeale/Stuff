@@ -37,7 +37,6 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 
 public class ModuleWindow extends Window {
@@ -220,12 +219,7 @@ public class ModuleWindow extends Window {
 	}
 
 	private @FXML void goHome() {
-		try {
-			Stuff.displayWindow(new HomeWindow());
-		} catch (WindowLoadFailureException e) {
-			Logging.err("Failed to show the home window.");
-			Logging.err(e);
-		}
+		Stuff.displayHome();
 	}
 
 	/**

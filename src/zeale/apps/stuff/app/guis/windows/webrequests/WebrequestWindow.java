@@ -38,7 +38,6 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.webrequests.WebRequestMethod.WebRequestException;
 
 public class WebrequestWindow extends Window {
@@ -65,12 +64,7 @@ public class WebrequestWindow extends Window {
 	}
 
 	private @FXML void goHome(ActionEvent event) {
-		try {
-			Stuff.displayWindow(new HomeWindow());
-		} catch (WindowLoadFailureException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Stuff.displayHome();
 	}
 
 	private @FXML void initialize() {

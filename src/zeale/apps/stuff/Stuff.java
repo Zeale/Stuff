@@ -39,6 +39,15 @@ public class Stuff extends Application {
 		}
 	};
 
+	public static void displayHome() throws RuntimeException {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * The program's default view for its console. This should be accessed on the
 	 * JavaFX Application thread in case a new view needs to be made.
