@@ -2,6 +2,8 @@ package zeale.apps.stuff;
 
 import java.io.File;
 
+import org.alixia.chatroom.api.items.LateLoadItem;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -41,19 +43,14 @@ public class Stuff extends Application {
 	 * The program's default view for its console. This should be accessed on the
 	 * JavaFX Application thread in case a new view needs to be made.
 	 */
-	private static final PhoenixReference<StandardConsoleView> PROGRAM_CONSOLE_VIEW = new PhoenixReference<StandardConsoleView>() {
-
-		@Override
-		protected StandardConsoleView generate() {
-			Stage stage = makeStage();
-			stage.setHeight(800);
-			stage.setWidth(1000);
-			stage.setMinHeight(650);
-			stage.setMinWidth(800);
-			return PROGRAM_CONSOLE.getView(stage);
-		}
-
-	};
+	private static final LateLoadItem<StandardConsoleView> PROGRAM_CONSOLE_VIEW = new LateLoadItem<>(() -> {
+		Stage stage = makeStage();
+		stage.setHeight(800);
+		stage.setWidth(1000);
+		stage.setMinHeight(650);
+		stage.setMinWidth(800);
+		return PROGRAM_CONSOLE.getView(stage);
+	});
 
 	public static void displayConsole() {
 		if (!Platform.isFxApplicationThread())
