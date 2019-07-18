@@ -76,9 +76,9 @@ public class WebrequestWindow extends Window {
 		loader.setController(this);
 		try {
 			Parent root = loader.load();
-			stage.setScene(new Scene(root));
 			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
 					"zeale/apps/stuff/app/guis/windows/webrequests/Webrequests.css");
+			stage.setScene(new Scene(root));
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the UI for the Web Request Window.", e);
 		}

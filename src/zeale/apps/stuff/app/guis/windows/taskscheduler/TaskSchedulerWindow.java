@@ -864,9 +864,9 @@ public class TaskSchedulerWindow extends Window {
 		loader.setController(this);
 		try {
 			Parent root = loader.load();
-			stage.setScene(new Scene(root));
 			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
 					"zeale/apps/stuff/app/guis/windows/taskscheduler/TaskSchedulerStyles.css");
+			stage.setScene(new Scene(root));
 		} catch (IOException e) {
 			Logging.err("Failed to load the Task Scheduler window's main GUI.");
 			Logging.err(e);
