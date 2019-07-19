@@ -177,7 +177,7 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 	public void handle(StandardConsoleUserInput input) {
 		printCaret = true;
 
-		if (input.text.isEmpty())
+		if (input.text == null || input.text.isEmpty())
 			printCmdErrMessage();
 		else {
 			console.println(input.text.trim());
@@ -210,7 +210,7 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 	}
 
 	private void printCmdErrMessage() {
-		print("Command not found. Type ", DEFAULT_SYSTEM_MESSAGE_COLOR);
+		print("Please type a command, or type ", DEFAULT_SYSTEM_MESSAGE_COLOR);
 		print("help", DEFAULT_VALUE_COLOR);
 		println(" for a list of commands.", DEFAULT_SYSTEM_MESSAGE_COLOR);
 	}
