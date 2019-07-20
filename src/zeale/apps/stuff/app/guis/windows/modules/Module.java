@@ -85,12 +85,20 @@ class Module {
 
 	}
 
-	public URLClassLoader getLoader() {
-		return loader.get();
+	protected void delete() {
+		file.delete();
 	}
 
 	public Image getIcon() {
 		return icon;
+	}
+
+	public URLClassLoader getLoader() {
+		return loader.get();
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public zeale.apps.stuff.api.modules.Module load() throws ModuleLoadException {
@@ -117,14 +125,6 @@ class Module {
 			throw new ModuleLoadException("Unable to instantiate the module \"" + name
 					+ "\". The Module Loader has no access to the module's class's constructor.", e);
 		}
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	protected void delete() {
-		file.delete();
 	}
 
 }

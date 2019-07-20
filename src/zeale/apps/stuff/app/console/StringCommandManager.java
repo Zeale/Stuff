@@ -9,12 +9,12 @@ class StringCommandManager extends GenericCommandManager<ParsedObjectCommand<Sta
 
 	private final StringCommandParser parser;
 
-	public StringCommandManager(StringCommandParser parser) {
-		this.parser = parser;
-	}
-
 	public StringCommandManager(String cmdChar) {
 		this(new StringCommandParser(cmdChar));
+	}
+
+	public StringCommandManager(StringCommandParser parser) {
+		this.parser = parser;
 	}
 
 	public boolean run(StandardConsoleUserInput data) {

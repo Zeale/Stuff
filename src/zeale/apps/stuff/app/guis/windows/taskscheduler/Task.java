@@ -28,22 +28,10 @@ class Task extends Datapiece {
 	private final ObjectProperty<Instant> dueDate = oprop("due-date", (StringGateway<Instant>) Instant::parse);
 	private final ObservableList<Label> labels;
 
-	public ObservableList<Label> getLabels() {
-		return labels;
-	}
-
-	public void addLabel(Label label) {
-		labels.add(label);
-	}
-
-	public void removeLabel(Label label) {
-		labels.remove(label);
-	}
-
 	/**
 	 * Creates a new {@link Task} in memory. No writing or reading operations occur
 	 * when this is called.
-	 * 
+	 *
 	 * @param data          The location of this {@link Task}.
 	 * @param labelObtainer The label obtainer, used to obtain loaded labels that
 	 *                      are specified in this {@link Task}'s datafile when this
@@ -54,75 +42,87 @@ class Task extends Datapiece {
 		labels = lprop("labels", new Gateway<String, Label>() {
 
 			@Override
-			public Label to(String value) {
-				return labelObtainer.apply(value);
+			public String from(Label value) {
+				return value.getId();
 			}
 
 			@Override
-			public String from(Label value) {
-				return value.getId();
+			public Label to(String value) {
+				return labelObtainer.apply(value);
 			}
 		}, FXCollections.observableArrayList());
 	}
 
-	public final StringProperty nameProperty() {
-		return this.name;
-	}
-
-	public final String getName() {
-		return this.nameProperty().get();
-	}
-
-	public final void setName(final String name) {
-		this.nameProperty().set(name);
-	}
-
-	public final StringProperty descriptionProperty() {
-		return this.description;
-	}
-
-	public final String getDescription() {
-		return this.descriptionProperty().get();
-	}
-
-	public final void setDescription(final String description) {
-		this.descriptionProperty().set(description);
+	public void addLabel(Label label) {
+		labels.add(label);
 	}
 
 	public final BooleanProperty completedProperty() {
-		return this.completed;
+		return completed;
 	}
 
-	public final boolean isCompleted() {
-		return this.completedProperty().get();
-	}
-
-	public final void setCompleted(final boolean completed) {
-		this.completedProperty().set(completed);
-	}
-
-	public final BooleanProperty urgentProperty() {
-		return this.urgent;
-	}
-
-	public final boolean isUrgent() {
-		return this.urgentProperty().get();
-	}
-
-	public final void setUrgent(final boolean urgent) {
-		this.urgentProperty().set(urgent);
+	public final StringProperty descriptionProperty() {
+		return description;
 	}
 
 	public final ObjectProperty<Instant> dueDateProperty() {
-		return this.dueDate;
+		return dueDate;
+	}
+
+	public final String getDescription() {
+		return descriptionProperty().get();
 	}
 
 	public final Instant getDueDate() {
-		return this.dueDateProperty().get();
+		return dueDateProperty().get();
+	}
+
+	public ObservableList<Label> getLabels() {
+		return labels;
+	}
+
+	public final String getName() {
+		return nameProperty().get();
+	}
+
+	public final boolean isCompleted() {
+		return completedProperty().get();
+	}
+
+	public final boolean isUrgent() {
+		return urgentProperty().get();
+	}
+
+	public final StringProperty nameProperty() {
+		return name;
+	}
+
+	public void removeLabel(Label label) {
+		labels.remove(label);
+	}
+
+	public final void setCompleted(final boolean completed) {
+		completedProperty().set(completed);
+	}
+
+	public final void setDescription(final String description) {
+		descriptionProperty().set(description);
 	}
 
 	public final void setDueDate(final Instant dueDate) {
-		this.dueDateProperty().set(dueDate);
+		dueDateProperty().set(dueDate);
+	}
+
+	public final void setName(final String name) {
+		nameProperty().set(name);
+	}
+
+	public final void setUrgent(final boolean urgent) {
+		urgentProperty().set(urgent);
+	}
+
+	public final BooleanProperty urgentProperty() {
+		return urgent;
 	}
 
 }

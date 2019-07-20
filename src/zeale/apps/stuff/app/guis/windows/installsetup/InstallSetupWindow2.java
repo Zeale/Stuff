@@ -23,6 +23,16 @@ import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public class InstallSetupWindow2 extends Window {
 
+	private static void link(File from, File to) throws IOException {
+		to.getParentFile().mkdirs();// Make path if it doesn't already exist.
+		to.delete();// Delete the file if there's already something there for whatever reason.
+
+		ShellLink link = ShellLink.createLink(from.getAbsolutePath());
+		link.saveTo(to.getAbsolutePath());
+	}
+
+	private Stage stage;
+
 	@Override
 	public void destroy() {
 		stage.setMinHeight(0);
@@ -30,16 +40,6 @@ public class InstallSetupWindow2 extends Window {
 		stage.setMaxHeight(Double.MAX_VALUE);
 		stage.setMaxWidth(Double.MAX_VALUE);
 		stage.setAlwaysOnTop(false);
-	}
-
-	private Stage stage;
-
-	private static void link(File from, File to) throws IOException {
-		to.getParentFile().mkdirs();// Make path if it doesn't already exist.
-		to.delete();// Delete the file if there's already something there for whatever reason.
-
-		ShellLink link = ShellLink.createLink(from.getAbsolutePath());
-		link.saveTo(to.getAbsolutePath());
 	}
 
 	@Override
@@ -100,15 +100,13 @@ public class InstallSetupWindow2 extends Window {
 					}
 				}
 
-				if (desktop.isSelected()) {
-
+				if (desktop.isSelected())
 					try {
 						link(currProgram1,
 								new File(FileSystemView.getFileSystemView().getHomeDirectory(), "Stuff.lnk"));
 					} catch (IOException e3) {
 						e3.printStackTrace();
 					}
-				}
 
 				try {
 					new HomeWindow().display(stage);

@@ -21,13 +21,6 @@ import zeale.apps.tools.console.std.StandardConsole.StandardConsoleUserInput;
 
 public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsoleUserInput>, StyledPrintable {
 
-	private final GenericCommandManager<StandardConsoleUserInput> inputHandler = new GenericCommandManager<>();
-	private final StringCommandManager commandHandler = new StringCommandManager("");
-	private final HelpBook helpBook = new HelpBook(DEFAULT_SYSTEM_MESSAGE_COLOR, DEFAULT_VALUE_COLOR);
-
-	private static final Color DEFAULT_RESPONSE_COLOR = Color.BLACK, DEFAULT_SYSTEM_MESSAGE_COLOR = DARKORANGE,
-			DEFAULT_VALUE_COLOR = GOLD;
-
 	private abstract class StuffCmd extends zeale.apps.stuff.app.console.StringCommand<StandardConsoleUserInput> {
 
 		{
@@ -48,6 +41,14 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 
 	}
 
+	private static final Color DEFAULT_RESPONSE_COLOR = Color.BLACK, DEFAULT_SYSTEM_MESSAGE_COLOR = DARKORANGE,
+			DEFAULT_VALUE_COLOR = GOLD;
+	private final GenericCommandManager<StandardConsoleUserInput> inputHandler = new GenericCommandManager<>();
+
+	private final StringCommandManager commandHandler = new StringCommandManager("");
+
+	private final HelpBook helpBook = new HelpBook(DEFAULT_SYSTEM_MESSAGE_COLOR, DEFAULT_VALUE_COLOR);
+
 	{
 		CommandHelp helpCommandHelp = helpBook.addCommand("help",
 				"Lists available commands with information about them.", "help [page|['\\']command-name]", "?");
@@ -58,14 +59,14 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 				int page = 1;
 				FIRST_ARG: if (data.getArgs().length == 1) {
 					String arg;
-					if (!data.getArgs()[0].startsWith("\\")) {
+					if (!data.getArgs()[0].startsWith("\\"))
 						try {
 							page = Integer.parseInt(data.getArgs()[0]);
 							break FIRST_ARG;
 						} catch (NumberFormatException e) {
 							arg = data.getArgs()[0];
 						}
-					} else
+					else
 						arg = data.getArgs()[0].substring(1);
 					if (!helpBook.print(StuffBasicConsoleLogic.this, arg, true, true))
 						err("No command with the name or alias: \"" + arg + "\" was found.");
@@ -114,7 +115,7 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
 				if (data.getArgs().length != 1)
 					err("Illegal number of arguments for command: " + data.cmd());
-				else {
+				else
 					try {
 						Stuff.displayWindow((Window) Class.forName(data.getArgs()[0]).newInstance());
 						print("The task completed successfully.");
@@ -127,7 +128,33 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 					} catch (WindowLoadFailureException e) {
 						err("An error occurred while launching that window.");
 					}
+			}
+		};
+
+		helpBook.addCommand("echo",
+				"Prints each given argument back to the console. This command is primarily meant for debugging.",
+				"echo (argument)...", "print", "write");
+		new StuffCmd("echo", "print", "write") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				if (data.getArgs().length == 0)
+					err("Please include at least one argument when invoking this command.");
+				else {
+					for (String s : data.getArgs())
+						print(s);
+					println();
 				}
+			}
+		};
+
+		helpBook.addCommand("echo-raw", "Prints the command invocation of this command back to the console.",
+				"echo-raw[*]", "print-raw", "write-raw");
+		new StuffCmd("echo-raw", "print-raw", "write-raw") {
+
+			@Override
+			public void act(ParsedObjectCommand<StandardConsoleUserInput> data) {
+				println(data.input());
 			}
 		};
 	}
@@ -135,6 +162,8 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 	private boolean printCaret;
 
 	private final StandardConsole console;
+
+	private final StringCommandParser parser = new StringCommandParser("");
 
 	public StuffBasicConsoleLogic(StandardConsole console) {
 		this.console = console;
@@ -144,27 +173,11 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 		Logging.err(error);
 	}
 
-	private void printCmdErrMessage() {
-		print("Command not found. Type ", DEFAULT_SYSTEM_MESSAGE_COLOR);
-		print("help", DEFAULT_VALUE_COLOR);
-		println(" for a list of commands.", DEFAULT_SYSTEM_MESSAGE_COLOR);
-	}
-
-	private void printCmdErrMessage(String cmd) {
-		print("Command, ", DEFAULT_SYSTEM_MESSAGE_COLOR);
-		print(cmd, DEFAULT_VALUE_COLOR);
-		print(", not found. Type ", DEFAULT_SYSTEM_MESSAGE_COLOR);
-		print("help", DEFAULT_VALUE_COLOR);
-		println(" for a list of commands.", DEFAULT_SYSTEM_MESSAGE_COLOR);
-	}
-
-	private final StringCommandParser parser = new StringCommandParser("");
-
 	@Override
 	public void handle(StandardConsoleUserInput input) {
 		printCaret = true;
 
-		if (input.text.isEmpty())
+		if (input.text == null || input.text.isEmpty())
 			printCmdErrMessage();
 		else {
 			console.println(input.text.trim());
@@ -183,6 +196,11 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 	}
 
 	@Override
+	public void print(String text) {
+		StyledPrintable.super.print(text, DEFAULT_RESPONSE_COLOR);
+	}
+
+	@Override
 	public void print(String text, Color color, boolean bold, boolean italicized) {
 		if (printCaret) {
 			console.print("> ", DEFAULT_RESPONSE_COLOR);
@@ -191,9 +209,18 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 		console.print(text, color, bold, italicized);
 	}
 
-	@Override
-	public void print(String text) {
-		StyledPrintable.super.print(text, DEFAULT_RESPONSE_COLOR);
+	private void printCmdErrMessage() {
+		print("Please type a command, or type ", DEFAULT_SYSTEM_MESSAGE_COLOR);
+		print("help", DEFAULT_VALUE_COLOR);
+		println(" for a list of commands.", DEFAULT_SYSTEM_MESSAGE_COLOR);
+	}
+
+	private void printCmdErrMessage(String cmd) {
+		print("Command, ", DEFAULT_SYSTEM_MESSAGE_COLOR);
+		print(cmd, DEFAULT_VALUE_COLOR);
+		print(", not found. Type ", DEFAULT_SYSTEM_MESSAGE_COLOR);
+		print("help", DEFAULT_VALUE_COLOR);
+		println(" for a list of commands.", DEFAULT_SYSTEM_MESSAGE_COLOR);
 	}
 
 	@Override

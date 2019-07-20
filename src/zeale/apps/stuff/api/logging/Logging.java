@@ -10,9 +10,6 @@ import javafx.scene.text.FontWeight;
 import zeale.apps.stuff.Stuff;
 
 public final class Logging {
-	private Logging() {
-	}
-
 	private static final Logger standard = new Logger("STD"), error = new Logger("ERR"), warn = new Logger("WRN"),
 			debug = new Logger("DBG");
 
@@ -28,8 +25,8 @@ public final class Logging {
 		debug.setPrinter(Stuff.PROGRAM_CONSOLE);
 	}
 
-	public static void std(String text) {
-		standard.log(text);
+	public static void dbg(String text) {
+		debug.log(text);
 		Stuff.displayConsole();
 	}
 
@@ -47,6 +44,11 @@ public final class Logging {
 		Stuff.displayConsole();
 	}
 
+	public static void std(String text) {
+		standard.log(text);
+		Stuff.displayConsole();
+	}
+
 	public static void wrn(String text) {
 		warn.log(text);
 		Stuff.displayConsole();
@@ -61,9 +63,7 @@ public final class Logging {
 		Stuff.displayConsole();
 	}
 
-	public static void dbg(String text) {
-		debug.log(text);
-		Stuff.displayConsole();
+	private Logging() {
 	}
 
 }

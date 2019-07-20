@@ -2,6 +2,8 @@ package zeale.apps.stuff;
 
 import java.io.File;
 
+import org.alixia.chatroom.api.items.LateLoadItem;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -37,23 +39,38 @@ public class Stuff extends Application {
 		}
 	};
 
+	public static void displayHome() throws RuntimeException {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * The program's default view for its console. This should be accessed on the
 	 * JavaFX Application thread in case a new view needs to be made.
 	 */
-	private static final PhoenixReference<StandardConsoleView> PROGRAM_CONSOLE_VIEW = new PhoenixReference<StandardConsoleView>() {
+	private static final LateLoadItem<StandardConsoleView> PROGRAM_CONSOLE_VIEW = new LateLoadItem<>(() -> {
+		Stage stage = makeStage();
+		stage.setHeight(800);
+		stage.setWidth(1000);
+		stage.setMinHeight(650);
+		stage.setMinWidth(800);
+		return PROGRAM_CONSOLE.getView(stage);
+	});
 
-		@Override
-		protected StandardConsoleView generate() {
-			Stage stage = makeStage();
-			stage.setHeight(800);
-			stage.setWidth(1000);
-			stage.setMinHeight(650);
-			stage.setMinWidth(800);
-			return PROGRAM_CONSOLE.getView(stage);
-		}
+	/**
+	 * The program's installation directory. This is laxly detected (as of now) by
+	 * simply getting the program's working directory. Some sort of storage API will
+	 * need to be made later.
+	 */
+	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
+			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
+			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data");
 
-	};
+	private static Stage stage;
 
 	public static void displayConsole() {
 		if (!Platform.isFxApplicationThread())
@@ -65,10 +82,23 @@ public class Stuff extends Application {
 		}
 	}
 
+	public static void displayWindow(Window window) throws WindowLoadFailureException {
+		window.display(stage);
+	}
+
+	public static void displayWindow(Window window, ApplicationProperties props) throws WindowLoadFailureException {
+		window.display(stage, props);
+	}
+
+	public static void main(String[] args) {
+		Platform.setImplicitExit(false);
+		launch(Stuff.class, args);
+	}
+
 	/**
 	 * Creates a new {@link Stage} and styles it to fit with the application. This
 	 * function must be called on the application thread.
-	 * 
+	 *
 	 * @return The newly created {@link Stage}.
 	 * @throws InterruptedException In case the thread is interrupted while the FX
 	 *                              Application thread makes the stage.
@@ -90,35 +120,6 @@ public class Stuff extends Application {
 			}
 		});
 		stage.setTitle("Stuff");
-	}
-
-	/**
-	 * The program's installation directory. This is laxly detected (as of now) by
-	 * simply getting the program's working directory. Some sort of storage API will
-	 * need to be made later.
-	 */
-	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
-			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
-			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data");
-
-	private static Stage stage;
-
-	public static void displayWindow(Window window) throws WindowLoadFailureException {
-		window.display(stage);
-	}
-
-	public static void displayWindow(Window window, ApplicationProperties props) throws WindowLoadFailureException {
-		window.display(stage, props);
-	}
-
-	public static void main(String[] args) {
-		Platform.setImplicitExit(false);
-		launch(Stuff.class, args);
-	}
-
-	@Override
-	public void stop() throws Exception {
-		Window.destroyStage(stage);
 	}
 
 	@Override
@@ -147,5 +148,10 @@ public class Stuff extends Application {
 		(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow1()
 				: args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_2) ? new InstallSetupWindow2()
 						: new HomeWindow()).display(primaryStage);
+	}
+
+	@Override
+	public void stop() throws Exception {
+		Window.destroyStage(stage);
 	}
 }
