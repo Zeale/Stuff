@@ -1,0 +1,1 @@
+package zeale.apps.stuff.api.chatroom.events;
