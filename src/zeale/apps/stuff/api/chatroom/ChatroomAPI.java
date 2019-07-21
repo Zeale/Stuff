@@ -11,6 +11,9 @@ import zeale.apps.stuff.Stuff;
  */
 public final class ChatroomAPI {
 
+	private ChatroomAPI() {
+	}
+
 	/**
 	 * This is the address of "The Main Server," or, more specifically, my desktop.
 	 * When you run {@link Stuff} and launch the chatroom, by default, it will try
