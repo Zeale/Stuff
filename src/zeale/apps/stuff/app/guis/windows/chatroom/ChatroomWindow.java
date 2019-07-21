@@ -53,6 +53,10 @@ public class ChatroomWindow extends Window {
 		}
 	};
 
+	public static void launch() {
+		System.out.println("Called");
+	}
+
 	@Override
 	public void destroy() {
 		// TODO Auto-generated method stub
