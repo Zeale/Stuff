@@ -5,11 +5,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class EventManager {
+public final class EventManager<E extends Event> {
 
-	private final Map<EventType<? extends Event>, Collection<EventHandler<?>>> handlerMap = new HashMap<>();
+	private final Map<EventType<? extends E>, Collection<EventHandler<?>>> handlerMap = new HashMap<>();
 
-	public <T extends Event> void register(EventType<T> type, EventHandler<? super T> handler) {
+	public <T extends E> void register(EventType<T> type, EventHandler<? super T> handler) {
 		if (handlerMap.containsKey(type)) {
 			handlerMap.get(type).add(handler);
 		} else {
@@ -19,7 +19,7 @@ public final class EventManager {
 		}
 	}
 
-	public <T extends Event> void unregsiter(EventType<T> type, EventHandler<? super T> handler) {
+	public <T extends E> void unregsiter(EventType<T> type, EventHandler<? super T> handler) {
 		if (handlerMap.containsKey(type)) {
 			Collection<EventHandler<?>> handlers = handlerMap.get(type);
 			if (handlers.remove(handler) && handlers.isEmpty())
@@ -28,13 +28,13 @@ public final class EventManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Event> void fire(EventType<T> type, T event) {
-		EventType<Event> currType = (EventType<Event>) type;
+	public <T extends E> void fire(EventType<T> type, T event) {
+		EventType<E> currType = (EventType<E>) type;
 		while (currType != null) {
 			if (handlerMap.containsKey(currType))
 				for (EventHandler<?> eh : handlerMap.get(currType))
-					((EventHandler<Event>) eh).handle(event);
-			currType = event.isConsumed() ? null : (EventType<Event>) currType.getParent();
+					((EventHandler<E>) eh).handle(event);
+			currType = event.isConsumed() ? null : (EventType<E>) currType.getParent();
 		}
 	}
 
