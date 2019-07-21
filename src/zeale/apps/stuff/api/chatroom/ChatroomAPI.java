@@ -46,4 +46,11 @@ public final class ChatroomAPI {
 	public static int getDefaultConnectionPort() {
 		return DEFAULT_CONNECTION_PORT;
 	}
+
+	private final static String CURRENT_VERSION = "1";
+
+	public static String getCurrentVersion() {
+		return CURRENT_VERSION;
+	}
+
 }
