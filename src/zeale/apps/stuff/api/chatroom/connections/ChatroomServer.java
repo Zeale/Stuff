@@ -2,12 +2,17 @@ package zeale.apps.stuff.api.chatroom.connections;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 
 import org.alixia.javalibrary.networking.sockets.Client;
 import org.alixia.javalibrary.networking.sockets.Server;
+import org.alixia.javalibrary.util.Box;
 
 import zeale.apps.stuff.api.chatroom.ChatroomAPI;
+import zeale.apps.stuff.api.chatroom.connections.messages.EndConnectionMessage;
+import zeale.apps.stuff.api.chatroom.events.Event;
+import zeale.apps.stuff.api.chatroom.events.EventManager;
 
 /**
  * A server that runs on this machine, awaiting for connection attempts from
@@ -23,6 +28,7 @@ import zeale.apps.stuff.api.chatroom.ChatroomAPI;
 public class ChatroomServer implements Closeable {
 
 	private ChatroomConnectionListener listener;
+	private final EventManager<Event> eventManager = new EventManager<>();
 
 	public ChatroomServer() throws IOException {
 		this(ChatroomAPI.getDefaultConnectionPort());
@@ -48,8 +54,13 @@ public class ChatroomServer implements Closeable {
 		listener = new ChatroomConnectionListener(server) {
 			@Override
 			protected void handleIncomingConnection(Client connection) {
-				// TODO Auto-generated method stub
-
+				eventManager.fire(IncomingClientEvent.INCOMING_CLIENT_EVENT,
+						new IncomingClientEvent(ChatroomServer.this, connection));// Incoming Connection.
+				try {
+					Box<Serializable> result = connection.read(5000);// Expect String with version information.
+				} catch (ClassNotFoundException | IOException e) {
+					connection.send(EndConnectionMessage.STREAM_ERROR_OCCURRED);
+				}
 			}
 		};
 	}
