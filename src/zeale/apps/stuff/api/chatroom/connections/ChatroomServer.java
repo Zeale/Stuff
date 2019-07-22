@@ -54,8 +54,8 @@ public abstract class ChatroomServer implements Closeable {
 	 * {@link #handleUserConnected(ChatroomUser)} method is called, on that thread,
 	 * with a new {@link ChatroomUser} object representing the newly connected user.
 	 */
-	public void launch() {
-
+	public void launch() throws IllegalStateException {
+		listener.open();
 	}
 
 	@Override

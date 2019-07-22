@@ -123,7 +123,11 @@ public abstract class ChatroomConnectionListener {
 		acceptionThread.setDaemon(daemon);
 	}
 
-	public void open() {
+	/**
+	 * @throws IllegalStateException In case this {@link ChatroomConnectionListener}
+	 *                               has already been opened.
+	 */
+	public void open() throws IllegalStateException {
 		acceptionThread.start();
 	}
 
