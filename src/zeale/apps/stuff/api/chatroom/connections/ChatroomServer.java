@@ -20,7 +20,7 @@ import zeale.apps.stuff.api.chatroom.ChatroomAPI;
  * @author Zeale
  *
  */
-public abstract class ChatroomServer implements Closeable {
+public class ChatroomServer implements Closeable {
 
 	private ChatroomConnectionListener listener;
 
