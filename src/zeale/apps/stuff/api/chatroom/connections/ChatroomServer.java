@@ -36,9 +36,16 @@ public class ChatroomServer implements Closeable {
 		this(new Server(socket));
 	}
 
+	protected String getVersion() {
+		return ChatroomAPI.getCurrentVersion();
+	}
+
+	protected boolean acceptVersion(String version) {
+		return ChatroomAPI.getCurrentVersion().contentEquals(version);
+	}
+
 	public ChatroomServer(Server server) {
 		listener = new ChatroomConnectionListener(server) {
-
 			@Override
 			protected void handleIncomingConnection(Client connection) {
 				// TODO Auto-generated method stub
