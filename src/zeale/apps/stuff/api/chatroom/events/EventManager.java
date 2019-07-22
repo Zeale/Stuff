@@ -33,7 +33,11 @@ public final class EventManager<E extends Event> {
 		while (currType != null) {
 			if (handlerMap.containsKey(currType))
 				for (EventHandler<?> eh : handlerMap.get(currType))
-					((EventHandler<E>) eh).handle(event);
+					try {
+						((EventHandler<E>) eh).handle(event);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 			currType = event.isConsumed() ? null : (EventType<E>) currType.getParent();
 		}
 	}
