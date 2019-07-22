@@ -1,4 +1,4 @@
-package zeale.apps.stuff.api.chatroom;
+package zeale.apps.stuff.api.chatroom.connections;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.net.ServerSocket;
 
 import org.alixia.javalibrary.networking.sockets.Client;
 import org.alixia.javalibrary.networking.sockets.Server;
+
+import zeale.apps.stuff.api.chatroom.ChatroomAPI;
 
 /**
  * A server that runs on this machine, awaiting for connection attempts from

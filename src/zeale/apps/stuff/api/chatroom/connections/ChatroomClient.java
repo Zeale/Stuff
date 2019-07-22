@@ -1,4 +1,4 @@
-package zeale.apps.stuff.api.chatroom;
+package zeale.apps.stuff.api.chatroom.connections;
 
 import org.alixia.javalibrary.networking.sockets.Client;
 

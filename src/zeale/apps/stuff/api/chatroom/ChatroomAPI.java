@@ -1,6 +1,7 @@
 package zeale.apps.stuff.api.chatroom;
 
 import zeale.apps.stuff.Stuff;
+import zeale.apps.stuff.api.chatroom.connections.ChatroomServer;
 
 /**
  * This class (mostly) provides access to non-functional API features, such as
