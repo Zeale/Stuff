@@ -1,4 +1,4 @@
-package zeale.apps.stuff.api.chatroom.connections;
+package zeale.apps.stuff.api.chatroom.connections.server;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import org.alixia.javalibrary.networking.sockets.Server;
 import org.alixia.javalibrary.util.Box;
 
 import zeale.apps.stuff.api.chatroom.ChatroomAPI;
+import zeale.apps.stuff.api.chatroom.connections.ChatroomClient;
 import zeale.apps.stuff.api.chatroom.connections.messages.EndConnectionMessage;
 import zeale.apps.stuff.api.chatroom.events.Event;
 import zeale.apps.stuff.api.chatroom.events.EventManager;

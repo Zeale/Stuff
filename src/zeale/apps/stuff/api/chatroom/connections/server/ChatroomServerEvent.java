@@ -1,4 +1,4 @@
-package zeale.apps.stuff.api.chatroom.connections;
+package zeale.apps.stuff.api.chatroom.connections.server;
 
 import java.time.Instant;
 
