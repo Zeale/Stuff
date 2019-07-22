@@ -17,4 +17,6 @@ public class EndConnectionMessage extends Message {
 		return reason;
 	}
 
+	public static final EndConnectionMessage STREAM_ERROR_OCCURRED = new EndConnectionMessage("Stream error occurred.");
+
 }
