@@ -4,7 +4,10 @@ import java.time.Instant;
 
 import org.alixia.javalibrary.networking.sockets.Client;
 
+import zeale.apps.stuff.api.chatroom.events.EventType;
+
 public class ChatroomServerConnectionEvent extends ChatroomServerEvent {
+	public static final EventType<ChatroomServerConnectionEvent> CHATROOM_SERVER_CONNECTION_EVENT = new EventType<>(CHATROOM_SERVER_EVENT);
 	private final Client client;
 
 	public Client getClient() {

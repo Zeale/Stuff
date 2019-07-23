@@ -16,6 +16,7 @@ public class IncomingClientEvent extends ChatroomServerConnectionEvent {
 		super(timestamp, server, client);
 	}
 
-	public static final EventType<IncomingClientEvent> INCOMING_CLIENT_EVENT = new EventType<>(CHATROOM_SERVER_EVENT);
+	public static final EventType<IncomingClientEvent> INCOMING_CLIENT_EVENT = new EventType<>(
+			CHATROOM_SERVER_CONNECTION_EVENT);
 
 }
