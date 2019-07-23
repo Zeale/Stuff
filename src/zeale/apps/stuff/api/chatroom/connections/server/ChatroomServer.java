@@ -64,8 +64,23 @@ public class ChatroomServer implements Closeable {
 								new TimeoutWhileClientLoggingInEvent(ChatroomServer.this, connection));
 						connection.send(EndConnectionMessage.STREAM_ERROR_OCCURRED);
 						connection.tryClose();
+					} else if (!(result.value instanceof String)) {
+						eventManager.fire(
+								UnexpectedDataWhileClientLoggingInEvent.UNEXPECTED_DATA_WHILE_CLIENT_LOGGING_IN_EVENT,
+								new UnexpectedDataWhileClientLoggingInEvent(ChatroomServer.this, connection,
+										result.value));
+						connection.send(EndConnectionMessage.UNEXPECTED_DATA_RECEIVED);
+						connection.tryClose();
+					} else if (acceptVersion((String) result.value)) {
+						// The version is acceptable. Send back this server's version.
+						IOException exc = connection.send(getVersion());
+						// TODO Handle.
 					} else {
-
+						eventManager.fire(IncompatibleClientVersionEvent.INCOMPATIBLE_CLIENT_VERSION_EVENT,
+								new IncompatibleClientVersionEvent(ChatroomServer.this, connection,
+										(String) result.value));
+						connection.send(EndConnectionMessage.INCOMPATIBLE_VERSION);
+						connection.tryClose();
 					}
 				} catch (ClassNotFoundException | IOException e) {
 					eventManager.fire(ErrorWhileClientLoggingInEvent.ERROR_WHILE_CLIENT_LOGGING_IN_EVENT,
