@@ -65,42 +65,70 @@ public class ChatroomServer implements Closeable {
 		return ChatroomAPI.getCurrentVersion().contentEquals(version);
 	}
 
+	/**
+	 * Handles an incoming connection. By default, this method calls
+	 * {@link #converseVersion(Client)}. If that returns <code>true</code>, then
+	 * this method calls {@link #converseLogin(Client)}.
+	 * {@link #converseLogin(Client)} is tasked with both handling log in attempts
+	 * by the client and actually logging the client in.
+	 * 
+	 * @param connection
+	 */
+	protected void handleIncomingConnection(Client connection) {
+		eventManager.fire(IncomingClientEvent.INCOMING_CLIENT_EVENT,
+				new IncomingClientEvent(ChatroomServer.this, connection));// Incoming Connection.
+		if (converseVersion(connection))// Runs if version convo was ok.
+			converseLogin(connection);
+	}
+
+	protected boolean converseVersion(Client client) {
+		try {
+			Box<Serializable> result = client.read(5000);// Expect String with version information.
+			if (result == null) {
+				eventManager.fire(TimeoutWhileClientLoggingInEvent.TIMEOUT_WHILE_CLIENT_LOGGING_IN_EVENT,
+						new TimeoutWhileClientLoggingInEvent(ChatroomServer.this, client));
+				client.trySend(EndConnectionMessage.STREAM_ERROR_OCCURRED);
+				client.tryClose();
+			} else if (!(result.value instanceof String)) {
+				eventManager.fire(UnexpectedDataWhileClientLoggingInEvent.UNEXPECTED_DATA_WHILE_CLIENT_LOGGING_IN_EVENT,
+						new UnexpectedDataWhileClientLoggingInEvent(ChatroomServer.this, client, result.value));
+				client.trySend(EndConnectionMessage.UNEXPECTED_DATA_RECEIVED);
+				client.tryClose();
+			} else if (acceptVersion((String) result.value)) {
+				// The version is acceptable. Send back this server's version.
+				client.send(getVersion());// Catch block handles this as well.
+				return true;
+			} else {
+				eventManager.fire(IncompatibleClientVersionEvent.INCOMPATIBLE_CLIENT_VERSION_EVENT,
+						new IncompatibleClientVersionEvent(ChatroomServer.this, client, (String) result.value));
+				client.trySend(EndConnectionMessage.INCOMPATIBLE_VERSION);
+				client.tryClose();
+			}
+		} catch (ClassNotFoundException | IOException e) {
+			eventManager.fire(ErrorWhileClientLoggingInEvent.ERROR_WHILE_CLIENT_LOGGING_IN_EVENT,
+					new ErrorWhileClientLoggingInEvent(ChatroomServer.this, client, e));
+			client.trySend(EndConnectionMessage.STREAM_ERROR_OCCURRED);
+			client.tryClose();
+		}
+		return false;
+	}
+
+	protected void converseLogin(Client client) {
+		try {
+			Box<Serializable> result = client.read(10000);// Expect log in information in 10 seconds...
+		} catch (ClassNotFoundException | IOException e) {
+			eventManager.fire(ErrorWhileClientLoggingInEvent.ERROR_WHILE_CLIENT_LOGGING_IN_EVENT,
+					new ErrorWhileClientLoggingInEvent(ChatroomServer.this, client, e));
+			client.trySend(EndConnectionMessage.STREAM_ERROR_OCCURRED);
+			client.tryClose();
+		}
+	}
+
 	public ChatroomServer(Server server) {
 		listener = new ChatroomConnectionListener(server) {
 			@Override
 			protected void handleIncomingConnection(Client connection) {
-				eventManager.fire(IncomingClientEvent.INCOMING_CLIENT_EVENT,
-						new IncomingClientEvent(ChatroomServer.this, connection));// Incoming Connection.
-				try {
-					Box<Serializable> result = connection.read(5000);// Expect String with version information.
-					if (result == null) {
-						eventManager.fire(TimeoutWhileClientLoggingInEvent.TIMEOUT_WHILE_CLIENT_LOGGING_IN_EVENT,
-								new TimeoutWhileClientLoggingInEvent(ChatroomServer.this, connection));
-						connection.trySend(EndConnectionMessage.STREAM_ERROR_OCCURRED);
-						connection.tryClose();
-					} else if (!(result.value instanceof String)) {
-						eventManager.fire(
-								UnexpectedDataWhileClientLoggingInEvent.UNEXPECTED_DATA_WHILE_CLIENT_LOGGING_IN_EVENT,
-								new UnexpectedDataWhileClientLoggingInEvent(ChatroomServer.this, connection,
-										result.value));
-						connection.trySend(EndConnectionMessage.UNEXPECTED_DATA_RECEIVED);
-						connection.tryClose();
-					} else if (acceptVersion((String) result.value)) {
-						// The version is acceptable. Send back this server's version.
-						connection.send(getVersion());// Catch block handles this as well.
-					} else {
-						eventManager.fire(IncompatibleClientVersionEvent.INCOMPATIBLE_CLIENT_VERSION_EVENT,
-								new IncompatibleClientVersionEvent(ChatroomServer.this, connection,
-										(String) result.value));
-						connection.trySend(EndConnectionMessage.INCOMPATIBLE_VERSION);
-						connection.tryClose();
-					}
-				} catch (ClassNotFoundException | IOException e) {
-					eventManager.fire(ErrorWhileClientLoggingInEvent.ERROR_WHILE_CLIENT_LOGGING_IN_EVENT,
-							new ErrorWhileClientLoggingInEvent(ChatroomServer.this, connection, e));
-					connection.trySend(EndConnectionMessage.STREAM_ERROR_OCCURRED);
-					connection.tryClose();
-				}
+				ChatroomServer.this.handleIncomingConnection(connection);
 			}
 		};
 	}
