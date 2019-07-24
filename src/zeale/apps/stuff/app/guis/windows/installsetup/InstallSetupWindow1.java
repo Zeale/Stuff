@@ -103,10 +103,9 @@ public class InstallSetupWindow1 extends Window {
 
 						continueButton.setOnAction(event1 -> {
 							try {
-								Runtime.getRuntime()
-										.exec(executable.getAbsolutePath() + " " + ProgramArguments.INSTALLATION_CLEANUP
-												+ "=\"" + currFile.getAbsolutePath() + "\" "
-												+ ProgramArguments.INSTALLATION_STAGE_2, null, to);
+								Runtime.getRuntime().exec(executable.getAbsolutePath() + " --"
+										+ ProgramArguments.INSTALLATION_CLEANUP + "=\"" + currFile.getAbsolutePath()
+										+ "\" " + ProgramArguments.INSTALLATION_STAGE_2, null, to);
 								Platform.exit();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -119,7 +118,7 @@ public class InstallSetupWindow1 extends Window {
 				else
 					try {
 						Runtime.getRuntime()
-								.exec(currFile.getName() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
+								.exec(currFile.getName() + " --" + ProgramArguments.INSTALLATION_CLEANUP + "=\""
 										+ currFile.getAbsolutePath() + "\" " + ProgramArguments.INSTALLATION_STAGE_2,
 										null, to);
 						Platform.exit();

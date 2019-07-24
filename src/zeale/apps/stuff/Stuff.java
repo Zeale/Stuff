@@ -16,6 +16,7 @@ import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.api.modules.Module;
 import zeale.apps.stuff.app.console.StuffBasicConsoleLogic;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow1;
@@ -122,6 +123,7 @@ public class Stuff extends Application {
 		stage.setTitle("Stuff");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		prepareStage(stage = primaryStage);
@@ -142,6 +144,21 @@ public class Stuff extends Application {
 				e.printStackTrace();
 				Logging.wrn("Failed to delete temporary files needed for installation.");
 				Logging.wrn("File location: " + file);
+			}
+		}
+		if (args.getNamed().containsKey(ProgramArguments.LAUNCH_MODULE)) {
+			Class<?> cls = Class.forName(args.getNamed().get(ProgramArguments.LAUNCH_MODULE));
+			try {
+				if (Module.class.isAssignableFrom(cls))
+					((Class<? extends Module>) cls).newInstance().launch();
+				else
+					throw new RuntimeException(
+							"The specified module class is not a subclass of Module, and so, cannot be loaded as a module. (Class: "
+									+ args.getNamed().get(ProgramArguments.LAUNCH_MODULE) + ")");
+			} catch (Exception e) {
+				throw new RuntimeException(
+						"An error occurred while trying to launch the module class specified via a command line argument: "
+								+ args.getNamed().get(ProgramArguments.LAUNCH_MODULE));
 			}
 		}
 
