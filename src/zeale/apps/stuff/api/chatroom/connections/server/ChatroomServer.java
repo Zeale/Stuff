@@ -13,7 +13,9 @@ import zeale.apps.stuff.api.chatroom.ChatroomAPI;
 import zeale.apps.stuff.api.chatroom.connections.client.ChatroomClient;
 import zeale.apps.stuff.api.chatroom.connections.messages.EndConnectionMessage;
 import zeale.apps.stuff.api.chatroom.events.Event;
+import zeale.apps.stuff.api.chatroom.events.EventHandler;
 import zeale.apps.stuff.api.chatroom.events.EventManager;
+import zeale.apps.stuff.api.chatroom.events.EventType;
 
 /**
  * A server that runs on this machine, awaiting for connection attempts from
@@ -30,6 +32,18 @@ public class ChatroomServer implements Closeable {
 
 	private ChatroomConnectionListener listener;
 	private final EventManager<Event> eventManager = new EventManager<>();
+
+	public EventManager<Event> getEventManager() {
+		return eventManager;
+	}
+
+	public <T extends Event> void register(EventType<T> type, EventHandler<? super T> handler) {
+		eventManager.register(type, handler);
+	}
+
+	public <T extends Event> void unregsiter(EventType<T> type, EventHandler<? super T> handler) {
+		eventManager.unregsiter(type, handler);
+	}
 
 	public ChatroomServer() throws IOException {
 		this(ChatroomAPI.getDefaultConnectionPort());
