@@ -158,13 +158,13 @@ public class Stuff extends Application {
 			} catch (Exception e) {
 				throw new RuntimeException(
 						"An error occurred while trying to launch the module class specified via a command line argument: "
-								+ args.getNamed().get(ProgramArguments.LAUNCH_MODULE));
+								+ args.getNamed().get(ProgramArguments.LAUNCH_MODULE),
+						e);
 			}
-		}
-
-		(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow1()
-				: args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_2) ? new InstallSetupWindow2()
-						: new HomeWindow()).display(primaryStage);
+		} else
+			(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow1()
+					: args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_2) ? new InstallSetupWindow2()
+							: new HomeWindow()).display(primaryStage);
 	}
 
 	@Override
