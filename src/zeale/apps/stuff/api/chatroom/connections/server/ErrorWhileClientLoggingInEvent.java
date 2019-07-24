@@ -18,7 +18,7 @@ public class ErrorWhileClientLoggingInEvent extends ChatroomServerConnectionEven
 	}
 
 	public static final EventType<ErrorWhileClientLoggingInEvent> ERROR_WHILE_CLIENT_LOGGING_IN_EVENT = new EventType<>(
-			CHATROOM_SERVER_CONNECTION_EVENT);
+			CLIENT_DISCONNECTED_EVENT);
 
 	public ErrorWhileClientLoggingInEvent(ChatroomServer server, Client client, Exception exception) {
 		super(server, client);

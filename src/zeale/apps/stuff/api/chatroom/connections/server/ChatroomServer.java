@@ -116,6 +116,7 @@ public class ChatroomServer implements Closeable {
 	protected void converseLogin(Client client) {
 		try {
 			Box<Serializable> result = client.read(10000);// Expect log in information in 10 seconds...
+			// TODO Finish conversation.
 		} catch (ClassNotFoundException | IOException e) {
 			eventManager.fire(ErrorWhileClientLoggingInEvent.ERROR_WHILE_CLIENT_LOGGING_IN_EVENT,
 					new ErrorWhileClientLoggingInEvent(ChatroomServer.this, client, e));

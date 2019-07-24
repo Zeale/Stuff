@@ -9,7 +9,7 @@ import zeale.apps.stuff.api.chatroom.events.EventType;
 public class TimeoutWhileClientLoggingInEvent extends ChatroomServerConnectionEvent {
 
 	public static final EventType<TimeoutWhileClientLoggingInEvent> TIMEOUT_WHILE_CLIENT_LOGGING_IN_EVENT = new EventType<>(
-			CHATROOM_SERVER_CONNECTION_EVENT);
+			CLIENT_DISCONNECTED_EVENT);
 
 	public TimeoutWhileClientLoggingInEvent(ChatroomServer server, Client client) {
 		super(server, client);

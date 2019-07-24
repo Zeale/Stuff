@@ -17,7 +17,7 @@ import zeale.apps.stuff.api.chatroom.events.EventType;
  */
 public class IncompatibleClientVersionEvent extends ChatroomServerConnectionEvent {
 	public static final EventType<IncompatibleClientVersionEvent> INCOMPATIBLE_CLIENT_VERSION_EVENT = new EventType<>(
-			CHATROOM_SERVER_CONNECTION_EVENT);
+			CLIENT_DISCONNECTED_EVENT);
 	private final String version;
 
 	/**

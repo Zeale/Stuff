@@ -10,7 +10,7 @@ import zeale.apps.stuff.api.chatroom.events.EventType;
 public class UnexpectedDataWhileClientLoggingInEvent extends ChatroomServerConnectionEvent {
 	private final Serializable data;
 	public static final EventType<UnexpectedDataWhileClientLoggingInEvent> UNEXPECTED_DATA_WHILE_CLIENT_LOGGING_IN_EVENT = new EventType<>(
-			CHATROOM_SERVER_CONNECTION_EVENT);
+			CLIENT_DISCONNECTED_EVENT);
 
 	public final Serializable getData() {
 		return data;
