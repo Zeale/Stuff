@@ -1,5 +1,7 @@
 package zeale.apps.stuff.api.chatroom.connections.client;
 
+import java.io.IOException;
+
 import org.alixia.javalibrary.networking.sockets.Client;
 
 import zeale.apps.stuff.api.chatroom.events.Event;
@@ -30,6 +32,10 @@ public class ChatroomClient {
 	public ChatroomClient(String host, int port) {
 		this.host = host;
 		this.port = port;
+	}
+	
+	private void reinstateClient() throws IOException {
+		
 	}
 
 }
