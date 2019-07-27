@@ -101,8 +101,10 @@ public abstract class ChatroomConnectionListener {
 						}
 					}.start();
 				} catch (Exception e) {
-					close();
-					eventManager.fire(CONNECTION_ERROR_EVENT, new ConnectionErrorEvent(e));
+					if (!consumeExceptions) {
+						close();
+						eventManager.fire(CONNECTION_ERROR_EVENT, new ConnectionErrorEvent(e));
+					}
 				}
 			}
 		}
@@ -133,14 +135,19 @@ public abstract class ChatroomConnectionListener {
 
 	protected abstract void handleIncomingConnection(Client connection);
 
+	private volatile boolean consumeExceptions;
+
 	public IOException close() {
 		try {
+			consumeExceptions = true;
 			server.close();
 			closed = true;
 			return null;
 		} catch (IOException e) {
 			closed = true;
 			return e;
+		} finally {
+			consumeExceptions = false;
 		}
 	}
 
