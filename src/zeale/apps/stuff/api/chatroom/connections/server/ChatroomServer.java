@@ -12,6 +12,7 @@ import org.alixia.javalibrary.util.Box;
 import zeale.apps.stuff.api.chatroom.ChatroomAPI;
 import zeale.apps.stuff.api.chatroom.connections.client.ChatroomClient;
 import zeale.apps.stuff.api.chatroom.connections.messages.EndConnectionMessage;
+import zeale.apps.stuff.api.chatroom.connections.messages.LoginInformation;
 import zeale.apps.stuff.api.chatroom.events.Event;
 import zeale.apps.stuff.api.chatroom.events.EventHandler;
 import zeale.apps.stuff.api.chatroom.events.EventManager;
@@ -35,7 +36,7 @@ import zeale.apps.stuff.api.chatroom.events.EventType;
  * @author Zeale
  *
  */
-public class ChatroomServer implements Closeable {
+public abstract class ChatroomServer implements Closeable {
 
 	private ChatroomConnectionListener listener;
 	private final EventManager<Event> eventManager = new EventManager<>();
@@ -102,7 +103,7 @@ public class ChatroomServer implements Closeable {
 			if (result == null) {
 				eventManager.fire(TimeoutWhileClientLoggingInEvent.TIMEOUT_WHILE_CLIENT_LOGGING_IN_EVENT,
 						new TimeoutWhileClientLoggingInEvent(ChatroomServer.this, client));
-				client.trySend(EndConnectionMessage.STREAM_ERROR_OCCURRED);
+				client.trySend(EndConnectionMessage.TIMEOUT);
 				client.tryClose();
 			} else if (!(result.value instanceof String)) {
 				eventManager.fire(UnexpectedDataWhileClientLoggingInEvent.UNEXPECTED_DATA_WHILE_CLIENT_LOGGING_IN_EVENT,
@@ -128,10 +129,23 @@ public class ChatroomServer implements Closeable {
 		return false;
 	}
 
+	protected abstract void login(Client client, LoginInformation info);
+
 	protected void converseLogin(Client client) {
 		try {
 			Box<Serializable> result = client.read(10000);// Expect log in information in 10 seconds...
-			// TODO Finish conversation.
+			if (result == null) {
+				eventManager.fire(TimeoutWhileClientLoggingInEvent.TIMEOUT_WHILE_CLIENT_LOGGING_IN_EVENT,
+						new TimeoutWhileClientLoggingInEvent(this, client));
+				client.trySend(EndConnectionMessage.TIMEOUT);
+				client.tryClose();
+			} else if (!(result.value instanceof LoginInformation)) {
+				eventManager.fire(UnexpectedDataWhileClientLoggingInEvent.UNEXPECTED_DATA_WHILE_CLIENT_LOGGING_IN_EVENT,
+						new UnexpectedDataWhileClientLoggingInEvent(this, client, result.value));
+				client.trySend(EndConnectionMessage.UNEXPECTED_DATA_RECEIVED);
+				client.tryClose();
+			} else
+				login(client, (LoginInformation) result.value);
 		} catch (ClassNotFoundException | IOException e) {
 			eventManager.fire(ErrorWhileClientLoggingInEvent.ERROR_WHILE_CLIENT_LOGGING_IN_EVENT,
 					new ErrorWhileClientLoggingInEvent(ChatroomServer.this, client, e));

@@ -27,6 +27,7 @@ public class EndConnectionMessage extends Message {
 
 	public static final EndConnectionMessage STREAM_ERROR_OCCURRED = new EndConnectionMessage("Stream error occurred"),
 			UNEXPECTED_DATA_RECEIVED = new EndConnectionMessage("Unexpected data received"),
-			INCOMPATIBLE_VERSION = new EndConnectionMessage("Version determined to be incomaptible");
+			INCOMPATIBLE_VERSION = new EndConnectionMessage("Version determined to be incomaptible"),
+			TIMEOUT = new EndConnectionMessage("No response in time; disconnecting");
 
 }
