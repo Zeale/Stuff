@@ -18,12 +18,19 @@ import zeale.apps.stuff.api.chatroom.events.EventManager;
 import zeale.apps.stuff.api.chatroom.events.EventType;
 
 /**
+ * <p>
  * A server that runs on this machine, awaiting for connection attempts from
  * {@link ChatroomClient}s. When a successful connection is established, the
  * server waits for the {@link ChatroomClient} to send a {@link String}
  * representing supported protocol version information. Once the client sends
  * this, the server sends its supported protocol version back, and then the
  * server awaits any query or action from the client.
+ * </p>
+ * <p>
+ * While the server is running, it constantly waits for an incoming connection.
+ * If an error arises at any time while this is happening, the {@link #listener}
+ * object used by this class is remade via the {@link #makeListener()} method.
+ * </p>
  * 
  * @author Zeale
  *
@@ -134,7 +141,14 @@ public class ChatroomServer implements Closeable {
 	}
 
 	private final void reinstateListener() throws IOException {
-		listener = makeListener();
+		(listener = makeListener()).register(ChatroomConnectionListener.CONNECTION_ERROR_EVENT, x -> {
+			try {
+				reinstateListener();
+			} catch (IOException e) {
+				eventManager.fire(ChatroomServerReopenFailureEvent.CHATROOM_SERVER_REOPEN_FAILURE_EVENT,
+						new ChatroomServerReopenFailureEvent(this));
+			}
+		});
 	}
 
 	protected ChatroomConnectionListener makeListener() throws IOException {
