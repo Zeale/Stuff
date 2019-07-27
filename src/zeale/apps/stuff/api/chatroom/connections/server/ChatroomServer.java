@@ -32,6 +32,17 @@ public class ChatroomServer implements Closeable {
 
 	private ChatroomConnectionListener listener;
 	private final EventManager<Event> eventManager = new EventManager<>();
+	protected final int port;// Later it can be made so that the port can be changed.
+
+	private boolean daemon;
+
+	public void setDaemon(boolean daemon) {
+		listener.setDaemon(this.daemon = daemon);
+	}
+
+	public boolean isDaemon() {
+		return daemon;
+	}
 
 	public EventManager<Event> getEventManager() {
 		return eventManager;
@@ -50,11 +61,8 @@ public class ChatroomServer implements Closeable {
 	}
 
 	public ChatroomServer(int port) throws IOException {
-		this(new ServerSocket(port));
-	}
-
-	public ChatroomServer(ServerSocket socket) {
-		this(new Server(socket));
+		this.port = port;
+		reinstateListener();
 	}
 
 	protected String getVersion() {
@@ -125,8 +133,12 @@ public class ChatroomServer implements Closeable {
 		}
 	}
 
-	public ChatroomServer(Server server) {
-		listener = new ChatroomConnectionListener(server) {
+	private final void reinstateListener() throws IOException {
+		listener = makeListener();
+	}
+
+	protected ChatroomConnectionListener makeListener() throws IOException {
+		return new ChatroomConnectionListener(new Server(new ServerSocket(port))) {
 			@Override
 			protected void handleIncomingConnection(Client connection) {
 				ChatroomServer.this.handleIncomingConnection(connection);
