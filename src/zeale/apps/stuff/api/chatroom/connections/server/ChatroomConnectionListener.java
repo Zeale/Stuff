@@ -45,7 +45,7 @@ import zeale.apps.stuff.api.chatroom.events.EventType;
 public abstract class ChatroomConnectionListener {
 
 	public ChatroomConnectionListener(int port) throws IOException {
-		server = new Server(new ServerSocket(port));
+		this(new Server(new ServerSocket(port)));
 	}
 
 	public final class ConnectionErrorEvent extends Event {
