@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -37,7 +36,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.stuff.utilities.java.references.LazyReference;
 
 public class ModuleWindow extends Window {
 
@@ -117,14 +116,13 @@ public class ModuleWindow extends Window {
 		DEFAULT_MODULE_HOVER_EFFECT.setRadius(35);
 	}
 
-	private final static PhoenixReference<File> MODULE_INSTALLATION_DIRECTORY = PhoenixReference
-			.create((Supplier<File>) () -> {
-				File file = new File(Stuff.INSTALLATION_DIRECTORY, "Modules");
-				file.mkdirs();
-				return file;
-			});
+	private final static LazyReference<File> MODULE_INSTALLATION_DIRECTORY = LazyReference.create(() -> {
+		File file = new File(Stuff.INSTALLATION_DIRECTORY, "Modules");
+		file.mkdirs();
+		return file;
+	});
 
-	private static final PhoenixReference<ObservableList<Module>> LOADED_MODULES = new PhoenixReference<ObservableList<Module>>() {
+	private static final LazyReference<ObservableList<Module>> LOADED_MODULES = new LazyReference<ObservableList<Module>>() {
 
 		@Override
 		protected ObservableList<Module> generate() {

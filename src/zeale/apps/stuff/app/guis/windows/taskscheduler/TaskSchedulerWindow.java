@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.alixia.javalibrary.javafx.bindings.BindingTools;
 import org.alixia.javalibrary.javafx.bindings.BindingTools.FilterBinding;
@@ -67,7 +66,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.stuff.utilities.java.references.LazyReference;
 
 public class TaskSchedulerWindow extends Window {
 
@@ -197,13 +196,13 @@ public class TaskSchedulerWindow extends Window {
 
 	}
 
-	final static PhoenixReference<File> TASK_SCHEDULER_DATA_DIR = PhoenixReference
-			.create((Supplier<File>) () -> new File(Stuff.APPLICATION_DATA, "Task Scheduler"));
+	final static LazyReference<File> TASK_SCHEDULER_DATA_DIR = LazyReference
+			.create(() -> new File(Stuff.APPLICATION_DATA, "Task Scheduler"));
 
-	private final static PhoenixReference<File> TASK_DATA_DIR = PhoenixReference
-			.create((Supplier<File>) () -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Tasks"));
+	private final static LazyReference<File> TASK_DATA_DIR = LazyReference
+			.create(() -> new File(TASK_SCHEDULER_DATA_DIR.get(), "Tasks"));
 
-	private static final PhoenixReference<List<Task>> DIRTY_TASKS = new PhoenixReference<List<Task>>() {
+	private static final LazyReference<List<Task>> DIRTY_TASKS = new LazyReference<List<Task>>() {
 
 		@Override
 		protected List<Task> generate() {
@@ -226,7 +225,7 @@ public class TaskSchedulerWindow extends Window {
 			};
 		}
 	};
-	final static PhoenixReference<ObservableList<Task>> TASK_LIST = new PhoenixReference<ObservableList<Task>>(true) {
+	final static LazyReference<ObservableList<Task>> TASK_LIST = new LazyReference<ObservableList<Task>>() {
 
 		@Override
 		protected ObservableList<Task> generate() {

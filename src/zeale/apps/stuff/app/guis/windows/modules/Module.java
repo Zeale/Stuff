@@ -11,7 +11,7 @@ import java.util.zip.ZipFile;
 import branch.alixia.unnamed.Datamap;
 import javafx.scene.image.Image;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.stuff.utilities.java.references.LazyReference;
 import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
 
 class Module {
@@ -21,7 +21,7 @@ class Module {
 	private final URL location;
 
 	// This is available for gc when loadedLaunchClass is ungenerated or is too.
-	private final PhoenixReference<URLClassLoader> loader = new PhoenixReference<URLClassLoader>(true) {
+	private final LazyReference<URLClassLoader> loader = new LazyReference<URLClassLoader>() {
 
 		@Override
 		protected URLClassLoader generate() {
