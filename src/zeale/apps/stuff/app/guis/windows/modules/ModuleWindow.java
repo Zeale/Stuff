@@ -207,8 +207,6 @@ public class ModuleWindow extends Window {
 
 	private @FXML StackPane dragBox;
 
-	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();// Strong reference uWu
-
 	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
 
 	@Override
@@ -224,10 +222,10 @@ public class ModuleWindow extends Window {
 	 *
 	 */
 	private @FXML void initialize() {
-		for (Module m : loadedModules)
+		for (Module m : LOADED_MODULES.get())
 			new ModuleItem(m);
 
-		loadedModules.addListener((ListChangeListener<Module>) c -> {
+		LOADED_MODULES.get().addListener((ListChangeListener<Module>) c -> {
 			while (c.next())
 				if (c.wasAdded())
 					for (Module m1 : c.getAddedSubList())
