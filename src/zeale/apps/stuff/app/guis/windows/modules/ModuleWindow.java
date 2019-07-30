@@ -2,6 +2,7 @@ package zeale.apps.stuff.app.guis.windows.modules;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +41,15 @@ import zeale.apps.stuff.utilities.java.references.LazyReference;
 
 public class ModuleWindow extends Window {
 
+	/**
+	 * This action ditches references to previous, possibly launched modules. This
+	 * action will still take place even if the modules are running, in which case
+	 * they will continue to run and will use their {@link URLClassLoader}s for
+	 * loading classes they need further down the road, but the references that
+	 * {@link Stuff} keeps to those class loaders and classes etc., will be
+	 * destroyed, so the modules (and their classes) will become available for
+	 * garbage collection once they finally stop functioning.
+	 */
 	private @FXML void reloadAllModules() {
 		LOADED_MODULES.regenerate();
 	}
