@@ -127,4 +127,13 @@ class Module {
 		}
 	}
 
+	public void reload() throws ModuleLoadException {
+		loader.regenerate();
+		try {
+			loadedLaunchClass.regenerate();
+		} catch (Exception e) {
+			throw new ModuleLoadException(e);
+		}
+	}
+
 }

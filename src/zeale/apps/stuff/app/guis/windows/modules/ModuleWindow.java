@@ -56,8 +56,8 @@ public class ModuleWindow extends Window {
 
 	private final class ModuleItem extends VBox {
 
-		private final MenuItem deleteModule = new MenuItem("Delete");
-		private final ContextMenu rightClickMenu = new ContextMenu(deleteModule);
+		private final MenuItem deleteModule = new MenuItem("Delete"), reloadModule = new MenuItem("Reload");
+		private final ContextMenu rightClickMenu = new ContextMenu(deleteModule, reloadModule);
 		private final Module module;
 
 		{
@@ -100,6 +100,17 @@ public class ModuleWindow extends Window {
 				moduleBox.getChildren().add(this);
 
 			deleteModule.setOnAction(__ -> delete());
+			reloadModule.setOnAction(__ -> {
+				try {
+					module.reload();
+					Logging.std("Successfully reloaded the module: " + module.getName() + ".");
+					Logging.std(
+							"Please be careful if it was running when you reloaded it. Reloading a module is effectively like loading a brand new module in. If the module was running when you reloaded it and you try to open it again, the old and new instances may conflict.");
+				} catch (ModuleLoadException e) {
+					Logging.err("An error occurred while attempting to reload the module.");
+					Logging.err(e);
+				}
+			});
 
 		}
 
