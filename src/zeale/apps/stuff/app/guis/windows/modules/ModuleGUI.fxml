@@ -66,6 +66,11 @@
               <MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Modules">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#reloadAllModules" text="Reload" />
+               </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>

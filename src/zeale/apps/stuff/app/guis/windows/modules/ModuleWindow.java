@@ -40,6 +40,10 @@ import zeale.apps.stuff.utilities.java.references.LazyReference;
 
 public class ModuleWindow extends Window {
 
+	private @FXML void reloadAllModules() {
+		LOADED_MODULES.regenerate();
+	}
+
 	private final class ModuleItem extends VBox {
 
 		private final MenuItem deleteModule = new MenuItem("Delete");
