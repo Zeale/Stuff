@@ -68,6 +68,7 @@ public class HelpBook {
 			printCommandHelp(printable, helps.get(i));
 			if (++i >= helps.size()) {
 				printable.print("End of help reached.", systemColor, true, false);
+				printable.println();
 				return;
 			}
 		}
