@@ -11,10 +11,12 @@ import org.alixia.javalibrary.strings.matching.Matching;
 
 import javafx.scene.paint.Color;
 import zeale.apps.stuff.Stuff;
+import zeale.apps.stuff.api.console.HelpBook;
+import zeale.apps.stuff.api.console.HelpPageException;
+import zeale.apps.stuff.api.console.HelpBook.CommandHelp;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.app.console.HelpBook.CommandHelp;
 import zeale.apps.tools.console.logic.ConsoleLogic;
 import zeale.apps.tools.console.std.StandardConsole;
 import zeale.apps.tools.console.std.StandardConsole.StandardConsoleUserInput;
