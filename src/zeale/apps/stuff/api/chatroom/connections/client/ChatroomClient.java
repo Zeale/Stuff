@@ -9,22 +9,29 @@ import java.net.UnknownHostException;
 import org.alixia.javalibrary.networking.sockets.Client;
 import org.alixia.javalibrary.util.Box;
 
+import zeale.apps.stuff.api.chatroom.ChatroomAPI;
+import zeale.apps.stuff.api.chatroom.connections.messages.EndConnectionMessage;
+
 //import zeale.apps.stuff.api.chatroom.events.Event;
 //import zeale.apps.stuff.api.chatroom.events.EventHandler;
 //import zeale.apps.stuff.api.chatroom.events.EventManager;
 //import zeale.apps.stuff.api.chatroom.events.EventType;
 
-public class ChatroomClient implements Closeable {
+public abstract class ChatroomClient implements Closeable {
 	private Client client;
+
+	protected Client getClient() {
+		return client;
+	}
 
 	// TODO Update (events)
 
-	public void send(Serializable item) throws IOException {
-		client.send(item);
+	protected boolean acceptVersion(String version) {
+		return ChatroomAPI.getCurrentVersion().contentEquals(version);
 	}
 
-	public IOException trySend(Serializable item) {
-		return client.trySend(item);
+	public void send(Serializable item) throws IOException {
+		client.send(item);
 	}
 
 	public IOException testConnection() {
@@ -37,6 +44,39 @@ public class ChatroomClient implements Closeable {
 
 	public Serializable read() throws ClassNotFoundException, IOException {
 		return client.read();
+	}
+
+	protected boolean converseVersion() {
+		try {
+			client.send(ChatroomAPI.getCurrentVersion());// Send ver
+			Box<Serializable> result = client.read(10000);// Expect ver response
+			if (result == null) {
+				// TODO Event
+				tryClose(EndConnectionMessage.TIMEOUT);
+			} else if (!(result.value instanceof String)) {
+				// TODO Event
+				tryClose(EndConnectionMessage.UNEXPECTED_DATA_RECEIVED);
+			} else if (acceptVersion((String) result.value)) {
+				return true;
+			} else {
+				// TODO Event
+				tryClose(EndConnectionMessage.INCOMPATIBLE_VERSION);
+			}
+		} catch (IOException | ClassNotFoundException e) {
+			// TODO Event
+			tryClose(EndConnectionMessage.STREAM_ERROR_OCCURRED);
+		}
+		return false;
+	}
+
+	private void tryClose(EndConnectionMessage message) {
+		client.trySend(message);
+		client.tryClose();
+		try {
+			reinstateClient();
+		} catch (IOException e) {
+			// TODO Event
+		}
 	}
 
 //	private final EventManager<Event> eventManager = new EventManager<>();
@@ -89,20 +129,16 @@ public class ChatroomClient implements Closeable {
 		if (client != null)
 			client.tryClose();
 		client = generateClient(host, port);
+		if (converseVersion())
+			converseLogin();
+		// TODO Event to note that everything's ready to go.
 	}
+
+	protected abstract void converseLogin();
 
 	@Override
 	public void close() throws IOException {
 		client.close();
-	}
-
-	public IOException tryClose() {
-		try {
-			close();
-			return null;
-		} catch (IOException e) {
-			return e;
-		}
 	}
 
 }
