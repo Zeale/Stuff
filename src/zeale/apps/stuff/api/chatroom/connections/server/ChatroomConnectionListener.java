@@ -89,7 +89,7 @@ public abstract class ChatroomConnectionListener {
 			while (!closed) {
 				try {
 					Client client = server.acceptConnection();
-					new Thread() {
+					Thread thread = new Thread() {
 
 						@Override
 						public void run() {
@@ -99,7 +99,9 @@ public abstract class ChatroomConnectionListener {
 								e.printStackTrace();
 							}
 						}
-					}.start();
+					};
+					thread.setDaemon(daemon);
+					thread.start();
 				} catch (Exception e) {
 					if (!consumeExceptions) {
 						close();
@@ -110,19 +112,19 @@ public abstract class ChatroomConnectionListener {
 		}
 	};
 
+	private boolean daemon;
+
 	/**
-	 * <p>
 	 * Sets the {@link Thread#setDaemon(boolean) daemon} status of the
-	 * {@link Thread} object which is used to accept incoming connections.
-	 * </p>
-	 * <p>
-	 * This method must be invoked before the thread has started.
-	 * </p>
+	 * {@link Thread} object which is used to accept incoming connections, and for
+	 * all the threads that are launched to handle connections. This must be called
+	 * before this {@link ChatroomConnectionListener} is {@link #open()}ed.
 	 * 
 	 * @param daemon Whether or not the {@link Thread} should be a daemon thread.
 	 */
 	public void setDaemon(boolean daemon) {
 		acceptionThread.setDaemon(daemon);
+		this.daemon = daemon;
 	}
 
 	/**
