@@ -42,14 +42,14 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow.NameNotFoundException;
-import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.stuff.utilities.java.references.LazyReference;
 
 class LabelManagerWindow extends Window {
 
-	private final static PhoenixReference<File> LABEL_DATA_DIR = PhoenixReference
+	private final static LazyReference<File> LABEL_DATA_DIR = LazyReference
 			.create((Supplier<File>) () -> new File(TaskSchedulerWindow.TASK_SCHEDULER_DATA_DIR.get(), "Labels"));
 
-	final static PhoenixReference<List<Label>> DIRTY_LABELS = new PhoenixReference<List<Label>>() {
+	final static LazyReference<List<Label>> DIRTY_LABELS = new LazyReference<List<Label>>() {
 
 		@Override
 		protected List<Label> generate() {
@@ -73,7 +73,7 @@ class LabelManagerWindow extends Window {
 			};
 		}
 	};
-	final static PhoenixReference<ObservableList<Label>> LABEL_LIST = new PhoenixReference<ObservableList<Label>>() {
+	final static LazyReference<ObservableList<Label>> LABEL_LIST = new LazyReference<ObservableList<Label>>() {
 
 		@Override
 		protected ObservableList<Label> generate() {

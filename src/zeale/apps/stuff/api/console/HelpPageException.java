@@ -1,6 +1,6 @@
-package zeale.apps.stuff.app.console;
+package zeale.apps.stuff.api.console;
 
-final class HelpPageException extends Exception {
+public final class HelpPageException extends Exception {
 
 	/**
 	 * SUID

@@ -1,4 +1,4 @@
-package zeale.apps.stuff.app.console;
+package zeale.apps.stuff.api.console;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.alixia.chatroom.api.printables.StyledPrintable;
 
 import javafx.scene.paint.Color;
 
-class HelpBook {
+public class HelpBook {
 
 	public final class CommandHelp {
 		private final String name, description, usage, aliases[];
@@ -68,6 +68,7 @@ class HelpBook {
 			printCommandHelp(printable, helps.get(i));
 			if (++i >= helps.size()) {
 				printable.print("End of help reached.", systemColor, true, false);
+				printable.println();
 				return;
 			}
 		}

@@ -2,12 +2,12 @@ package zeale.apps.stuff.app.guis.windows.modules;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -37,14 +37,27 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.stuff.utilities.java.references.LazyReference;
 
 public class ModuleWindow extends Window {
 
+	/**
+	 * This action ditches references to previous, possibly launched modules. This
+	 * action will still take place even if the modules are running, in which case
+	 * they will continue to run and will use their {@link URLClassLoader}s for
+	 * loading classes they need further down the road, but the references that
+	 * {@link Stuff} keeps to those class loaders and classes etc., will be
+	 * destroyed, so the modules (and their classes) will become available for
+	 * garbage collection once they finally stop functioning.
+	 */
+	private @FXML void reloadAllModules() {
+		LOADED_MODULES.regenerate();
+	}
+
 	private final class ModuleItem extends VBox {
 
-		private final MenuItem deleteModule = new MenuItem("Delete");
-		private final ContextMenu rightClickMenu = new ContextMenu(deleteModule);
+		private final MenuItem deleteModule = new MenuItem("Delete"), reloadModule = new MenuItem("Reload");
+		private final ContextMenu rightClickMenu = new ContextMenu(deleteModule, reloadModule);
 		private final Module module;
 
 		{
@@ -87,6 +100,17 @@ public class ModuleWindow extends Window {
 				moduleBox.getChildren().add(this);
 
 			deleteModule.setOnAction(__ -> delete());
+			reloadModule.setOnAction(__ -> {
+				try {
+					module.reload();
+					Logging.std("Successfully reloaded the module: " + module.getName() + ".");
+					Logging.std(
+							"Please be careful if it was running when you reloaded it. Reloading a module is effectively like loading a brand new module in. If the module was running when you reloaded it and you try to open it again, the old and new instances may conflict.");
+				} catch (ModuleLoadException e) {
+					Logging.err("An error occurred while attempting to reload the module.");
+					Logging.err(e);
+				}
+			});
 
 		}
 
@@ -117,14 +141,13 @@ public class ModuleWindow extends Window {
 		DEFAULT_MODULE_HOVER_EFFECT.setRadius(35);
 	}
 
-	private final static PhoenixReference<File> MODULE_INSTALLATION_DIRECTORY = PhoenixReference
-			.create((Supplier<File>) () -> {
-				File file = new File(Stuff.INSTALLATION_DIRECTORY, "Modules");
-				file.mkdirs();
-				return file;
-			});
+	private final static LazyReference<File> MODULE_INSTALLATION_DIRECTORY = LazyReference.create(() -> {
+		File file = new File(Stuff.INSTALLATION_DIRECTORY, "Modules");
+		file.mkdirs();
+		return file;
+	});
 
-	private static final PhoenixReference<ObservableList<Module>> LOADED_MODULES = new PhoenixReference<ObservableList<Module>>() {
+	private static final LazyReference<ObservableList<Module>> LOADED_MODULES = new LazyReference<ObservableList<Module>>() {
 
 		@Override
 		protected ObservableList<Module> generate() {
@@ -209,8 +232,6 @@ public class ModuleWindow extends Window {
 
 	private @FXML StackPane dragBox;
 
-	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();// Strong reference uWu
-
 	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
 
 	@Override
@@ -226,10 +247,10 @@ public class ModuleWindow extends Window {
 	 *
 	 */
 	private @FXML void initialize() {
-		for (Module m : loadedModules)
+		for (Module m : LOADED_MODULES.get())
 			new ModuleItem(m);
 
-		loadedModules.addListener((ListChangeListener<Module>) c -> {
+		LOADED_MODULES.get().addListener((ListChangeListener<Module>) c -> {
 			while (c.next())
 				if (c.wasAdded())
 					for (Module m1 : c.getAddedSubList())
