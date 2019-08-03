@@ -13,6 +13,7 @@ import javafx.scene.paint.Color;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.console.HelpBook;
 import zeale.apps.stuff.api.console.HelpPageException;
+import zeale.apps.stuff.api.console.ParsedObjectCommand;
 import zeale.apps.stuff.api.console.HelpBook.CommandHelp;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;

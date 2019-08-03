@@ -3,6 +3,7 @@ package zeale.apps.stuff.app.console;
 import org.alixia.javalibrary.commands.GenericCommandManager;
 import org.alixia.javalibrary.commands.processing.StringCommandParser;
 
+import zeale.apps.stuff.api.console.ParsedObjectCommand;
 import zeale.apps.tools.console.std.StandardConsole.StandardConsoleUserInput;
 
 class StringCommandManager extends GenericCommandManager<ParsedObjectCommand<StandardConsoleUserInput>> {

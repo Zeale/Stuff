@@ -1,8 +1,8 @@
-package zeale.apps.stuff.app.console;
+package zeale.apps.stuff.api.console;
 
 import org.alixia.javalibrary.commands.StringCommand;
 
-class ParsedObjectCommand<O> {
+public class ParsedObjectCommand<O> {
 	private final StringCommand cmd;
 	private final O data;
 

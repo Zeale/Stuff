@@ -3,6 +3,8 @@ package zeale.apps.stuff.app.console;
 import org.alixia.javalibrary.commands.GenericCommand;
 import org.alixia.javalibrary.strings.matching.Matching;
 
+import zeale.apps.stuff.api.console.ParsedObjectCommand;
+
 abstract class StringCommand<O> implements GenericCommand<ParsedObjectCommand<O>> {
 
 	private final Matching matching;
