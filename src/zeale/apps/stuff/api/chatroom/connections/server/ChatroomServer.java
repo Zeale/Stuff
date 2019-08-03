@@ -158,6 +158,7 @@ public abstract class ChatroomServer implements Closeable {
 		(listener = makeListener()).register(ChatroomConnectionListener.CONNECTION_ERROR_EVENT, x -> {
 			try {
 				reinstateListener();
+				listener.open();
 			} catch (IOException e) {
 				eventManager.fire(ChatroomServerReopenFailureEvent.CHATROOM_SERVER_REOPEN_FAILURE_EVENT,
 						new ChatroomServerReopenFailureEvent(this));
