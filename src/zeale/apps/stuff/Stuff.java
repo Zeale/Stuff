@@ -29,6 +29,12 @@ public class Stuff extends Application {
 
 	public static final StandardConsole PROGRAM_CONSOLE = new StandardConsole();
 
+	private static Parameters programParameters;
+
+	public static Parameters getProgramParameters() {
+		return programParameters;
+	}
+
 	static {
 		PROGRAM_CONSOLE.applyLogic(new StuffBasicConsoleLogic(PROGRAM_CONSOLE));
 	}
@@ -39,6 +45,11 @@ public class Stuff extends Application {
 			return new Image("zeale/apps/stuff/rsrc/app/guis/appicon.png");
 		}
 	};
+
+	@Override
+	public void init() throws Exception {
+		programParameters = getParameters();
+	}
 
 	public static void displayHome() throws RuntimeException {
 		try {
