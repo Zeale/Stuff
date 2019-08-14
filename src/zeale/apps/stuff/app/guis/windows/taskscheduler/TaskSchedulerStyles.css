@@ -1,0 +1,6 @@
+#LabelSelectionBox > .check-box {
+	-fx-font-size: 1.3em;
+}
+#LabelSelectionBox > .check-box .text {
+	-fx-fill: egg;
+}

@@ -13,10 +13,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -26,15 +26,47 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.app.guis.windows.HomeWindow;
 
 public final class CalculatorWindow extends Window {
 
-	private @FXML Button searchButton;
 	private @FXML TextField inputField;
 
 	private @FXML TextField extendedFunctionalitySearch;
 	private @FXML Pane extendedFunctionalityFlowPane;
+
+	private @FXML void buttonPushed(ActionEvent event) {
+		Object source = event.getSource();
+		if (source instanceof Button)
+			inputField.appendText(((Button) source).getText());
+		else
+			Logging.wrn("A button was misconfigured. Please report this error to the author. (Button Error: " + source
+					+ "   " + source.getClass() + ".)");
+
+		int cp = inputField.getCaretPosition();
+		inputField.requestFocus();
+		inputField.positionCaret(cp);
+	}
+
+	private @FXML void clearInputField(ActionEvent event) {
+		inputField.clear();
+	}
+
+	@Override
+	public void destroy() {
+	}
+
+	private @FXML void functionPushed(ActionEvent event) {
+		Object source = event.getSource();
+		if (source instanceof Button)
+			inputField.appendText(((Button) source).getText() + "(");
+		else
+			Logging.wrn("A function button was misconfigured. Please report this error to the author. (Button Error: "
+					+ source + "   " + source.getClass() + ".)");
+	}
+
+	private @FXML void goHome(ActionEvent event) {
+		Stuff.displayHome();
+	}
 
 	private @FXML void initialize() {
 
@@ -44,10 +76,6 @@ public final class CalculatorWindow extends Window {
 				buttons.add((TaggedCalculatorButton) n);
 
 		extendedFunctionalitySearch.textProperty().addListener(new ChangeListener<String>() {
-
-			private boolean matches(String searchTerm, String itemName) {
-				return itemName.toLowerCase().contains(searchTerm.toLowerCase());
-			}
 
 			@Override
 			public synchronized void changed(ObservableValue<? extends String> observable, String oldValue,
@@ -73,48 +101,12 @@ public final class CalculatorWindow extends Window {
 				}
 
 			}
+
+			private boolean matches(String searchTerm, String itemName) {
+				return itemName.toLowerCase().contains(searchTerm.toLowerCase());
+			}
 		});
 
-		try {
-			ImageView searchIcon = new ImageView("/zeale/apps/stuff/rsrc/app/gui/windows/calculator/Search Icon.png");
-			searchIcon.setPreserveRatio(true);
-			searchIcon.setFitHeight(16);
-			searchButton.setGraphic(searchIcon);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-	}
-
-	private @FXML void buttonPushed(ActionEvent event) {
-		Object source = event.getSource();
-		if (source instanceof Button) {
-			inputField.appendText(((Button) source).getText());
-		} else {
-			Logging.wrn("A button was misconfigured. Please report this error to the author. (Button Error: " + source
-					+ "   " + source.getClass() + ".)");
-		}
-
-		int cp = inputField.getCaretPosition();
-		inputField.requestFocus();
-		inputField.positionCaret(cp);
-	}
-
-	private @FXML void goHome(ActionEvent event) {
-		try {
-			Stuff.displayWindow(new HomeWindow());
-		} catch (WindowLoadFailureException e) {
-			Logging.err(e);
-		}
-	}
-
-	private @FXML void functionPushed(ActionEvent event) {
-		Object source = event.getSource();
-		if (source instanceof Button) {
-			inputField.appendText(((Button) source).getText() + "(");
-		} else {
-			Logging.wrn("A function button was misconfigured. Please report this error to the author. (Button Error: "
-					+ source + "   " + source.getClass() + ".)");
-		}
 	}
 
 	private @FXML void inputFieldKeyEvent(KeyEvent event) {
@@ -124,12 +116,18 @@ public final class CalculatorWindow extends Window {
 		}
 	}
 
-	private @FXML void clearInputField(ActionEvent event) {
-		inputField.clear();
-	}
-
-	private @FXML void solve(ActionEvent event) {
-		solve();
+	@Override
+	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("CalculatorGUI.fxml"));
+		loader.setController(this);
+		try {
+			Parent root = loader.load();
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
+					"/zeale/apps/stuff/app/guis/windows/calculator/CalculatorGUI.css");
+			stage.setScene(new Scene(root));
+		} catch (IOException e) {
+			throw new WindowLoadFailureException("Failed to load the UI for the Calculator Window.", e);
+		}
 	}
 
 	private void solve() {
@@ -140,20 +138,8 @@ public final class CalculatorWindow extends Window {
 		}
 	}
 
-	@Override
-	public void destroy() {
-	}
-
-	// TODO Add a checked exception for window loading failures.
-	@Override
-	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("CalculatorGUI.fxml"));
-		loader.setController(this);
-		try {
-			stage.setScene(new Scene(loader.load()));
-		} catch (IOException e) {
-			throw new WindowLoadFailureException("Failed to load the UI for the Calculator Window.", e);
-		}
+	private @FXML void solve(ActionEvent event) {
+		solve();
 	}
 
 }

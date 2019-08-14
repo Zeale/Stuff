@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 public enum StandardWebRequestMethods implements WebRequestMethod {
 	GET, POST {
 
+		@Override
 		String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
 			String path = url.getPath(),
 					result = "POST " + (path.isEmpty() ? "/" : path) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
@@ -50,6 +51,16 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	},
 	PATCH;
 
+	private static String addExtras(String userAgent, Map<String, String> params) throws WebRequestException {
+		String result = "";
+		if (userAgent != null && !userAgent.isEmpty())
+			result += "User-Agent: " + userAgent + "\r\n";
+		if (params != null)
+			for (Entry<String, String> e : params.entrySet())
+				result += e.getKey() + ": " + e.getValue() + "\r\n";
+		return result;
+	}
+
 	static String send(String address, int port, String text) throws WebRequestException {
 		try (Socket socket = new Socket(address, port)) {
 			PrintWriter output = new PrintWriter(socket.getOutputStream());
@@ -73,26 +84,6 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 		}
 	}
 
-	private static String addExtras(String userAgent, Map<String, String> params) throws WebRequestException {
-		String result = "";
-		if (userAgent != null && !userAgent.isEmpty())
-			result += "User-Agent: " + userAgent + "\r\n";
-		if (params != null)
-			for (Entry<String, String> e : params.entrySet())
-				result += e.getKey() + ": " + e.getValue() + "\r\n";
-		return result;
-	}
-
-	String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
-		String query = url.getQuery(), path = url.getPath(), result = name() + " " + (path.isEmpty() ? "/" : path)
-				+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
-
-		if (body != null && !body.isEmpty())
-			result += "\r\n" + body;
-
-		return result;
-	}
-
 	private static URL url(String url) throws WebRequestException {
 		try {
 			return new URL(url);
@@ -105,6 +96,16 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	public String preview(String url, String userAgent, Map<String, String> params, String body)
 			throws WebRequestException {
 		return preview(url(url), userAgent, params, body);
+	}
+
+	String preview(URL url, String userAgent, Map<String, String> params, String body) throws WebRequestException {
+		String query = url.getQuery(), path = url.getPath(), result = name() + " " + (path.isEmpty() ? "/" : path)
+				+ (query == null ? "" : query) + " HTTP/1.1\r\n" + addExtras(userAgent, params);
+
+		if (body != null && !body.isEmpty())
+			result += "\r\n" + body;
+
+		return result;
 	}
 
 	@Override

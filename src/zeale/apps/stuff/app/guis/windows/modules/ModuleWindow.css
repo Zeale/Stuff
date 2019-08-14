@@ -1,0 +1,7 @@
+#ModuleView .module-item:hover .image-view {
+	-fx-effect: dropshadow(gaussian, black, 30, 0.4, 0, 0);
+}
+
+#ModuleView .module-item:hover .text {
+	-fx-fill: -stuff-hover-fill;
+}
