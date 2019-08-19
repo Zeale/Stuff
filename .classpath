@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="src/javafx-nodes"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/standard-console"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Evaluator"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Evaluator"/>
 	<classpathentry kind="lib" path="C:/Users/yoric/Documents/GitHub/Stuff/libs/mslinks/mslinks.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
