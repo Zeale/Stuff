@@ -55,7 +55,7 @@ public class HelpBook {
 	public void print(StyledPrintable printable, int page) throws HelpPageException {
 		int item = (page - 1) * 3;
 		int maxPage = (helps.size() + 2) / 3;
-		if (item < 0 || item > helps.size())
+		if (page < 1 || page > maxPage)
 			throw new HelpPageException(page, maxPage);
 
 		printable.print("Showing page ", systemColor, true, false);
