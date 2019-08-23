@@ -265,6 +265,7 @@ public class TaskSchedulerWindow extends Window {
 			return list;
 		}
 	};
+
 	private static final Border SELECTED_ROW_DEFAULT_BORDER = Utilities.getBorderFromColor(Color.GOLD, 1),
 			SELECTED_ROW_HOVER_BORDER = Utilities.getBorderFromColor(Color.RED, 1);
 	private static final Gateway<Instant, LocalDate> INSTANT_TO_LOCALDATE_GATEWAY = new Gateway<Instant, LocalDate>() {
@@ -459,6 +460,7 @@ public class TaskSchedulerWindow extends Window {
 	private @FXML void initialize() {
 		selectedTask = taskView.getSelectionModel().selectedItemProperty();
 
+		ObservableList<Task> filteredTasks = FXCollections.observableArrayList();
 		taskView.setRowFactory(param -> new TableRow<Task>() {
 			{
 				hoverProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
@@ -486,7 +488,13 @@ public class TaskSchedulerWindow extends Window {
 						return;
 
 					tsk.getData().delete();
-					TASK_LIST.get().remove(tsk);
+
+					// You need a bidirectional filtered binding for just this upper line.
+//					TASK_LIST.get().remove(tsk);
+					filteredTasks.remove(tsk);
+					if (DIRTY_TASKS.exists())
+						DIRTY_TASKS.get().remove(tsk);
+
 				});
 				rightClickMenu.getItems().add(item);
 
@@ -712,8 +720,7 @@ public class TaskSchedulerWindow extends Window {
 
 		});
 
-		ObservableList<Task> taskList = FXCollections.observableArrayList();
-		FilterBinding<Task> filteredBinding = BindingTools.filterBind(TASK_LIST.get(), taskList);
+		FilterBinding<Task> filteredBinding = BindingTools.filterBind(TASK_LIST.get(), filteredTasks);
 		class FilterSelectedListener implements ChangeListener<Boolean> {
 			private final Function<? super Task, Boolean> filter;
 
@@ -802,7 +809,7 @@ public class TaskSchedulerWindow extends Window {
 				}
 		});
 
-		taskView.setItems(taskList);
+		taskView.setItems(filteredTasks);
 
 	}
 
