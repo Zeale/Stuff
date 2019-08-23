@@ -490,7 +490,9 @@ public class TaskSchedulerWindow extends Window {
 				});
 				rightClickMenu.getItems().add(item);
 
-				setContextMenu(rightClickMenu);
+				if (!isEmpty())
+					setContextMenu(rightClickMenu);
+				contextMenuProperty().bind(BindingTools.mask(emptyProperty(), t -> t ? null : rightClickMenu));
 
 				setOnMouseEntered(event -> setTextFill(Color.RED));
 				setOnMouseExited(event -> setTextFill(Color.GOLD));
