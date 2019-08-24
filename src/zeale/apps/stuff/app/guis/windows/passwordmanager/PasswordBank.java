@@ -1,6 +1,8 @@
 package zeale.apps.stuff.app.guis.windows.passwordmanager;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.alixia.javalibrary.files.FileTools;
@@ -12,12 +14,14 @@ import zeale.apps.stuff.utilities.java.references.PhoenixReference;
 import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
 
 /**
+ * <p>
  * A {@link PasswordBank} is the interface that allows saving and reading
  * {@link Account} objects from the hard drive. It stores a {@link File} object
  * that represents the directory in which all of the {@link Account} objects
- * belonging to this bank are stored, and provides an methods that allow reading
- * and saving {@link Account} objects.
- * 
+ * belonging to this bank are stored, and provides methods that allow the
+ * reading and saving of {@link Account} objects.
+ * </p>
+ * <p>
  * The {@link PasswordBank} abstraction is meant only to allow interfacing with
  * requested files. It transforms data between {@link Account} objects and files
  * on the hard drive. Because its purpose is limited to that, the bank pays no
@@ -25,6 +29,13 @@ import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
  * that it stores which is meant to contain account data. Methods in this class
  * will throw exceptions when attempts to retrieve an {@link Account} off of a
  * file or vice versa, fail.
+ * </p>
+ * <p>
+ * It is up to the bank itself to decide on how cold accounts, (AKA accounts
+ * that are unloaded, but stored on the hard drive), should be referred to. For
+ * example, a {@link PasswordBank} may permit nested {@link Account} objects
+ * which may be referable via a parent {@link Account} reference, followed by a
+ * delimiter and then a child's name.
  * 
  * @author Zeale
  *
@@ -38,7 +49,7 @@ public abstract class PasswordBank {
 
 		@Override
 		protected File generate() throws Exception {
-			File file = new File(Stuff.APP_DATA_DIRECTORY, "Password Manager/Password Banks");
+			File file = new File(Stuff.APPLICATION_DATA, "Password Manager/Password Banks");
 			if (!(file.isDirectory() || file.mkdirs()))
 				throw new Exception(
 						"Failed to locate/create the Password Bank folder: " + file.getAbsolutePath() + ".");
@@ -92,7 +103,6 @@ public abstract class PasswordBank {
 		if (doesHardBankExist(name))
 			throw new BankAlreadyExistsException(name);
 		/* TODO */
-
 	}
 
 	public static boolean isBankLoaded(String name) {
@@ -112,11 +122,20 @@ public abstract class PasswordBank {
 		FileTools.deltree(bankFile);
 	}
 
-	public abstract void saveAccount();
+	public abstract void saveAccount(Account account);
 
-	public abstract Account loadAccount();
+	public abstract Account loadAccount(String ref);
 
-	public abstract void deleteAccount();
+	public abstract List<Account> loadAllAccounts();
+
+	public void saveAllAccounts(Collection<Account> accounts) {
+		for (Account a : accounts)
+			saveAccount(a);
+	}
+
+	public abstract void deleteAccount(Account account);
+
+	public abstract void deleteAccount(String ref);
 
 	/**
 	 * Returns the {@link File} that a bank with the specified name will use.
