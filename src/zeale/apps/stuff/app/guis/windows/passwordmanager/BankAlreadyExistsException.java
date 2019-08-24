@@ -1,6 +1,6 @@
 package zeale.apps.stuff.app.guis.windows.passwordmanager;
 
-public class BankAlreadyExistsException extends PasswordBankException {
+class BankAlreadyExistsException extends PasswordBankException {
 
 	/**
 	 * SUID

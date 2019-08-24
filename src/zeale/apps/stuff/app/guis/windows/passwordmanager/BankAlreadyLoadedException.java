@@ -7,7 +7,7 @@ package zeale.apps.stuff.app.guis.windows.passwordmanager;
  * @author Zeale
  *
  */
-public class BankAlreadyLoadedException extends PasswordBankException {
+class BankAlreadyLoadedException extends PasswordBankException {
 
 	/**
 	 * SUID

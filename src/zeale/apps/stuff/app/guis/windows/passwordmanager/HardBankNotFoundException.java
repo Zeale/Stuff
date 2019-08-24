@@ -1,6 +1,6 @@
 package zeale.apps.stuff.app.guis.windows.passwordmanager;
 
-public class HardBankNotFoundException extends PasswordBankException {
+class HardBankNotFoundException extends PasswordBankException {
 
 	/**
 	 * SUID
