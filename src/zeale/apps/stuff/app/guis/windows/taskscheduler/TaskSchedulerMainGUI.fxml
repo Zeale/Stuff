@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -15,8 +15,10 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -30,13 +32,23 @@
 						<MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
 					</items>
 				</Menu>
+            <Menu mnemonicParsing="false" text="Tasks">
+              <items>
+                  <CheckMenuItem fx:id="filterComplete" mnemonicParsing="false" text="Filter Complete" />
+                  <CheckMenuItem fx:id="filterUrgent" mnemonicParsing="false" text="Filter Urgent" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Labels">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#showEditLabelGUI" text="Edit" />
+                  <MenuItem mnemonicParsing="false" onAction="#showCreateLabelGUI" text="Create" />
+                  <MenuItem mnemonicParsing="false" onAction="#showLabelManagerWindow" text="View" />
+                  <CheckMenuItem fx:id="showLabels" mnemonicParsing="false" text="Show" />
+              </items>
+            </Menu>
 			</menus>
 		</MenuBar>
 	</top>
-	<stylesheets>
-		<URL value="@../stylesheets/Pop%20Button.css" />
-		<URL value="@../stylesheets/BasicStyles.css" />
-	</stylesheets>
    <center>
       <TabPane fx:id="layoutTabPane" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
@@ -46,19 +58,17 @@
                      <items>
                         <TableView fx:id="taskView" minWidth="400.0" prefWidth="500.0">
                           <columns>
-                            <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="Name" />
-                            <TableColumn fx:id="descriptionColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="346.0000305175781" text="Description" />
-                              <TableColumn fx:id="completeColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" text="Complete" />
-                              <TableColumn fx:id="urgentColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" text="Urgent" />
-                              <TableColumn fx:id="dueDateColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="191.0" text="Due Date" />
+                            <TableColumn fx:id="nameColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" text="Name" />
+                            <TableColumn fx:id="descriptionColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="250.0" text="Description" />
+                              <TableColumn fx:id="completeColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Complete" />
+                              <TableColumn fx:id="urgentColumn" editable="false" maxWidth="1.7976931348623157E308" minWidth="75.0" prefWidth="75.0" text="Urgent" />
+                              <TableColumn fx:id="dueDateColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="100.0" text="Due Date" />
+                              <TableColumn fx:id="labelColumn" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="350.0" text="Labels" />
                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
                         </TableView>
                         <TabPane minHeight="600.0" minWidth="450.0" prefWidth="800.0" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                            <Tab text="Basic Info">
+                            <Tab text="Information">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -74,7 +84,7 @@
                                        </children></AnchorPane>
                               </content>
                             </Tab>
-                            <Tab text="Other">
+                            <Tab text="Attributes">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                        <children>
@@ -91,6 +101,28 @@
                                        </children></AnchorPane>
                               </content>
                             </Tab>
+                              <Tab text="Labels">
+                                <content>
+                                  <AnchorPane>
+                                       <children>
+                                          <Button layoutX="372.0" layoutY="14.0" mnemonicParsing="false" onAction="#showEditLabelGUI" styleClass="pop-button" text="Edit" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                                             <tooltip>
+                                                <Tooltip text="Edit available labels..." />
+                                             </tooltip>
+                                          </Button>
+                                          <VBox layoutY="200.0" spacing="50.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="75.0">
+                                             <children>
+                                                <TextField fx:id="labelFilter" promptText="Search for a Label..." />
+                                                <FlowPane id="LabelSelectionBox" fx:id="labelSelectionBox" hgap="20.0" vgap="20.0" VBox.vgrow="SOMETIMES" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />
+                                             </padding>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                </content>
+                              </Tab>
                           </tabs>
                         </TabPane>
                      </items>

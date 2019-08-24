@@ -2,12 +2,12 @@ package zeale.apps.stuff.app.guis.windows.modules;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -36,22 +37,27 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.app.guis.windows.HomeWindow;
-import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.stuff.utilities.java.references.LazyReference;
 
 public class ModuleWindow extends Window {
 
-	// TODO Add drag and drop functionality.
-	private static final DropShadow DEFAULT_MODULE_HOVER_EFFECT = new DropShadow();
-	static {
-		DEFAULT_MODULE_HOVER_EFFECT.setSpread(0.35);
-		DEFAULT_MODULE_HOVER_EFFECT.setRadius(35);
+	/**
+	 * This action ditches references to previous, possibly launched modules. This
+	 * action will still take place even if the modules are running, in which case
+	 * they will continue to run and will use their {@link URLClassLoader}s for
+	 * loading classes they need further down the road, but the references that
+	 * {@link Stuff} keeps to those class loaders and classes etc., will be
+	 * destroyed, so the modules (and their classes) will become available for
+	 * garbage collection once they finally stop functioning.
+	 */
+	private @FXML void reloadAllModules() {
+		LOADED_MODULES.regenerate();
 	}
 
 	private final class ModuleItem extends VBox {
 
-		private final MenuItem deleteModule = new MenuItem("Delete");
-		private final ContextMenu rightClickMenu = new ContextMenu(deleteModule);
+		private final MenuItem deleteModule = new MenuItem("Delete"), reloadModule = new MenuItem("Reload");
+		private final ContextMenu rightClickMenu = new ContextMenu(deleteModule, reloadModule);
 		private final Module module;
 
 		{
@@ -61,11 +67,51 @@ public class ModuleWindow extends Window {
 			setPickOnBounds(true);
 		}
 
-		public void remove() {
-			synchronized (ModuleWindow.this) {
-				moduleBox.getChildren().remove(this);
-				moduleViewMapping.remove(module);
-			}
+		private final ImageView icon;
+
+		public ModuleItem(Module module) {
+			getStyleClass().add("module-item");
+			Text title = new Text(module.getName());
+			title.getStyleClass().add("text");
+			getChildren().addAll(icon = new ImageView(module.getIcon()), title);
+			icon.getStyleClass().add("image-view");
+			title.setStyle("-fx-font-size: 1.4em;");
+			setOnMouseClicked(event -> {
+				if (event.getButton() == MouseButton.SECONDARY) {
+					rightClickMenu.show(this, event.getScreenX(), event.getScreenY());
+					event.consume();
+				} else if (event.getButton() == MouseButton.PRIMARY)
+					try {
+						module.load().launch();
+					} catch (ModuleLoadException e1) {
+						Logging.err("Failed to launch the module: \"" + module.getName() + "\".");
+						Logging.err(e1);
+					} catch (Exception e2) {
+						Logging.err("An unexpected error occurred while trying to launch the module: \""
+								+ module.getName() + "\".");
+						Logging.err(e2);
+					}
+			});
+
+			icon.setPreserveRatio(true);
+			icon.setFitWidth(128);
+			moduleViewMapping.put(this.module = module, this);
+			if (fits(getName(), searchField.getText()))
+				moduleBox.getChildren().add(this);
+
+			deleteModule.setOnAction(__ -> delete());
+			reloadModule.setOnAction(__ -> {
+				try {
+					module.reload();
+					Logging.std("Successfully reloaded the module: " + module.getName() + ".");
+					Logging.std(
+							"Please be careful if it was running when you reloaded it. Reloading a module is effectively like loading a brand new module in. If the module was running when you reloaded it and you try to open it again, the old and new instances may conflict.");
+				} catch (ModuleLoadException e) {
+					Logging.err("An error occurred while attempting to reload the module.");
+					Logging.err(e);
+				}
+			});
+
 		}
 
 		public void delete() {
@@ -74,61 +120,34 @@ public class ModuleWindow extends Window {
 			module.delete();
 		}
 
-		private final ImageView icon;
-
-		public ModuleItem(Module module) {
-			Text title = new Text(module.getName());
-			getChildren().addAll(icon = new ImageView(module.getIcon()), title);
-			title.setStyle("-fx-font-size: 1.4em;");
-			setOnMouseClicked(event -> {
-				try {
-					module.load().launch();
-				} catch (ModuleLoadException e1) {
-					Logging.err("Failed to launch the module: \"" + module.getName() + "\".");
-					Logging.err(e1);
-				} catch (Exception e2) {
-					Logging.err("An unexpected error occurred while trying to launch the module: \"" + module.getName()
-							+ "\".");
-					Logging.err(e2);
-				}
-			});
-			setOnMouseEntered(__ -> icon.setEffect(DEFAULT_MODULE_HOVER_EFFECT));
-			setOnMouseExited(__ -> icon.setEffect(null));
-
-			icon.setPreserveRatio(true);
-			icon.setFitWidth(128);
-			moduleViewMapping.put(this.module = module, this);
-			if (fits(getName(), searchField.getText()))
-				moduleBox.getChildren().add(this);
-
-			setOnMouseClicked(event -> {
-				if (event.getButton() == MouseButton.SECONDARY) {
-					rightClickMenu.show(this, event.getScreenX(), event.getScreenY());
-					event.consume();
-				}
-			});
-			deleteModule.setOnAction(__ -> delete());
-
-		}
-
 		public String getName() {
 			return module.getName();
 		}
 
+		public void remove() {
+			synchronized (ModuleWindow.this) {
+				moduleBox.getChildren().remove(this);
+				moduleViewMapping.remove(module);
+			}
+		}
+
 	}
 
-	private static boolean fits(String name, String query) {
-		return query.isEmpty() || name.toLowerCase().contains(query.toLowerCase());
+	// TODO Add drag and drop functionality.
+	private static final DropShadow DEFAULT_MODULE_HOVER_EFFECT = new DropShadow();
+
+	static {
+		DEFAULT_MODULE_HOVER_EFFECT.setSpread(0.35);
+		DEFAULT_MODULE_HOVER_EFFECT.setRadius(35);
 	}
 
-	private final static PhoenixReference<File> MODULE_INSTALLATION_DIRECTORY = PhoenixReference
-			.create((Supplier<File>) () -> {
-				File file = new File(Stuff.INSTALLATION_DIRECTORY, "Modules");
-				file.mkdirs();
-				return file;
-			});
+	private final static LazyReference<File> MODULE_INSTALLATION_DIRECTORY = LazyReference.create(() -> {
+		File file = new File(Stuff.INSTALLATION_DIRECTORY, "Modules");
+		file.mkdirs();
+		return file;
+	});
 
-	private static final PhoenixReference<ObservableList<Module>> LOADED_MODULES = new PhoenixReference<ObservableList<Module>>() {
+	private static final LazyReference<ObservableList<Module>> LOADED_MODULES = new LazyReference<ObservableList<Module>>() {
 
 		@Override
 		protected ObservableList<Module> generate() {
@@ -163,31 +182,75 @@ public class ModuleWindow extends Window {
 		}
 	};
 
-	private @FXML void goHome() {
+	private static boolean fits(String name, String query) {
+		return name.toLowerCase().contains(query.toLowerCase());
+	}
+
+	public static void loadModule(File module) {
+		File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), module.getName());
 		try {
-			Stuff.displayWindow(new HomeWindow());
-		} catch (WindowLoadFailureException e) {
-			Logging.err("Failed to show the home window.");
+			if (newFile.exists()) {
+				Logging.err("The module: \"" + module.getAbsolutePath()
+						+ "\" could not be loaded because a module with the same file name already exists.");
+				return;
+			}
+			Files.copy(module.toPath(), newFile.toPath());
+			if (LOADED_MODULES.exists())
+				LOADED_MODULES.get().add(new Module(module));
+		} catch (IOException e) {
+			Logging.err("Failed to copy the module: " + module.getAbsolutePath()
+					+ " to the module directory, (which is at: " + MODULE_INSTALLATION_DIRECTORY.get().getAbsolutePath()
+					+ "), so that it can be loaded.");
+			Logging.err(e);
+		} catch (ModuleLoadException e) {
+			newFile.delete();
+			Logging.err("Failed to load the module: " + module.getAbsolutePath());
 			Logging.err(e);
 		}
 	}
 
+	public static void loadModules(Collection<File> modules) {
+		for (File f : modules)
+			if (f.getName().endsWith(".jar"))
+				loadModule(f);
+			else if (f.getName().endsWith(".zip"))
+				loadZip(f);
+	}
+
+	public static void loadPackage(File pckge) {
+		/* TODO */
+	}
+
+	private static void loadZip(File zip) {
+		loadPackage(zip);
+	}
+
 	private @FXML FlowPane moduleBox;
 	private @FXML TextField searchField;
+
 	private @FXML Text dragInfoText;
+
 	private @FXML StackPane dragBox;
-	private final ObservableList<Module> loadedModules = LOADED_MODULES.get();// Strong reference uWu
 
 	private final Map<Module, ModuleItem> moduleViewMapping = new HashMap<>();
 
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+	}
+
+	private @FXML void goHome() {
+		Stuff.displayHome();
+	}
+
 	/**
-	 * 
+	 *
 	 */
 	private @FXML void initialize() {
-		for (Module m : loadedModules)
+		for (Module m : LOADED_MODULES.get())
 			new ModuleItem(m);
 
-		loadedModules.addListener((ListChangeListener<Module>) c -> {
+		LOADED_MODULES.get().addListener((ListChangeListener<Module>) c -> {
 			while (c.next())
 				if (c.wasAdded())
 					for (Module m1 : c.getAddedSubList())
@@ -279,60 +342,18 @@ public class ModuleWindow extends Window {
 	}
 
 	@Override
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
 		FXMLLoader loader = new FXMLLoader(ModuleWindow.class.getResource("ModuleGUI.fxml"));
 		loader.setController(this);
 		try {
-			stage.setScene(new Scene(loader.load()));
+			Parent root = loader.load();
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
+					"zeale/apps/stuff/app/guis/windows/modules/ModuleWindow.css");
+			stage.setScene(new Scene(root));
 		} catch (IOException e) {
 			Logging.err("Failed to show the Module window.");
 			Logging.err(e);
 		}
-	}
-
-	public static void loadModules(Collection<File> modules) {
-		for (File f : modules) {
-			if (f.getName().endsWith(".jar"))
-				loadModule(f);
-			else if (f.getName().endsWith(".zip"))
-				loadZip(f);
-		}
-	}
-
-	public static void loadModule(File module) {
-		File newFile = new File(MODULE_INSTALLATION_DIRECTORY.get(), module.getName());
-		try {
-			if (newFile.exists()) {
-				Logging.err("The module: \"" + module.getAbsolutePath()
-						+ "\" could not be loaded because a module with the same file name already exists.");
-				return;
-			}
-			Files.copy(module.toPath(), newFile.toPath());
-			if (LOADED_MODULES.exists())
-				LOADED_MODULES.get().add(new Module(module));
-		} catch (IOException e) {
-			Logging.err("Failed to copy the module: " + module.getAbsolutePath()
-					+ " to the module directory, (which is at: " + MODULE_INSTALLATION_DIRECTORY.get().getAbsolutePath()
-					+ "), so that it can be loaded.");
-			Logging.err(e);
-		} catch (ModuleLoadException e) {
-			newFile.delete();
-			Logging.err("Failed to load the module: " + module.getAbsolutePath());
-			Logging.err(e);
-		}
-	}
-
-	private static void loadZip(File zip) {
-		loadPackage(zip);
-	}
-
-	public static void loadPackage(File pckge) {
-		/* TODO */
 	}
 
 }

@@ -2,6 +2,8 @@ package zeale.apps.stuff;
 
 import java.io.File;
 
+import org.alixia.chatroom.api.items.LateLoadItem;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -14,6 +16,8 @@ import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
 import zeale.apps.stuff.api.installation.ProgramArguments;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.api.modules.Module;
+import zeale.apps.stuff.app.console.StuffBasicConsoleLogic;
 import zeale.apps.stuff.app.guis.windows.HomeWindow;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow1;
 import zeale.apps.stuff.app.guis.windows.installsetup.InstallSetupWindow2;
@@ -25,6 +29,16 @@ public class Stuff extends Application {
 
 	public static final StandardConsole PROGRAM_CONSOLE = new StandardConsole();
 
+	private static Parameters programParameters;
+
+	public static Parameters getProgramParameters() {
+		return programParameters;
+	}
+
+	static {
+		PROGRAM_CONSOLE.applyLogic(new StuffBasicConsoleLogic(PROGRAM_CONSOLE));
+	}
+
 	private static final PhoenixReference<Image> windowIcon = new PhoenixReference<Image>() {
 		@Override
 		protected Image generate() {
@@ -32,18 +46,43 @@ public class Stuff extends Application {
 		}
 	};
 
+	@Override
+	public void init() throws Exception {
+		programParameters = getParameters();
+	}
+
+	public static void displayHome() throws RuntimeException {
+		try {
+			Stuff.displayWindow(new HomeWindow());
+		} catch (WindowLoadFailureException e) {
+			Logging.err(e);
+			throw new RuntimeException(e);
+		}
+	}
+
 	/**
 	 * The program's default view for its console. This should be accessed on the
 	 * JavaFX Application thread in case a new view needs to be made.
 	 */
-	private static final PhoenixReference<StandardConsoleView> PROGRAM_CONSOLE_VIEW = new PhoenixReference<StandardConsoleView>() {
+	private static final LateLoadItem<StandardConsoleView> PROGRAM_CONSOLE_VIEW = new LateLoadItem<>(() -> {
+		Stage stage = makeStage();
+		stage.setHeight(800);
+		stage.setWidth(1000);
+		stage.setMinHeight(650);
+		stage.setMinWidth(800);
+		return PROGRAM_CONSOLE.getView(stage);
+	});
 
-		@Override
-		protected StandardConsoleView generate() {
-			return PROGRAM_CONSOLE.getView(makeStage());
-		}
+	/**
+	 * The program's installation directory. This is laxly detected (as of now) by
+	 * simply getting the program's working directory. Some sort of storage API will
+	 * need to be made later.
+	 */
+	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
+			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
+			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data");
 
-	};
+	private static Stage stage;
 
 	public static void displayConsole() {
 		if (!Platform.isFxApplicationThread())
@@ -55,10 +94,23 @@ public class Stuff extends Application {
 		}
 	}
 
+	public static void displayWindow(Window window) throws WindowLoadFailureException {
+		window.display(stage);
+	}
+
+	public static void displayWindow(Window window, ApplicationProperties props) throws WindowLoadFailureException {
+		window.display(stage, props);
+	}
+
+	public static void main(String[] args) {
+		Platform.setImplicitExit(false);
+		launch(Stuff.class, args);
+	}
+
 	/**
 	 * Creates a new {@link Stage} and styles it to fit with the application. This
 	 * function must be called on the application thread.
-	 * 
+	 *
 	 * @return The newly created {@link Stage}.
 	 * @throws InterruptedException In case the thread is interrupted while the FX
 	 *                              Application thread makes the stage.
@@ -79,36 +131,10 @@ public class Stuff extends Application {
 				event.consume();
 			}
 		});
+		stage.setTitle("Stuff");
 	}
 
-	/**
-	 * The program's installation directory. This is laxly detected (as of now) by
-	 * simply getting the program's working directory. Some sort of storage API will
-	 * need to be made later.
-	 */
-	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
-			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
-			APP_DATA_DIRECTORY = new File(INSTALLATION_DIRECTORY, "App Data");
-
-	private static Stage stage;
-
-	public static void displayWindow(Window window) throws WindowLoadFailureException {
-		window.display(stage);
-	}
-
-	public static void displayWindow(Window window, ApplicationProperties props) throws WindowLoadFailureException {
-		window.display(stage, props);
-	}
-
-	public static void main(String[] args) {
-		launch(Stuff.class, args);
-	}
-
-	@Override
-	public void stop() throws Exception {
-		Window.destroyStage(stage);
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		prepareStage(stage = primaryStage);
@@ -131,9 +157,29 @@ public class Stuff extends Application {
 				Logging.wrn("File location: " + file);
 			}
 		}
+		if (args.getNamed().containsKey(ProgramArguments.LAUNCH_MODULE)) {
+			Class<?> cls = Class.forName(args.getNamed().get(ProgramArguments.LAUNCH_MODULE));
+			try {
+				if (Module.class.isAssignableFrom(cls))
+					((Class<? extends Module>) cls).newInstance().launch();
+				else
+					throw new RuntimeException(
+							"The specified module class is not a subclass of Module, and so, cannot be loaded as a module. (Class: "
+									+ args.getNamed().get(ProgramArguments.LAUNCH_MODULE) + ")");
+			} catch (Exception e) {
+				throw new RuntimeException(
+						"An error occurred while trying to launch the module class specified via a command line argument: "
+								+ args.getNamed().get(ProgramArguments.LAUNCH_MODULE),
+						e);
+			}
+		} else
+			(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow1()
+					: args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_2) ? new InstallSetupWindow2()
+							: new HomeWindow()).display(primaryStage);
+	}
 
-		(args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_1) ? new InstallSetupWindow1()
-				: args.getUnnamed().contains(ProgramArguments.INSTALLATION_STAGE_2) ? new InstallSetupWindow2()
-						: new HomeWindow()).display(primaryStage);
+	@Override
+	public void stop() throws Exception {
+		Window.destroyStage(stage);
 	}
 }

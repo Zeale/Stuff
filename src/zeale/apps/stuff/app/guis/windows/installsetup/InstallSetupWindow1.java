@@ -26,6 +26,8 @@ import zeale.apps.stuff.api.installation.ProgramArguments;
 
 public class InstallSetupWindow1 extends Window {
 
+	private Stage stage;
+
 	@Override
 	public void destroy() {
 		// Undo the modifications that this Window did to the Stage. (This doesn't
@@ -37,8 +39,6 @@ public class InstallSetupWindow1 extends Window {
 		stage.setMaxWidth(Double.MAX_VALUE);
 		stage.setAlwaysOnTop(false);
 	}
-
-	private Stage stage;
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
@@ -52,6 +52,10 @@ public class InstallSetupWindow1 extends Window {
 		TextField input = new TextField(Stuff.INSTALLATION_DIRECTORY.toString());
 		Button fileChooseButton = new Button("..."), defaultButton = new Button(""),
 				continueButton = new Button("Continue");
+
+		fileChooseButton.getStyleClass().add("pop-button");
+		defaultButton.getStyleClass().add("pop-button");
+		continueButton.getStyleClass().add("pop-button");
 
 		DirectoryChooser saveFileChooser = new DirectoryChooser();
 		saveFileChooser.initialDirectoryProperty()
@@ -88,22 +92,20 @@ public class InstallSetupWindow1 extends Window {
 				File currFile = new File(
 						InstallSetupWindow1.class.getProtectionDomain().getCodeSource().getLocation().getPath())
 								.getAbsoluteFile();
-				if (!to.equals(Stuff.INSTALLATION_DIRECTORY)) {
+				if (!to.equals(Stuff.INSTALLATION_DIRECTORY))
 					try {
 
 						File executable = new File(to, currFile.getName());
-						Files.copy(currFile.toPath(), executable.toPath(),
-								StandardCopyOption.REPLACE_EXISTING);
+						Files.copy(currFile.toPath(), executable.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
 						box.getChildren().remove(inputBox);
 						info.setText("Finished setting installation directory. Press continue to continue.");
 
 						continueButton.setOnAction(event1 -> {
 							try {
-								Runtime.getRuntime()
-										.exec(executable.getAbsolutePath() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
-												+ currFile.getAbsolutePath() + "\" "
-												+ ProgramArguments.INSTALLATION_STAGE_2, null, to);
+								Runtime.getRuntime().exec(executable.getAbsolutePath() + " --"
+										+ ProgramArguments.INSTALLATION_CLEANUP + "=\"" + currFile.getAbsolutePath()
+										+ "\" " + ProgramArguments.INSTALLATION_STAGE_2, null, to);
 								Platform.exit();
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
@@ -113,10 +115,10 @@ public class InstallSetupWindow1 extends Window {
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 					}
-				} else {
+				else
 					try {
 						Runtime.getRuntime()
-								.exec(currFile.getName() + " " + ProgramArguments.INSTALLATION_CLEANUP + "=\""
+								.exec(currFile.getName() + " --" + ProgramArguments.INSTALLATION_CLEANUP + "=\""
 										+ currFile.getAbsolutePath() + "\" " + ProgramArguments.INSTALLATION_STAGE_2,
 										null, to);
 						Platform.exit();
@@ -124,13 +126,14 @@ public class InstallSetupWindow1 extends Window {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
 				running = false;
 			}
 
 		});
 
-		stage.setScene(new Scene(box));
+		box.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
+		Scene scene = new Scene(box);
+		stage.setScene(scene);
 
 		stage.setMinHeight(300);
 		stage.setMinWidth(200);

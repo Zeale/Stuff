@@ -11,19 +11,17 @@ import java.util.zip.ZipFile;
 import branch.alixia.unnamed.Datamap;
 import javafx.scene.image.Image;
 import zeale.apps.stuff.api.logging.Logging;
-import zeale.apps.stuff.utilities.java.references.PhoenixReference;
+import zeale.apps.stuff.utilities.java.references.LazyReference;
 import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
 
 class Module {
 
-	private static final String STUFF_MODULE_INTERNAL_MANIFEST_LOCATION = "STUFF-MODULE-MANIFEST/Manifest.mf",
-			ICON_MANIFEST_KEY = "icon", LAUNCH_CLASS_MANIFEST_KEY = "launch-class", NAME_MANIFEST_KEY = "name";
 	private final Image icon;
 	private final String name, launchClass;
 	private final URL location;
 
 	// This is available for gc when loadedLaunchClass is ungenerated or is too.
-	private final PhoenixReference<URLClassLoader> loader = new PhoenixReference<URLClassLoader>(true) {
+	private final LazyReference<URLClassLoader> loader = new LazyReference<URLClassLoader>() {
 
 		@Override
 		protected URLClassLoader generate() {
@@ -56,14 +54,14 @@ class Module {
 
 	public Module(File file) throws IOException, ModuleLoadException {
 		try (ZipFile jar = new JarFile(this.file = file)) {
-			ZipEntry entry = jar.getEntry(STUFF_MODULE_INTERNAL_MANIFEST_LOCATION);
+			ZipEntry entry = jar.getEntry(zeale.apps.stuff.api.modules.Module.STUFF_MODULE_INTERNAL_MANIFEST_LOCATION);
 			if (entry == null)
 				throw new ModuleLoadException("Invalid module; The manifest file could not be located inside the jar.");
 			Datamap datamap = Datamap.read(jar.getInputStream(entry));
 
-			name = datamap.get(NAME_MANIFEST_KEY);
-			launchClass = datamap.get(LAUNCH_CLASS_MANIFEST_KEY);
-			String ico = datamap.get(ICON_MANIFEST_KEY);
+			name = datamap.get(zeale.apps.stuff.api.modules.Module.NAME_MANIFEST_KEY);
+			launchClass = datamap.get(zeale.apps.stuff.api.modules.Module.LAUNCH_CLASS_MANIFEST_KEY);
+			String ico = datamap.get(zeale.apps.stuff.api.modules.Module.ICON_MANIFEST_KEY);
 			location = file.toURI().toURL();
 
 			if (name == null)
@@ -87,12 +85,20 @@ class Module {
 
 	}
 
-	public URLClassLoader getLoader() {
-		return loader.get();
+	protected void delete() {
+		file.delete();
 	}
 
 	public Image getIcon() {
 		return icon;
+	}
+
+	public URLClassLoader getLoader() {
+		return loader.get();
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public zeale.apps.stuff.api.modules.Module load() throws ModuleLoadException {
@@ -121,12 +127,13 @@ class Module {
 		}
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	protected void delete() {
-		file.delete();
+	public void reload() throws ModuleLoadException {
+		loader.regenerate();
+		try {
+			loadedLaunchClass.regenerate();
+		} catch (Exception e) {
+			throw new ModuleLoadException(e);
+		}
 	}
 
 }

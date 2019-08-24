@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
@@ -21,7 +20,6 @@
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-
 
 <BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <center>
@@ -118,11 +116,6 @@
          </children>
       </GridPane>
    </center>
-   <stylesheets>
-      <URL value="@../stylesheets/Pop%20Button.css" />
-      <URL value="@../stylesheets/BasicStyles.css" />
-      <URL value="@Encryption.css" />
-   </stylesheets>
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
