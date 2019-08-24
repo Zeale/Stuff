@@ -40,7 +40,7 @@ import zeale.apps.stuff.utilities.java.references.SporadicPhoenixReference;
  * @author Zeale
  *
  */
-public abstract class PasswordBank {
+abstract class PasswordBank {
 
 	private boolean valid = true;
 
