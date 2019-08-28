@@ -13,8 +13,30 @@
 	-pop-button--clicked-text-color: -stuff-text-fill;
 }
 
+/* Radio Buttons */
 .radio-button .radio {
 	-fx-focus-color: transparent;
+	-fx-background-color: -stuff-dark;
+}
+
+.radio-button .text {
+	-fx-fill: -stuff-text-fill;
+}
+
+.radio-button:hover .text {
+	-fx-fill: -stuff-hover-fill;
+}
+
+.radio-button:selected .text {
+	-fx-font-weight: bold;
+}
+
+.radio-button:selected .radio .dot {
+	-fx-background-color: -stuff-text-fill;
+}
+
+.radio-button:selected:hover .radio .dot {
+	-fx-background-color: -stuff-hover-fill;
 }
 
 .pop-button:hover.button, .pop-button:hover.menu-button > .label {

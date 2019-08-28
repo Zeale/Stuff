@@ -106,8 +106,7 @@ public class EncryptionWindow extends Window {
 		loader.setController(this);
 		try {
 			Parent root = loader.load();
-			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get(),
-					"zeale/apps/stuff/app/guis/windows/encryption/Encryption.css");
+			root.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
 			stage.setScene(new Scene(root));
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to load the UI for the Encryption Window.", e);
