@@ -11,7 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import zeale.apps.stuff.app.guis.windows.calculator.calculators.linear_algebra.CalculatorResourceObtainer;
 
 public class CalculatorMenuButton extends Button {
 	/**
@@ -33,7 +32,7 @@ public class CalculatorMenuButton extends Button {
 	 * {@link Node} should become the root.
 	 * </p>
 	 */
-	private final BooleanProperty fillCenter = new SimpleBooleanProperty();
+	private final BooleanProperty fillCenter = new SimpleBooleanProperty(true);
 	private CalculatorWindow instance;
 
 	void setInstance(CalculatorWindow instance) {
