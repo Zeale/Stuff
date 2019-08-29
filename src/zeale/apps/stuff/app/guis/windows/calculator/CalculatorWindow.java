@@ -135,7 +135,7 @@ public final class CalculatorWindow extends Window {
 		for (TitledPane tp : calcSelectorAccordion.getPanes())
 			for (Node n : ((Parent) tp.getContent()).getChildrenUnmodifiable())
 				if (n instanceof CalculatorMenuButton)
-					((CalculatorMenuButton) n).setInstance(this);
+					((CalculatorMenuButton) n).setInstance(this, tp.getText());
 
 	}
 

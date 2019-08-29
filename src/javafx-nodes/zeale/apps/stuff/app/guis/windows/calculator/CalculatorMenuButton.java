@@ -35,8 +35,11 @@ public class CalculatorMenuButton extends Button {
 	private final BooleanProperty fillCenter = new SimpleBooleanProperty(true);
 	private CalculatorWindow instance;
 
-	void setInstance(CalculatorWindow instance) {
+	private String section;
+
+	void setInstance(CalculatorWindow instance, String section) {
 		this.instance = instance;
+		this.section = section;
 	}
 
 	{
@@ -44,7 +47,8 @@ public class CalculatorMenuButton extends Button {
 	}
 
 	void showCalc(BorderPane pane) throws IOException {
-		FXMLLoader loader = new FXMLLoader(CalculatorWindow.class.getResource("calculators/" + file.get() + ".fxml"));
+		FXMLLoader loader = new FXMLLoader(
+				CalculatorWindow.class.getResource("calculators/" + section + "/" + file.get() + ".fxml"));
 		Parent root = loader.load();
 		pane.setCenter(root);
 		instance.showSides(!fillCenter.get());
