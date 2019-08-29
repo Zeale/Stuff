@@ -66,6 +66,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.api.utilities.Utils;
 import zeale.apps.stuff.utilities.java.references.LazyReference;
 
 public class TaskSchedulerWindow extends Window {
@@ -281,20 +282,6 @@ public class TaskSchedulerWindow extends Window {
 		}
 	};
 
-	static final File findFeasibleFile(File location, String extension) throws FileNotFoundException {
-		String uuid = UUID.randomUUID().toString();
-		File file = new File(location, uuid);
-		if (file.exists()) {
-			int val = 0;
-			while ((file = new File(location, uuid + "-" + val + extension)).exists())
-				if (++val == 0)
-					// If the user has 2^32 files in this directory each with the same UUID then
-					// wtf.
-					throw new FileNotFoundException();
-		}
-		return file;
-	}
-
 	/**
 	 * Finds a feasible name using UUIDs and the given {@link Function}.
 	 *
@@ -383,7 +370,7 @@ public class TaskSchedulerWindow extends Window {
 		}
 		File file;
 		try {
-			file = findFeasibleFile(TASK_DATA_DIR.get(), ".tsk");
+			file = Utils.findFeasibleFile(TASK_DATA_DIR.get(), ".tsk");
 		} catch (FileNotFoundException e1) {
 			Logging.err("Failed to find a feasible file for the Task, \"" + createName.getText() + "\".");
 			return;

@@ -41,6 +41,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.api.utilities.Utils;
 import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow.NameNotFoundException;
 import zeale.apps.stuff.utilities.java.references.LazyReference;
 
@@ -108,7 +109,7 @@ class LabelManagerWindow extends Window {
 
 	private static final Label createNewLabel() throws NameNotFoundException, FileNotFoundException {
 		String uuid = TaskSchedulerWindow.findFeasibleName(LabelManagerWindow::idTaken);
-		Label label = new Label(TaskSchedulerWindow.findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), uuid);
+		Label label = new Label(Utils.findFeasibleFile(LABEL_DATA_DIR.get(), ".lbl"), uuid);
 
 		InvalidationListener invalidationListener = __ -> markDirty(label);
 

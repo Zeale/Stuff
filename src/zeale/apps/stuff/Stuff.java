@@ -80,7 +80,8 @@ public class Stuff extends Application {
 	 */
 	public static final File INSTALLATION_DIRECTORY = new File("").getAbsoluteFile(),
 			PROPERTIES_FILE = new File(INSTALLATION_DIRECTORY, "properties.stf.dat"),
-			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data");
+			APPLICATION_DATA = new File(INSTALLATION_DIRECTORY, "App Data"),
+			MODULE_DATA = new File(INSTALLATION_DIRECTORY, "Module Data");
 
 	private static Stage stage;
 
