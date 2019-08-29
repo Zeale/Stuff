@@ -10,7 +10,9 @@ public final class Utils {
 	 * <p>
 	 * Attempts to find a feasible, non-existent {@link File} by creating a
 	 * randomized {@link UUID} and using it and the specified
-	 * <code>extension</code>, as the file's name.
+	 * <code>extension</code>, as the file's name. <b>Please note that this method
+	 * does not prepend the <code>extension</code> with a '<code>.</code>'
+	 * character.</b>.
 	 * </p>
 	 * <p>
 	 * If a {@link File} with that name and the specified extension already exists
