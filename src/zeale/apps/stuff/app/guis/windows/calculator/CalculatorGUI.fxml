@@ -285,7 +285,7 @@
 	<right>
 		<Accordion id="NavigationControl" fx:id="calcSelectorAccordion" maxWidth="200.0" minWidth="150.0" pickOnBounds="false" prefWidth="200.0" BorderPane.alignment="CENTER">
 			<panes>
-				<TitledPane animated="false" text="Header">
+				<TitledPane animated="false" text="Algebra">
 					<content>
 						<VBox alignment="TOP_CENTER" spacing="20.0">
 							<padding>
@@ -294,6 +294,42 @@
 						</VBox>
 					</content>
 				</TitledPane>
+            <TitledPane animated="false" text="Geometry">
+               <content>
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </TitledPane>
+            <TitledPane animated="false" text="Trigonometry">
+               <content>
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </TitledPane>
+            <TitledPane animated="false" text="Calculus">
+               <content>
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </TitledPane>
+            <TitledPane animated="false" text="Statistics">
+               <content>
+                  <VBox alignment="TOP_CENTER" spacing="20.0">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                  </VBox>
+               </content>
+            </TitledPane>
 			</panes>
 		</Accordion>
 	</right>
