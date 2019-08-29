@@ -45,7 +45,7 @@ public class CalculatorMenuButton extends Button {
 	}
 
 	void showCalc(BorderPane pane) throws IOException {
-		FXMLLoader loader = new FXMLLoader(CalculatorResourceObtainer.class.getResource(file.get() + ".fxml"));
+		FXMLLoader loader = new FXMLLoader(CalculatorWindow.class.getResource("calculators/" + file.get() + ".fxml"));
 		Parent root = loader.load();
 		pane.setCenter(root);
 		instance.showSides(!fillCenter.get());
