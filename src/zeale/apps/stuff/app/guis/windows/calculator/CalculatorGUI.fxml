@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
@@ -25,304 +24,288 @@
 <?import javafx.scene.text.Font?>
 <?import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="1300.0" pickOnBounds="false" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <center>
-            <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
-               <content>
-                  <StackPane>
-                     <children>
-                        <VBox alignment="CENTER" pickOnBounds="false" spacing="20.0">
-                           <children>
-                              <TextField fx:id="inputField" maxWidth="800.0" onKeyPressed="#inputFieldKeyEvent" prefHeight="50.0">
-                                 <font>
-                                    <Font name="Monospaced Bold" size="16.0" />
-                                 </font>
-                              </TextField>
-                              <TabPane maxHeight="500.0" maxWidth="800.0" minHeight="400.0" pickOnBounds="false" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-                                 <tabs>
-                                    <Tab text="Math">
-                                       <content>
-                                          <ScrollPane fitToHeight="true" fitToWidth="true">
-                                             <content>
-                                                <HBox alignment="CENTER" spacing="20.0">
-                                                   <children>
-                                                      <StackPane minHeight="100.0" minWidth="250.0" prefHeight="220.0" prefWidth="150.0" style="-fx-border-color: transparent -stuff-dark transparent transparent;" HBox.hgrow="SOMETIMES">
-                                                         <children>
-                                                            <GridPane maxHeight="180.0" maxWidth="180.0" StackPane.alignment="CENTER">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="(" GridPane.columnIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=")" GridPane.columnIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="!" />
-                                                               </children>
-                                                               <StackPane.margin>
-                                                                  <Insets />
-                                                               </StackPane.margin>
-                                                            </GridPane>
-                                                         </children>
-                                                      </StackPane>
-                                                      <StackPane minHeight="160.0" minWidth="210.0" prefWidth="210.0" HBox.hgrow="SOMETIMES">
-                                                         <children>
-                                                            <GridPane alignment="CENTER" maxHeight="176.0" maxWidth="132.0" StackPane.alignment="CENTER">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="2" GridPane.columnIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="3" GridPane.columnIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="4" GridPane.rowIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="5" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="6" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="7" GridPane.rowIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="8" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                               </children>
-                                                            </GridPane>
-                                                            <GridPane pickOnBounds="false">
-                                                               <columnConstraints>
-                                                                  <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
-                                                               </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
-                                                               <children>
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="+" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="-" GridPane.rowIndex="1" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="*" GridPane.rowIndex="2" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="/" GridPane.rowIndex="3" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="\%" GridPane.rowIndex="4" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="^" GridPane.rowIndex="5" />
-                                                                  <Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="=" GridPane.rowIndex="6" />
-                                                               </children>
-                                                               <StackPane.margin>
-                                                                  <Insets bottom="40.0" top="40.0" />
-                                                               </StackPane.margin>
-                                                            </GridPane>
-                                                            <Button mnemonicParsing="false" onAction="#solve" styleClass="pop-button" text="Solve" StackPane.alignment="BOTTOM_CENTER" />
-                                                         </children>
-                                                      </StackPane>
-                                                      <StackPane minHeight="200.0" minWidth="150.0" prefHeight="250.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-                                                         <children>
-                                                            <AnchorPane style="-fx-border-color: transparent transparent transparent -stuff-dark;">
-                                                               <children>
-                                                                  <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                     <content>
-                                                                        <GridPane alignment="TOP_CENTER">
-                                                                           <columnConstraints>
-                                                                              <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
-                                                                              <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
-                                                                           </columnConstraints>
-                                                                           <rowConstraints>
-                                                                              <RowConstraints fillHeight="false" valignment="CENTER" vgrow="ALWAYS" />
-                                                                              <RowConstraints fillHeight="false" valignment="CENTER" vgrow="ALWAYS" />
-                                                                              <RowConstraints fillHeight="false" valignment="CENTER" vgrow="ALWAYS" />
-                                                                           </rowConstraints>
-                                                                           <children>
-                                                                              <Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="sec" GridPane.rowIndex="1" />
-                                                                              <Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="cos" GridPane.columnIndex="1" />
-                                                                              <Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="csc" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                                              <Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="tan" GridPane.rowIndex="2" />
-                                                                              <Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="sin" />
-                                                                              <Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="cot" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                                           </children>
-                                                                        </GridPane>
-                                                                     </content>
-                                                                  </ScrollPane>
-                                                               </children>
-                                                            </AnchorPane>
-                                                            <Button mnemonicParsing="false" onAction="#clearInputField" styleClass="pop-button" text="Clear" StackPane.alignment="BOTTOM_CENTER" />
-                                                         </children>
-                                                      </StackPane>
-                                                   </children>
-                                                </HBox>
-                                             </content>
-                                          </ScrollPane>
-                                       </content>
-                                    </Tab>
-                                    <Tab text="Functions">
-                                       <content>
-                                          <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
-                                             <content>
-                                                <VBox spacing="30.0">
-                                                   <children>
-                                                      <TextField>
-                                                         <VBox.margin>
-                                                            <Insets left="20.0" right="20.0" />
-                                                         </VBox.margin>
-                                                      </TextField>
-                                                      <FlowPane hgap="40.0" vgap="50.0">
-                                                         <padding>
-                                                            <Insets left="30.0" right="30.0" />
-                                                         </padding>
-                                                         <children>
-                                                            <TaggedCalculatorButton onAction="#functionPushed" tag="Ceiling/Round Up" text="ceil" />
-                                                            <TaggedCalculatorButton onAction="#functionPushed" tag="Floor/Round Down" text="floor" />
-                                                            <TaggedCalculatorButton onAction="#functionPushed" tag="Floor/Round Down" text="round" />
-                                                         </children>
-                                                      </FlowPane>
-                                                   </children>
-                                                   <padding>
-                                                      <Insets bottom="30.0" top="30.0" />
-                                                   </padding>
-                                                </VBox>
-                                             </content>
-                                          </ScrollPane>
-                                       </content></Tab>
-                                    <Tab text="Extended Functionality">
-                                       <content>
-                                          <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
-                                             <content>
-                                                <VBox spacing="30.0">
-                                                   <children>
-                                                      <TextField fx:id="extendedFunctionalitySearch">
-                                                         <VBox.margin>
-                                                            <Insets left="20.0" right="20.0" />
-                                                         </VBox.margin>
-                                                      </TextField>
-                                                      <FlowPane fx:id="extendedFunctionalityFlowPane" alignment="TOP_CENTER" columnHalignment="CENTER" hgap="40.0" vgap="50.0">
-                                                         <children>
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Bracket" text="[" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Bracket" text="]" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Brace" text="{" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Brace" text="}" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Chevron" text="&lt;" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Chevron" text="&gt;" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Ampersand (Bitwise/Logical AND)" text="&amp;" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Double Ampersand (Bitwise/Logical AND)" text="&amp;&amp;" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Pipeline (Bitwise/Logical OR)" text="|" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Double Pipeline (Bitwise/Logical OR)" text="||" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Colon" text=":" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="Letter P (Probability)" text="p" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="True (Boolean Value)" text="true" />
-                                                            <TaggedCalculatorButton onAction="#buttonPushed" tag="False (Boolean Value)" text="false" />
-                                                         </children>
-                                                         <padding>
-                                                            <Insets left="30.0" right="30.0" />
-                                                         </padding>
-                                                      </FlowPane>
-                                                   </children>
-                                                   <padding>
-                                                      <Insets bottom="30.0" top="30.0" />
-                                                   </padding>
-                                                </VBox>
-                                             </content>
-                                          </ScrollPane>
-                                       </content>
-                                    </Tab>
-                                 </tabs>
-                                 <VBox.margin>
-                                    <Insets />
-                                 </VBox.margin>
-                              </TabPane>
-                           </children>
-                           <padding>
-                              <Insets bottom="20.0" top="70.0" />
-                           </padding>
-                        </VBox>
-                     </children>
-                     <padding>
-                        <Insets left="40.0" right="40.0" />
-                     </padding>
-                  </StackPane>
-               </content>
-            </ScrollPane>
-         </center>
-         <left>
-            <VBox id="SearchControl" alignment="TOP_CENTER" maxWidth="200.0" minWidth="150.0" pickOnBounds="false" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
-               <children>
-                  <HBox alignment="CENTER" pickOnBounds="false" spacing="10.0">
-                     <children>
-                        <TextField />
-                        <Button id="SearchButton" contentDisplay="CENTER" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
-                           <graphic>
-                              <SVGPath content="M 2.47,192.69 C 1.27,191.41 0.29,189.25 0.29,187.87 0.29,186.42 1.51,184.21 3.22,182.57 4.83,181.03 6.67,178.51 7.31,176.97 7.94,175.43 9.74,173.64 11.31,172.99 12.87,172.35 16.82,169.04 20.08,165.64 23.34,162.25 26.32,158.49 26.70,157.29 27.08,156.08 28.38,154.80 29.59,154.42 30.80,154.05 37.05,148.57 43.47,142.24 49.90,135.92 55.68,129.49 56.31,127.96 56.94,126.42 58.75,124.64 60.32,123.99 61.89,123.34 65.61,120.25 68.60,117.12 71.58,113.99 74.32,110.48 74.69,109.32 75.06,108.16 76.64,106.68 78.21,106.03 79.77,105.39 82.25,103.61 83.70,102.10 86.33,99.36 86.33,99.32 84.45,96.92 83.41,95.59 81.18,91.76 79.50,88.42 77.81,85.08 75.73,79.61 74.86,76.28 73.99,72.90 73.29,66.13 73.29,61.00 73.29,55.87 73.99,49.10 74.86,45.72 75.73,42.39 77.81,36.92 79.48,33.58 81.16,30.24 84.37,25.23 86.62,22.46 88.87,19.69 92.98,15.58 95.75,13.33 98.52,11.08 103.53,7.87 106.87,6.19 110.22,4.51 115.68,2.44 119.02,1.57 122.40,0.70 129.16,-0.00 134.29,-0.00 139.42,-0.00 146.19,0.70 149.56,1.57 152.89,2.43 158.81,4.74 162.71,6.70 167.59,9.16 172.15,12.63 177.41,17.88 182.66,23.14 186.13,27.70 188.59,32.59 190.55,36.48 192.86,42.40 193.72,45.73 194.60,49.10 195.29,55.87 195.29,61.00 195.29,66.13 194.60,72.90 193.72,76.27 192.86,79.60 190.55,85.52 188.59,89.41 186.13,94.30 182.66,98.86 177.41,104.12 172.15,109.37 167.59,112.84 162.71,115.30 158.81,117.26 152.89,119.57 149.56,120.43 146.19,121.30 139.42,122.00 134.29,122.00 129.16,122.00 122.40,121.30 119.02,120.43 115.68,119.56 110.22,117.48 106.87,115.80 103.53,114.11 99.70,111.88 98.37,110.84 95.97,108.96 95.94,108.97 93.20,111.59 91.68,113.05 89.91,115.52 89.26,117.08 88.61,118.65 87.13,120.23 85.97,120.60 84.81,120.97 81.30,123.71 78.17,126.70 75.04,129.68 71.95,133.40 71.30,134.97 70.65,136.54 68.87,138.35 67.34,138.98 65.81,139.62 59.38,145.39 53.05,151.82 46.72,158.24 41.25,164.46 40.89,165.64 40.52,166.82 38.92,168.32 37.33,168.98 35.74,169.64 31.76,172.96 28.50,176.36 25.24,179.75 22.27,183.49 21.90,184.66 21.53,185.83 19.94,187.32 18.38,187.97 16.81,188.61 14.27,190.46 12.72,192.07 11.01,193.86 8.89,195.00 7.28,195.00 5.81,195.00 3.67,193.97 2.47,192.69 2.47,192.69 2.47,192.69 2.47,192.69 Z M 149.53,113.14 C 153.21,112.12 158.76,109.76 161.87,107.89 164.98,106.03 169.83,102.20 172.66,99.38 175.48,96.57 179.44,91.47 181.45,88.05 183.47,84.64 185.88,78.72 186.82,74.89 188.06,69.84 188.40,65.28 188.07,58.22 187.77,51.79 186.90,46.52 185.50,42.65 184.33,39.43 182.03,34.71 180.39,32.15 178.75,29.59 175.46,25.52 173.10,23.10 170.73,20.68 166.25,17.05 163.15,15.02 160.05,13.00 154.88,10.48 151.65,9.42 147.25,7.98 142.94,7.50 134.29,7.50 125.65,7.50 121.34,7.98 116.93,9.42 113.71,10.48 108.53,13.00 105.43,15.02 102.33,17.05 97.86,20.68 95.49,23.10 93.12,25.52 89.84,29.59 88.20,32.15 86.55,34.71 84.26,39.43 83.09,42.65 81.73,46.40 80.81,51.87 80.51,57.90 80.23,63.45 80.54,69.59 81.27,72.90 81.94,75.98 83.78,81.20 85.35,84.50 86.92,87.80 89.90,92.54 91.96,95.04 94.03,97.53 97.76,101.26 100.25,103.32 102.75,105.37 107.13,108.21 109.98,109.62 112.84,111.03 117.34,112.77 119.98,113.50 122.63,114.23 128.85,114.86 133.81,114.91 139.78,114.97 145.10,114.37 149.53,113.14 149.53,113.14 149.53,113.14 149.53,113.14 Z M 121.94,112.42 C 118.72,111.64 112.98,109.37 109.20,107.38 104.67,105.00 100.16,101.48 96.02,97.09 92.56,93.42 88.49,87.81 86.97,84.61 85.46,81.41 83.57,76.03 82.77,72.65 81.97,69.27 81.32,64.02 81.32,61.00 81.32,57.98 81.99,52.68 82.80,49.24 83.61,45.80 85.68,40.19 87.41,36.78 89.13,33.36 93.22,27.78 96.49,24.37 100.15,20.56 105.07,16.79 109.23,14.60 112.95,12.65 118.88,10.37 122.40,9.54 125.91,8.71 131.27,8.03 134.29,8.03 137.32,8.03 142.56,8.68 145.94,9.48 149.32,10.28 154.70,12.17 157.90,13.68 161.10,15.20 166.72,19.27 170.38,22.73 174.76,26.85 178.29,31.37 180.65,35.86 182.63,39.63 184.93,45.58 185.75,49.10 186.58,52.62 187.26,57.98 187.26,61.00 187.26,64.03 186.61,69.27 185.81,72.65 185.02,76.03 183.13,81.43 181.63,84.65 179.82,88.53 176.36,93.04 171.35,98.06 166.33,103.07 161.82,106.53 157.94,108.34 154.72,109.84 149.32,111.72 145.94,112.52 142.56,113.32 137.09,113.94 133.79,113.90 130.49,113.86 125.16,113.20 121.94,112.42 121.94,112.42 121.94,112.42 121.94,112.42 Z M 144.49,110.90 C 147.41,110.30 152.95,108.31 156.81,106.48 161.54,104.23 165.87,101.10 170.13,96.84 174.40,92.58 177.52,88.25 179.77,83.51 181.60,79.66 183.59,74.12 184.20,71.20 184.80,68.29 185.29,63.70 185.29,61.00 185.29,58.30 184.80,53.71 184.20,50.80 183.59,47.88 181.60,42.34 179.77,38.49 177.55,33.80 174.40,29.43 170.29,25.32 166.24,21.27 161.68,17.96 156.96,15.67 153.02,13.75 147.41,11.69 144.49,11.09 141.58,10.49 136.99,10.00 134.29,10.00 131.60,10.00 127.01,10.49 124.09,11.09 121.18,11.69 115.57,13.75 111.62,15.67 106.97,17.94 102.35,21.26 98.45,25.16 94.55,29.06 91.23,33.67 88.96,38.33 87.04,42.27 84.98,47.88 84.38,50.80 83.78,53.71 83.29,58.30 83.29,61.00 83.29,63.70 83.78,68.29 84.38,71.20 84.98,74.12 87.04,79.73 88.96,83.67 91.25,88.37 94.56,92.95 98.56,96.95 102.22,100.61 107.22,104.32 111.01,106.18 114.49,107.89 119.69,109.87 122.56,110.56 125.44,111.26 130.36,111.87 133.49,111.91 136.63,111.96 141.58,111.51 144.49,110.90 144.49,110.90 144.49,110.90 144.49,110.90 Z M 129.29,92.74 C 129.29,92.60 138.18,83.71 149.04,72.99 149.04,72.99 168.79,53.50 168.79,53.50 168.79,53.50 149.30,73.25 149.30,73.25 138.58,84.11 129.69,93.00 129.55,93.00 129.41,93.00 129.29,92.88 129.29,92.74 129.29,92.74 129.29,92.74 129.29,92.74 Z M 134.29,59.50 C 148.86,44.93 161.00,33.00 161.28,33.00 161.55,33.00 149.86,44.92 135.29,59.50 120.72,74.07 108.58,86.00 108.31,86.00 108.03,86.00 119.72,74.07 134.29,59.50 Z M 101.29,69.74 C 101.29,69.60 110.18,60.71 121.04,49.99 121.04,49.99 140.79,30.50 140.79,30.50 140.79,30.50 121.30,50.25 121.30,50.25 110.58,61.11 101.69,70.00 101.55,70.00 101.41,70.00 101.29,69.88 101.29,69.74 101.29,69.74 101.29,69.74 101.29,69.74 Z" scaleX="0.1" scaleY="0.1" />
-                           </graphic>
-                        </Button>
-                     </children>
-                     <VBox.margin>
-                        <Insets top="20.0" />
-                     </VBox.margin>
-                  </HBox>
-                  <Accordion VBox.vgrow="ALWAYS">
-                     <panes>
-                        <TitledPane animated="false" text="Results">
-                           <content>
-                              <VBox prefHeight="200.0" prefWidth="100.0" />
-                           </content>
-                        </TitledPane>
-                     </panes>
-                  </Accordion>
-               </children>
-            </VBox>
-         </left>
-         <right>
-            <Accordion id="NavigationControl" maxWidth="200.0" minWidth="150.0" pickOnBounds="false" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <panes>
-                  <TitledPane animated="false" text="Arithmetic">
-                     <content>
-                        <VBox />
-                     </content>
-                  </TitledPane>
-                  <TitledPane animated="false" text="Trigonometry">
-                     <content>
-                        <VBox />
-                     </content>
-                  </TitledPane>
-                  <TitledPane animated="false" text="Calculus">
-                     <content>
-                        <VBox>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                           <cursor>
-                              <Cursor fx:constant="DEFAULT" />
-                           </cursor>
-                        </VBox>
-                     </content>
-                  </TitledPane>
-               </panes>
-            </Accordion>
-         </right>
-         <top>
-            <MenuBar BorderPane.alignment="CENTER">
-              <menus>
-                <Menu mnemonicParsing="false" text="Commands">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
-                     </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </top>
-      </BorderPane>
-   </children>
-</AnchorPane>
+<BorderPane fx:id="root" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+	<center>
+		<ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
+			<content>
+				<StackPane>
+					<children>
+						<VBox alignment="CENTER" pickOnBounds="false" spacing="20.0">
+							<children>
+								<TextField fx:id="inputField" maxWidth="800.0" onKeyPressed="#inputFieldKeyEvent" prefHeight="50.0">
+									<font>
+										<Font name="Monospaced Bold" size="16.0" />
+									</font>
+								</TextField>
+								<TabPane maxHeight="500.0" maxWidth="800.0" minHeight="400.0" pickOnBounds="false" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+									<tabs>
+										<Tab text="Math">
+											<content>
+												<ScrollPane fitToHeight="true" fitToWidth="true">
+													<content>
+														<HBox alignment="CENTER" spacing="20.0">
+															<children>
+																<StackPane minHeight="100.0" minWidth="250.0" prefHeight="220.0" prefWidth="150.0" style="-fx-border-color: transparent -stuff-dark transparent transparent;" HBox.hgrow="SOMETIMES">
+																	<children>
+																		<GridPane maxHeight="180.0" maxWidth="180.0" StackPane.alignment="CENTER">
+																			<columnConstraints>
+																				<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+																			</columnConstraints>
+																			<rowConstraints>
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+																			</rowConstraints>
+																			<children>
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="(" GridPane.columnIndex="1" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text=")" GridPane.columnIndex="2" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="!" />
+																			</children>
+																			<StackPane.margin>
+																				<Insets />
+																			</StackPane.margin>
+																		</GridPane>
+																	</children>
+																</StackPane>
+																<StackPane minHeight="160.0" minWidth="210.0" prefWidth="210.0" HBox.hgrow="SOMETIMES">
+																	<children>
+																		<GridPane alignment="CENTER" maxHeight="176.0" maxWidth="132.0" StackPane.alignment="CENTER">
+																			<columnConstraints>
+																				<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+																				<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
+																				<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" prefWidth="100.0" />
+																			</columnConstraints>
+																			<rowConstraints>
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+																			</rowConstraints>
+																			<children>
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="1" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="2" GridPane.columnIndex="1" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="3" GridPane.columnIndex="2" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="4" GridPane.rowIndex="1" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="5" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="6" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="7" GridPane.rowIndex="2" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="8" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="9" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+																			</children>
+																		</GridPane>
+																		<GridPane pickOnBounds="false">
+																			<columnConstraints>
+																				<ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" />
+																			</columnConstraints>
+																			<rowConstraints>
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																				<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+																			</rowConstraints>
+																			<children>
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="+" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="-" GridPane.rowIndex="1" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="*" GridPane.rowIndex="2" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="/" GridPane.rowIndex="3" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="\%" GridPane.rowIndex="4" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="^" GridPane.rowIndex="5" />
+																				<Button mnemonicParsing="false" onAction="#buttonPushed" styleClass="pop-button" text="=" GridPane.rowIndex="6" />
+																			</children>
+																			<StackPane.margin>
+																				<Insets bottom="40.0" top="40.0" />
+																			</StackPane.margin>
+																		</GridPane>
+																		<Button mnemonicParsing="false" onAction="#solve" styleClass="pop-button" text="Solve" StackPane.alignment="BOTTOM_CENTER" />
+																	</children>
+																</StackPane>
+																<StackPane minHeight="200.0" minWidth="150.0" prefHeight="250.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+																	<children>
+																		<AnchorPane style="-fx-border-color: transparent transparent transparent -stuff-dark;">
+																			<children>
+																				<ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+																					<content>
+																						<GridPane alignment="TOP_CENTER">
+																							<columnConstraints>
+																								<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
+																								<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
+																							</columnConstraints>
+																							<rowConstraints>
+																								<RowConstraints fillHeight="false" valignment="CENTER" vgrow="ALWAYS" />
+																								<RowConstraints fillHeight="false" valignment="CENTER" vgrow="ALWAYS" />
+																								<RowConstraints fillHeight="false" valignment="CENTER" vgrow="ALWAYS" />
+																							</rowConstraints>
+																							<children>
+																								<Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="sec" GridPane.rowIndex="1" />
+																								<Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="cos" GridPane.columnIndex="1" />
+																								<Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="csc" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+																								<Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="tan" GridPane.rowIndex="2" />
+																								<Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="sin" />
+																								<Button disable="true" mnemonicParsing="false" onAction="#functionPushed" styleClass="pop-button" text="cot" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+																							</children>
+																						</GridPane>
+																					</content>
+																				</ScrollPane>
+																			</children>
+																		</AnchorPane>
+																		<Button mnemonicParsing="false" onAction="#clearInputField" styleClass="pop-button" text="Clear" StackPane.alignment="BOTTOM_CENTER" />
+																	</children>
+																</StackPane>
+															</children>
+														</HBox>
+													</content>
+												</ScrollPane>
+											</content>
+										</Tab>
+										<Tab text="Functions">
+											<content>
+												<ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+													<content>
+														<VBox spacing="30.0">
+															<children>
+																<TextField>
+																	<VBox.margin>
+																		<Insets left="20.0" right="20.0" />
+																	</VBox.margin>
+																</TextField>
+																<FlowPane hgap="40.0" vgap="50.0">
+																	<padding>
+																		<Insets left="30.0" right="30.0" />
+																	</padding>
+																	<children>
+																		<TaggedCalculatorButton onAction="#functionPushed" tag="Ceiling/Round Up" text="ceil" />
+																		<TaggedCalculatorButton onAction="#functionPushed" tag="Floor/Round Down" text="floor" />
+																		<TaggedCalculatorButton onAction="#functionPushed" tag="Floor/Round Down" text="round" />
+																	</children>
+																</FlowPane>
+															</children>
+															<padding>
+																<Insets bottom="30.0" top="30.0" />
+															</padding>
+														</VBox>
+													</content>
+												</ScrollPane>
+											</content>
+										</Tab>
+										<Tab text="Extended Functionality">
+											<content>
+												<ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+													<content>
+														<VBox spacing="30.0">
+															<children>
+																<TextField fx:id="extendedFunctionalitySearch">
+																	<VBox.margin>
+																		<Insets left="20.0" right="20.0" />
+																	</VBox.margin>
+																</TextField>
+																<FlowPane fx:id="extendedFunctionalityFlowPane" alignment="TOP_CENTER" columnHalignment="CENTER" hgap="40.0" vgap="50.0">
+																	<children>
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Bracket" text="[" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Bracket" text="]" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Brace" text="{" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Brace" text="}" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Left/Opening Chevron" text="&lt;" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Right/Closing Chevron" text="&gt;" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Ampersand (Bitwise/Logical AND)" text="&amp;" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Double Ampersand (Bitwise/Logical AND)" text="&amp;&amp;" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Pipeline (Bitwise/Logical OR)" text="|" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Double Pipeline (Bitwise/Logical OR)" text="||" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Colon" text=":" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="Letter P (Probability)" text="p" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="True (Boolean Value)" text="true" />
+																		<TaggedCalculatorButton onAction="#buttonPushed" tag="False (Boolean Value)" text="false" />
+																	</children>
+																	<padding>
+																		<Insets left="30.0" right="30.0" />
+																	</padding>
+																</FlowPane>
+															</children>
+															<padding>
+																<Insets bottom="30.0" top="30.0" />
+															</padding>
+														</VBox>
+													</content>
+												</ScrollPane>
+											</content>
+										</Tab>
+									</tabs>
+									<VBox.margin>
+										<Insets />
+									</VBox.margin>
+								</TabPane>
+							</children>
+							<padding>
+								<Insets bottom="20.0" top="70.0" />
+							</padding>
+						</VBox>
+					</children>
+					<padding>
+						<Insets left="40.0" right="40.0" />
+					</padding>
+				</StackPane>
+			</content>
+		</ScrollPane>
+	</center>
+	<left>
+		<VBox id="SearchControl" fx:id="leftSide" alignment="TOP_CENTER" maxWidth="200.0" minWidth="150.0" pickOnBounds="false" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
+			<children>
+				<HBox alignment="CENTER" pickOnBounds="false" spacing="10.0">
+					<children>
+						<TextField />
+						<Button id="SearchButton" contentDisplay="CENTER" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0">
+							<graphic>
+								<SVGPath content="M 2.47,192.69 C 1.27,191.41 0.29,189.25 0.29,187.87 0.29,186.42 1.51,184.21 3.22,182.57 4.83,181.03 6.67,178.51 7.31,176.97 7.94,175.43 9.74,173.64 11.31,172.99 12.87,172.35 16.82,169.04 20.08,165.64 23.34,162.25 26.32,158.49 26.70,157.29 27.08,156.08 28.38,154.80 29.59,154.42 30.80,154.05 37.05,148.57 43.47,142.24 49.90,135.92 55.68,129.49 56.31,127.96 56.94,126.42 58.75,124.64 60.32,123.99 61.89,123.34 65.61,120.25 68.60,117.12 71.58,113.99 74.32,110.48 74.69,109.32 75.06,108.16 76.64,106.68 78.21,106.03 79.77,105.39 82.25,103.61 83.70,102.10 86.33,99.36 86.33,99.32 84.45,96.92 83.41,95.59 81.18,91.76 79.50,88.42 77.81,85.08 75.73,79.61 74.86,76.28 73.99,72.90 73.29,66.13 73.29,61.00 73.29,55.87 73.99,49.10 74.86,45.72 75.73,42.39 77.81,36.92 79.48,33.58 81.16,30.24 84.37,25.23 86.62,22.46 88.87,19.69 92.98,15.58 95.75,13.33 98.52,11.08 103.53,7.87 106.87,6.19 110.22,4.51 115.68,2.44 119.02,1.57 122.40,0.70 129.16,-0.00 134.29,-0.00 139.42,-0.00 146.19,0.70 149.56,1.57 152.89,2.43 158.81,4.74 162.71,6.70 167.59,9.16 172.15,12.63 177.41,17.88 182.66,23.14 186.13,27.70 188.59,32.59 190.55,36.48 192.86,42.40 193.72,45.73 194.60,49.10 195.29,55.87 195.29,61.00 195.29,66.13 194.60,72.90 193.72,76.27 192.86,79.60 190.55,85.52 188.59,89.41 186.13,94.30 182.66,98.86 177.41,104.12 172.15,109.37 167.59,112.84 162.71,115.30 158.81,117.26 152.89,119.57 149.56,120.43 146.19,121.30 139.42,122.00 134.29,122.00 129.16,122.00 122.40,121.30 119.02,120.43 115.68,119.56 110.22,117.48 106.87,115.80 103.53,114.11 99.70,111.88 98.37,110.84 95.97,108.96 95.94,108.97 93.20,111.59 91.68,113.05 89.91,115.52 89.26,117.08 88.61,118.65 87.13,120.23 85.97,120.60 84.81,120.97 81.30,123.71 78.17,126.70 75.04,129.68 71.95,133.40 71.30,134.97 70.65,136.54 68.87,138.35 67.34,138.98 65.81,139.62 59.38,145.39 53.05,151.82 46.72,158.24 41.25,164.46 40.89,165.64 40.52,166.82 38.92,168.32 37.33,168.98 35.74,169.64 31.76,172.96 28.50,176.36 25.24,179.75 22.27,183.49 21.90,184.66 21.53,185.83 19.94,187.32 18.38,187.97 16.81,188.61 14.27,190.46 12.72,192.07 11.01,193.86 8.89,195.00 7.28,195.00 5.81,195.00 3.67,193.97 2.47,192.69 2.47,192.69 2.47,192.69 2.47,192.69 Z M 149.53,113.14 C 153.21,112.12 158.76,109.76 161.87,107.89 164.98,106.03 169.83,102.20 172.66,99.38 175.48,96.57 179.44,91.47 181.45,88.05 183.47,84.64 185.88,78.72 186.82,74.89 188.06,69.84 188.40,65.28 188.07,58.22 187.77,51.79 186.90,46.52 185.50,42.65 184.33,39.43 182.03,34.71 180.39,32.15 178.75,29.59 175.46,25.52 173.10,23.10 170.73,20.68 166.25,17.05 163.15,15.02 160.05,13.00 154.88,10.48 151.65,9.42 147.25,7.98 142.94,7.50 134.29,7.50 125.65,7.50 121.34,7.98 116.93,9.42 113.71,10.48 108.53,13.00 105.43,15.02 102.33,17.05 97.86,20.68 95.49,23.10 93.12,25.52 89.84,29.59 88.20,32.15 86.55,34.71 84.26,39.43 83.09,42.65 81.73,46.40 80.81,51.87 80.51,57.90 80.23,63.45 80.54,69.59 81.27,72.90 81.94,75.98 83.78,81.20 85.35,84.50 86.92,87.80 89.90,92.54 91.96,95.04 94.03,97.53 97.76,101.26 100.25,103.32 102.75,105.37 107.13,108.21 109.98,109.62 112.84,111.03 117.34,112.77 119.98,113.50 122.63,114.23 128.85,114.86 133.81,114.91 139.78,114.97 145.10,114.37 149.53,113.14 149.53,113.14 149.53,113.14 149.53,113.14 Z M 121.94,112.42 C 118.72,111.64 112.98,109.37 109.20,107.38 104.67,105.00 100.16,101.48 96.02,97.09 92.56,93.42 88.49,87.81 86.97,84.61 85.46,81.41 83.57,76.03 82.77,72.65 81.97,69.27 81.32,64.02 81.32,61.00 81.32,57.98 81.99,52.68 82.80,49.24 83.61,45.80 85.68,40.19 87.41,36.78 89.13,33.36 93.22,27.78 96.49,24.37 100.15,20.56 105.07,16.79 109.23,14.60 112.95,12.65 118.88,10.37 122.40,9.54 125.91,8.71 131.27,8.03 134.29,8.03 137.32,8.03 142.56,8.68 145.94,9.48 149.32,10.28 154.70,12.17 157.90,13.68 161.10,15.20 166.72,19.27 170.38,22.73 174.76,26.85 178.29,31.37 180.65,35.86 182.63,39.63 184.93,45.58 185.75,49.10 186.58,52.62 187.26,57.98 187.26,61.00 187.26,64.03 186.61,69.27 185.81,72.65 185.02,76.03 183.13,81.43 181.63,84.65 179.82,88.53 176.36,93.04 171.35,98.06 166.33,103.07 161.82,106.53 157.94,108.34 154.72,109.84 149.32,111.72 145.94,112.52 142.56,113.32 137.09,113.94 133.79,113.90 130.49,113.86 125.16,113.20 121.94,112.42 121.94,112.42 121.94,112.42 121.94,112.42 Z M 144.49,110.90 C 147.41,110.30 152.95,108.31 156.81,106.48 161.54,104.23 165.87,101.10 170.13,96.84 174.40,92.58 177.52,88.25 179.77,83.51 181.60,79.66 183.59,74.12 184.20,71.20 184.80,68.29 185.29,63.70 185.29,61.00 185.29,58.30 184.80,53.71 184.20,50.80 183.59,47.88 181.60,42.34 179.77,38.49 177.55,33.80 174.40,29.43 170.29,25.32 166.24,21.27 161.68,17.96 156.96,15.67 153.02,13.75 147.41,11.69 144.49,11.09 141.58,10.49 136.99,10.00 134.29,10.00 131.60,10.00 127.01,10.49 124.09,11.09 121.18,11.69 115.57,13.75 111.62,15.67 106.97,17.94 102.35,21.26 98.45,25.16 94.55,29.06 91.23,33.67 88.96,38.33 87.04,42.27 84.98,47.88 84.38,50.80 83.78,53.71 83.29,58.30 83.29,61.00 83.29,63.70 83.78,68.29 84.38,71.20 84.98,74.12 87.04,79.73 88.96,83.67 91.25,88.37 94.56,92.95 98.56,96.95 102.22,100.61 107.22,104.32 111.01,106.18 114.49,107.89 119.69,109.87 122.56,110.56 125.44,111.26 130.36,111.87 133.49,111.91 136.63,111.96 141.58,111.51 144.49,110.90 144.49,110.90 144.49,110.90 144.49,110.90 Z M 129.29,92.74 C 129.29,92.60 138.18,83.71 149.04,72.99 149.04,72.99 168.79,53.50 168.79,53.50 168.79,53.50 149.30,73.25 149.30,73.25 138.58,84.11 129.69,93.00 129.55,93.00 129.41,93.00 129.29,92.88 129.29,92.74 129.29,92.74 129.29,92.74 129.29,92.74 Z M 134.29,59.50 C 148.86,44.93 161.00,33.00 161.28,33.00 161.55,33.00 149.86,44.92 135.29,59.50 120.72,74.07 108.58,86.00 108.31,86.00 108.03,86.00 119.72,74.07 134.29,59.50 Z M 101.29,69.74 C 101.29,69.60 110.18,60.71 121.04,49.99 121.04,49.99 140.79,30.50 140.79,30.50 140.79,30.50 121.30,50.25 121.30,50.25 110.58,61.11 101.69,70.00 101.55,70.00 101.41,70.00 101.29,69.88 101.29,69.74 101.29,69.74 101.29,69.74 101.29,69.74 Z" scaleX="0.1" scaleY="0.1" />
+							</graphic>
+						</Button>
+					</children>
+					<VBox.margin>
+						<Insets top="20.0" />
+					</VBox.margin>
+				</HBox>
+				<Accordion VBox.vgrow="ALWAYS">
+					<panes>
+						<TitledPane animated="false" text="Results">
+							<content>
+								<VBox prefHeight="200.0" prefWidth="100.0" />
+							</content>
+						</TitledPane>
+					</panes>
+				</Accordion>
+			</children>
+		</VBox>
+	</left>
+	<right>
+		<Accordion id="NavigationControl" fx:id="calcSelectorAccordion" maxWidth="200.0" minWidth="150.0" pickOnBounds="false" prefWidth="200.0" BorderPane.alignment="CENTER">
+			<panes>
+				<TitledPane animated="false" text="Header">
+					<content>
+						<VBox alignment="TOP_CENTER" spacing="20.0">
+							<padding>
+								<Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+							</padding>
+						</VBox>
+					</content>
+				</TitledPane>
+			</panes>
+		</Accordion>
+	</right>
+	<top>
+		<MenuBar BorderPane.alignment="CENTER">
+			<menus>
+				<Menu mnemonicParsing="false" text="Commands">
+					<items>
+						<MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
+					</items>
+				</Menu>
+			</menus>
+		</MenuBar>
+	</top>
+</BorderPane>

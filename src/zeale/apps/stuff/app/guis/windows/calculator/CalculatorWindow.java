@@ -15,11 +15,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
@@ -29,7 +33,11 @@ import zeale.apps.stuff.api.logging.Logging;
 
 public final class CalculatorWindow extends Window {
 
+	private @FXML BorderPane root;
 	private @FXML TextField inputField;
+
+	private @FXML VBox leftSide;
+	private @FXML Accordion calcSelectorAccordion;// rightSide
 
 	private @FXML TextField extendedFunctionalitySearch;
 	private @FXML Pane extendedFunctionalityFlowPane;
@@ -45,6 +53,25 @@ public final class CalculatorWindow extends Window {
 		int cp = inputField.getCaretPosition();
 		inputField.requestFocus();
 		inputField.positionCaret(cp);
+	}
+
+	void showSides(boolean show) {
+		if (show) {
+			root.setLeft(leftSide);
+			root.setRight(calcSelectorAccordion);
+		} else {
+			root.setLeft(null);
+			root.setRight(null);
+		}
+	}
+
+	void showCalc(CalculatorMenuButton calculator) {
+		try {
+			calculator.showCalc(root);
+		} catch (IOException e) {
+			Logging.err("Failed to show the calculator menu.");
+			Logging.err(e);
+		}
 	}
 
 	private @FXML void clearInputField(ActionEvent event) {
@@ -90,11 +117,9 @@ public final class CalculatorWindow extends Window {
 					}
 				else {
 					for (Iterator<Node> iterator = extendedFunctionalityFlowPane.getChildren().iterator(); iterator
-							.hasNext();) {
-						Node n = iterator.next();
-						if (n instanceof TaggedCalculatorButton)
+							.hasNext();)
+						if (iterator.next() instanceof TaggedCalculatorButton)
 							iterator.remove();
-					}
 					for (TaggedCalculatorButton tcb : buttons)
 						if (matches(newValue, tcb.getTag()))
 							extendedFunctionalityFlowPane.getChildren().add(tcb);
@@ -106,6 +131,11 @@ public final class CalculatorWindow extends Window {
 				return itemName.toLowerCase().contains(searchTerm.toLowerCase());
 			}
 		});
+
+		for (TitledPane tp : calcSelectorAccordion.getPanes())
+			for (Node n : ((Parent) tp.getContent()).getChildrenUnmodifiable())
+				if (n instanceof CalculatorMenuButton)
+					((CalculatorMenuButton) n).setInstance(this);
 
 	}
 
