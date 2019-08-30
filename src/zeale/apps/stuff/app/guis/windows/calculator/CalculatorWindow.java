@@ -68,7 +68,7 @@ public final class CalculatorWindow extends Window {
 	void showCalc(CalculatorMenuButton calculator) {
 		try {
 			calculator.showCalc(root);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Logging.err("Failed to show the calculator menu.");
 			Logging.err(e);
 		}

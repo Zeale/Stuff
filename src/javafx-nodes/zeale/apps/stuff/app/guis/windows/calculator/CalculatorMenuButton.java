@@ -10,12 +10,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 
 public class CalculatorMenuButton extends Button {
 	/**
 	 * The name of the FXML file, without the <code>.fxml</code> extension, to be
-	 * loaded as a resource with this class's {@link Class} object.
+	 * loaded as a resource with this class's {@link Class} object. The file must be
+	 * in the folder of the {@link TitledPane} that this {@link Button} is in.
 	 */
 	private final StringProperty file = new SimpleStringProperty();
 	/**
