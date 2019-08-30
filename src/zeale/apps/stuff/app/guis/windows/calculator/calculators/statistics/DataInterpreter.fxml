@@ -5,6 +5,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -41,7 +43,16 @@
                            </children>
                         </VBox>
                         <TilePane fx:id="detectedData" minHeight="100.0" style="-fx-border-color: -stuff-dark;" />
-                        <Button mnemonicParsing="false" styleClass="pop-button" text="Calculate Statistics" />
+                        <Button mnemonicParsing="false" onAction="#calcStats" styleClass="pop-button" text="Calculate Statistics" />
+                        <TableView>
+                          <columns>
+                            <TableColumn minWidth="100.0" prefWidth="150.0" text="Property" />
+                            <TableColumn minWidth="150.0" prefWidth="596.0" text="Value" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
                      </children>
                      <padding>
                         <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
