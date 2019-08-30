@@ -31,7 +31,7 @@
                               </Text>
                            </children>
                         </VBox>
-                        <TextArea fx:id="dataInput" prefHeight="150.0" prefWidth="300.0" />
+                        <TextArea fx:id="discreteDataInput" prefHeight="150.0" prefWidth="300.0" />
                         <VBox alignment="CENTER">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 1.4em;" text="Data Output" />
@@ -42,12 +42,12 @@
                               </Text>
                            </children>
                         </VBox>
-                        <TilePane fx:id="detectedData" minHeight="100.0" style="-fx-border-color: -stuff-dark;" />
+                        <TilePane fx:id="discreteDetectedData" minHeight="100.0" style="-fx-border-color: -stuff-dark;" />
                         <Button mnemonicParsing="false" onAction="#calcStats" styleClass="pop-button" text="Calculate Statistics" />
-                        <TableView>
+                        <TableView fx:id="discreteTable">
                           <columns>
-                            <TableColumn minWidth="100.0" prefWidth="150.0" text="Property" />
-                            <TableColumn minWidth="150.0" prefWidth="596.0" text="Value" />
+                            <TableColumn fx:id="discreteProps" minWidth="100.0" prefWidth="150.0" text="Property" />
+                            <TableColumn fx:id="discreteVals" minWidth="150.0" prefWidth="596.0" text="Value" />
                           </columns>
                            <columnResizePolicy>
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
