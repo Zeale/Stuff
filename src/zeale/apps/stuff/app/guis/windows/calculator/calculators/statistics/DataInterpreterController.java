@@ -2,7 +2,6 @@ package zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics;
 
 import org.alixia.javalibrary.streams.CharacterStream;
 
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,6 +9,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
@@ -87,47 +87,58 @@ public class DataInterpreterController {
 
 		Callback<CellDataFeatures<Property, String>, ObservableValue<String>> cellValueNameFactory = param -> param
 				.getValue().nameProperty(), cellValueValueFactory = param -> param.getValue().valueProperty();
-		Callback<TableColumn<Property, String>, TableCell<Property, String>> cellFactory = param -> new TableCell<Property, String>() {
+		class Cell extends TableCell<Property, String> {
 
 			{
-				setStyle("-fx-font-size: 1.2em;");
-				setTextFill(Color.GOLD);
-				setAlignment(Pos.CENTER_RIGHT);
-
-				ChangeListener<Boolean> selectionListener = (ChangeListener<Boolean>) (observable, oldValue,
-						newValue) -> {
-					setStyle(newValue ? "-fx-font-size: 1.2em;-fx-font-weight: bold;" : "-fx-font-size: 1.2em;");
-				};
 
 				tableRowProperty().addListener((observable, oldValue, newValue) -> {
-					if (newValue != null)
-						newValue.selectedProperty().addListener(selectionListener);
-					if (oldValue != null)
-						oldValue.selectedProperty().removeListener(selectionListener);
+					if (newValue != null) {
+						textFillProperty().unbind();
+						textFillProperty().bind(newValue.textFillProperty());
+					}
 				});
+			}
 
-				hoverProperty().addListener((x, y, z) -> setTextFill(z ? Color.RED : Color.GOLD));
-
-				setOnMouseClicked(x -> {
-					if (getTableRow().isEmpty())
-						getTableView().getSelectionModel().clearSelection();
-				});
+			public Cell(Pos position) {
+				setAlignment(position);
 			}
 
 			protected void updateItem(String item, boolean empty) {
 				setText(empty ? null : item);
 			}
+		}
+		Callback<TableColumn<Property, String>, TableCell<Property, String>> leftCellFactory = param -> new Cell(
+				Pos.CENTER_LEFT), rightCellFactory = p -> new Cell(Pos.CENTER_RIGHT);
+
+		Callback<TableView<Property>, TableRow<Property>> rowFactory = param -> new TableRow<Property>() {
+			{
+				setStyle("-fx-font-size: 1.2em;");
+
+				selectedProperty().addListener((observable, oldValue, newValue) -> setStyle(
+						newValue ? "-fx-font-size: 1.2em;-fx-font-weight: bold;" : "-fx-font-size: 1.2em;"));
+				setTextFill(Color.GOLD);
+				hoverProperty().addListener((x, y, z) -> setTextFill(z ? Color.RED : Color.GOLD));
+				setOnMouseClicked(x -> {
+					if (!isEmpty())
+						getTableView().getSelectionModel().select(getIndex());
+					else
+						getTableView().getSelectionModel().clearSelection();
+				});
+			}
+
 		};
 
+		discreteTable.setRowFactory(rowFactory);
 		discreteProps.setCellValueFactory(cellValueNameFactory);
-		discreteProps.setCellFactory(cellFactory);
+		discreteProps.setCellFactory(rightCellFactory);
 		discreteVals.setCellValueFactory(cellValueValueFactory);
-		discreteVals.setCellFactory(cellFactory);
+		discreteVals.setCellFactory(leftCellFactory);
 
+		continuousTable.setRowFactory(rowFactory);
 		continuousProps.setCellValueFactory(cellValueNameFactory);
-		continuousProps.setCellFactory(cellFactory);
+		continuousProps.setCellFactory(rightCellFactory);
 		continuousVals.setCellValueFactory(cellValueValueFactory);
-		continuousVals.setCellFactory(cellFactory);
+		continuousVals.setCellFactory(leftCellFactory);
 	}
 
 	private @FXML void calcDiscStats() {
