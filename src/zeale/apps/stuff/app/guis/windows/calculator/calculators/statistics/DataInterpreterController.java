@@ -3,63 +3,114 @@ package zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
+import javafx.util.Callback;
 
 public class DataInterpreterController {
-	private @FXML TextArea discreteDataInput;
-	private @FXML TilePane discreteDetectedData;
+	private @FXML TextArea discreteDataInput, continuousDataInput;
+	private @FXML TilePane discreteDetectedData, continuousDetectedData;
 
-	private @FXML TableView<Property> discreteTable;
-	private @FXML TableColumn<Property, String> discreteProps, discreteVals;
+	private @FXML TableView<Property> discreteTable, continuousTable;
+	private @FXML TableColumn<Property, String> discreteProps, continuousProps, discreteVals, continuousVals;
 
 	private interface Property {
-		void setValue(String val);
-
 		StringProperty nameProperty();
 
 		StringProperty valueProperty();
 	}
 
-	private enum DiscProperty implements Property {
-		MEAN("Mean (\u03A3; x\u0305)"), MEDIAN("Median (x\u0303)");
+	private interface PropertyTemplate<E extends Enum<E>> {
+		String getName();
 
-		private final StringProperty name = new SimpleStringProperty(), value = new SimpleStringProperty();
+		void set(String val, Property... props);
+
+		@SafeVarargs
+		static <E extends Enum<E> & PropertyTemplate<E>> Property[] props(E... enumVals) {
+			Property[] props = new Property[enumVals.length];
+			for (int i = 0; i < enumVals.length; i++) {
+				int j = i;
+				props[i] = new Property() {
+
+					private final StringProperty value = new SimpleStringProperty();
+
+					@Override
+					public StringProperty valueProperty() {
+						return value;
+					}
+
+					@Override
+					public StringProperty nameProperty() {
+						return new SimpleStringProperty(enumVals[j].getName());
+					}
+				};
+			}
+			return props;
+		}
+	}
+
+	private enum DiscProperty implements PropertyTemplate<DiscProperty> {
+		;
+
+		public final String name;
 
 		private DiscProperty(String name) {
-			setName(name);
+			this.name = name;
 		}
 
-		public final StringProperty nameProperty() {
+		@Override
+		public void set(String val, Property... props) {
+			props[ordinal()].valueProperty().set(val);
+		}
+
+		@Override
+		public String getName() {
 			return name;
-		}
-
-		public final void setName(final String name) {
-			nameProperty().set(name);
-		}
-
-		public final StringProperty valueProperty() {
-			return value;
-		}
-
-		public final void setValue(final String value) {
-			valueProperty().set(value);
 		}
 
 	}
 
+	private enum ContProperty implements PropertyTemplate<ContProperty> {
+		SUM("\u03A3"), SQUARE_OF_SUM("\u03A3\u00B2"), SUM_OF_SQUARES("\u03A3(x\u1D62)\u00B2"), MEAN("Mean (x\u0305)"),
+		MEDIAN("Median (x\u0303)");
+
+		public final String name;
+
+		private ContProperty(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public void set(String val, Property... props) {
+			props[ordinal()].valueProperty().set(val);
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
+	}
+
+	private final Property[] discProps = PropertyTemplate.props(DiscProperty.values()),
+			contProps = PropertyTemplate.props(ContProperty.values());
+
 	private @FXML void initialize() {
-		discreteTable.getItems().addAll(DiscProperty.values());
 
-		discreteProps.setCellValueFactory(param -> param.getValue().nameProperty());
+		discreteTable.getItems().addAll(discProps);
+		continuousTable.getItems().addAll(contProps);
 
-		discreteProps.setCellFactory(param -> new TableCell<Property, String>() {
+		Callback<CellDataFeatures<Property, String>, ObservableValue<String>> cellValueNameFactory = param -> param
+				.getValue().nameProperty(), cellValueValueFactory = param -> param.getValue().valueProperty();
+		Callback<TableColumn<Property, String>, TableCell<Property, String>> cellFactory = param -> new TableCell<Property, String>() {
 
 			{
 				setStyle("-fx-font-size: 1.2em;");
@@ -82,18 +133,31 @@ public class DataInterpreterController {
 
 				setOnMouseClicked(x -> {
 					if (getTableRow().isEmpty())
-						discreteTable.getSelectionModel().clearSelection();
+						getTableView().getSelectionModel().clearSelection();
 				});
 			}
 
 			protected void updateItem(String item, boolean empty) {
 				setText(empty ? null : item);
 			}
-		});
-		discreteVals.setCellValueFactory(param -> param.getValue().valueProperty());
+		};
+
+		discreteProps.setCellValueFactory(cellValueNameFactory);
+		discreteProps.setCellFactory(cellFactory);
+		discreteVals.setCellValueFactory(cellValueValueFactory);
+		discreteVals.setCellFactory(cellFactory);
+
+		continuousProps.setCellValueFactory(cellValueNameFactory);
+		continuousProps.setCellFactory(cellFactory);
+		continuousVals.setCellValueFactory(cellValueValueFactory);
+		continuousVals.setCellFactory(cellFactory);
 	}
 
-	private @FXML void calcStats() {
+	private @FXML void calcDiscStats() {
+
+	}
+
+	private @FXML void calcContStats() {
 
 	}
 
