@@ -35,14 +35,24 @@ public class DataInterpreterController {
 
 		Background color = FXTools.getBackgroundFromColor(new Color(0, 0, 0, 0.2));
 
-		class InputHandler implements EventHandler<KeyEvent> {
+		abstract class InputHandler implements EventHandler<KeyEvent> {
 			private final TextArea input;
 			private final FlowPane output;
+
+			protected final void printOut(String text) {
+				Text data = new Text(text);
+				StackPane box = new StackPane(data);
+				box.setBackground(color);
+				data.setFill(Color.GOLD);
+				output.getChildren().add(box);
+			}
 
 			public InputHandler(TextArea input, FlowPane output) {
 				(this.input = input).setOnKeyReleased(this);
 				this.output = output;
 			}
+
+			protected abstract String handle(String textFragment);
 
 			@Override
 			public void handle(KeyEvent event) {
@@ -50,37 +60,44 @@ public class DataInterpreterController {
 				StringBuilder curr = new StringBuilder();
 				int n;
 				output.getChildren().clear();
-				while ((n = str.next()) != -1)
-					if (Character.isWhitespace(n)) {
-						while (Character.isWhitespace(n = str.next()))
-							;
+				try {
+					while ((n = str.next()) != -1)
+						if (Character.isWhitespace(n)) {
+							while (Character.isWhitespace(n = str.next()))
+								;
 
-						Text data = new Text(curr.toString());
-						StackPane box = new StackPane(data);
-						box.setBackground(color);
-						data.setFill(Color.GOLD);
-						output.getChildren().add(box);
+							printOut(handle(curr.toString()));
 
-						if (n == -1)
-							return;
-						else
-							curr = new StringBuilder().append((char) n);
-					} else
-						curr.append((char) n);
-				if (curr.length() != 0) {
-					Text data = new Text(curr.toString());
-					StackPane box = new StackPane(data);
-					box.setBackground(color);
-					data.setFill(Color.GOLD);
-					output.getChildren().add(box);
+							if (n == -1)
+								return;
+							else
+								curr = new StringBuilder().append((char) n);
+						} else
+							curr.append((char) n);
+					if (curr.length() != 0) {
+						printOut(handle(curr.toString()));
+					}
+				} catch (Exception e) {
 				}
 
 			}
 
 		}
 
-		new InputHandler(discreteDataInput, discreteDetectedData);
-		new InputHandler(continuousDataInput, continuousDetectedData);
+		new InputHandler(discreteDataInput, discreteDetectedData) {
+
+			@Override
+			protected String handle(String textFragment) {
+				return textFragment;
+			}
+		};
+		new InputHandler(continuousDataInput, continuousDetectedData) {
+
+			@Override
+			protected String handle(String textFragment) {
+				return "" + Double.parseDouble(textFragment);
+			}
+		};
 
 		discreteTable.getItems().addAll(discProps);
 		continuousTable.getItems().addAll(contProps);
