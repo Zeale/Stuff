@@ -1,7 +1,5 @@
 package zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -21,84 +19,6 @@ public class DataInterpreterController {
 
 	private @FXML TableView<Property> discreteTable, continuousTable;
 	private @FXML TableColumn<Property, String> discreteProps, continuousProps, discreteVals, continuousVals;
-
-	private interface Property {
-		StringProperty nameProperty();
-
-		StringProperty valueProperty();
-	}
-
-	private interface PropertyTemplate<E extends Enum<E>> {
-		String getName();
-
-		void set(String val, Property... props);
-
-		@SafeVarargs
-		static <E extends Enum<E> & PropertyTemplate<E>> Property[] props(E... enumVals) {
-			Property[] props = new Property[enumVals.length];
-			for (int i = 0; i < enumVals.length; i++) {
-				int j = i;
-				props[i] = new Property() {
-
-					private final StringProperty value = new SimpleStringProperty();
-
-					@Override
-					public StringProperty valueProperty() {
-						return value;
-					}
-
-					@Override
-					public StringProperty nameProperty() {
-						return new SimpleStringProperty(enumVals[j].getName());
-					}
-				};
-			}
-			return props;
-		}
-	}
-
-	private enum DiscProperty implements PropertyTemplate<DiscProperty> {
-		;
-
-		public final String name;
-
-		private DiscProperty(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public void set(String val, Property... props) {
-			props[ordinal()].valueProperty().set(val);
-		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
-
-	}
-
-	private enum ContProperty implements PropertyTemplate<ContProperty> {
-		SUM("\u03A3"), SQUARE_OF_SUM("\u03A3\u00B2"), SUM_OF_SQUARES("\u03A3(x\u1D62)\u00B2"), MEAN("Mean (x\u0305)"),
-		MEDIAN("Median (x\u0303)");
-
-		public final String name;
-
-		private ContProperty(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public void set(String val, Property... props) {
-			props[ordinal()].valueProperty().set(val);
-		}
-
-		@Override
-		public String getName() {
-			return name;
-		}
-
-	}
 
 	private final Property[] discProps = PropertyTemplate.props(DiscProperty.values()),
 			contProps = PropertyTemplate.props(ContProperty.values());
