@@ -86,7 +86,8 @@ public class DataInterpreterController {
 		continuousTable.getItems().addAll(contProps);
 
 		Callback<CellDataFeatures<Property, String>, ObservableValue<String>> cellValueNameFactory = param -> param
-				.getValue().nameProperty(), cellValueValueFactory = param -> param.getValue().valueProperty();
+				.getValue().nameProperty().concat(":"),
+				cellValueValueFactory = param -> param.getValue().valueProperty();
 		class Cell extends TableCell<Property, String> {
 
 			{
