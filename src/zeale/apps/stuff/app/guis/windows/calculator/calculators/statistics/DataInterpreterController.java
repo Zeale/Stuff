@@ -1,5 +1,8 @@
 package zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alixia.javalibrary.streams.CharacterStream;
 
 import javafx.beans.value.ObservableValue;
@@ -20,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import main.alixia.javalibrary.javafx.tools.FXTools;
+import zeale.apps.stuff.api.logging.Logging;
 
 public class DataInterpreterController {
 	private @FXML TextArea discreteDataInput, continuousDataInput;
@@ -163,8 +167,45 @@ public class DataInterpreterController {
 
 	}
 
-	private @FXML void calcContStats() {
+	private List<ContinuousValue> readContinuousStats() {
+		List<ContinuousValue> values = new ArrayList<>();
 
+		CharacterStream str = CharacterStream.from(continuousDataInput.getText());
+		StringBuilder curr = new StringBuilder();
+		int n;
+
+		try {
+			while ((n = str.next()) != -1)
+				if (Character.isWhitespace(n)) {
+					while (Character.isWhitespace(n = str.next()))
+						;
+
+					values.add(new ContinuousValue(Double.parseDouble(curr.toString())));
+
+					if (n == -1)
+						break;
+					else
+						curr = new StringBuilder().append((char) n);
+				} else
+					curr.append((char) n);
+			if (curr.length() != 0)
+				values.add(new ContinuousValue(Double.parseDouble(curr.toString())));
+		} catch (NumberFormatException e) {
+			throw new RuntimeException("The input: " + curr.toString() + " could not be parsed as a number.", e);
+		}
+
+		return values;
+	}
+
+	private @FXML void calcContStats() {
+		List<ContinuousValue> values;
+		try {
+			values = readContinuousStats();
+		} catch (Exception e) {
+			Logging.err("Some of your input is malformed...");
+			Logging.err(e);
+			return;
+		}
 	}
 
 }
