@@ -6,7 +6,15 @@ import javafx.beans.property.StringProperty;
 interface PropertyTemplate<E extends Enum<E>> {
 	String getName();
 
-	void set(String val, Property... props);
+	default void set(String val, Property... props) {
+		props[ordinal()].valueProperty().set(val);
+	}
+
+	default String get(Property... props) {
+		return props[ordinal()].valueProperty().get();
+	}
+
+	int ordinal();
 
 	@SafeVarargs
 	static <E extends Enum<E> & PropertyTemplate<E>> Property[] props(E... enumVals) {

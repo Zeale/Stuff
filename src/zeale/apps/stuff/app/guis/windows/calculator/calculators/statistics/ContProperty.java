@@ -12,11 +12,6 @@ enum ContProperty implements PropertyTemplate<ContProperty> {
 	}
 
 	@Override
-	public void set(String val, Property... props) {
-		props[ordinal()].valueProperty().set(val);
-	}
-
-	@Override
 	public String getName() {
 		return name;
 	}
