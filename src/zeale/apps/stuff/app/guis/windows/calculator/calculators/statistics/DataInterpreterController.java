@@ -11,8 +11,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 public class DataInterpreterController {
 	private @FXML TextArea discreteDataInput;
@@ -63,16 +61,29 @@ public class DataInterpreterController {
 
 		discreteProps.setCellFactory(param -> new TableCell<Property, String>() {
 
-			private final Font regularFont = Font.font(20),
-					boldFont = Font.font(regularFont.getFamily(), FontWeight.BOLD, regularFont.getSize());
 			{
-				setStyle("-fx-font: egg;-fx-font-size: 1.2em;-fx-font-weight: egg;");
+				setStyle("-fx-font-size: 1.2em;");
 				setTextFill(Color.GOLD);
 				setAlignment(Pos.CENTER_RIGHT);
-				selectedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue,
-						newValue) -> setFont(newValue ? boldFont : regularFont));
+
+				ChangeListener<Boolean> selectionListener = (ChangeListener<Boolean>) (observable, oldValue,
+						newValue) -> {
+					setStyle(newValue ? "-fx-font-size: 1.2em;-fx-font-weight: bold;" : "-fx-font-size: 1.2em;");
+				};
+
+				tableRowProperty().addListener((observable, oldValue, newValue) -> {
+					if (newValue != null)
+						newValue.selectedProperty().addListener(selectionListener);
+					if (oldValue != null)
+						oldValue.selectedProperty().removeListener(selectionListener);
+				});
+
 				hoverProperty().addListener((x, y, z) -> setTextFill(z ? Color.RED : Color.GOLD));
-				setOnMouseClicked(x -> discreteTable.getSelectionModel().select(getIndex()));
+
+				setOnMouseClicked(x -> {
+					if (getTableRow().isEmpty())
+						discreteTable.getSelectionModel().clearSelection();
+				});
 			}
 
 			protected void updateItem(String item, boolean empty) {
