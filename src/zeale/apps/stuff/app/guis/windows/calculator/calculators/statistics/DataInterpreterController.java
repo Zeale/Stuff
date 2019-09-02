@@ -1,9 +1,22 @@
 package zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics;
 
-import java.util.ArrayList;
-import java.util.List;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.MEAN;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.MEDIAN;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.N;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.SQUARE_OF_SUM;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.SUM;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.SUM_OF_SQUARES;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.*;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.alixia.javalibrary.JavaTools;
 import org.alixia.javalibrary.streams.CharacterStream;
+import org.alixia.javalibrary.util.Pair;
 
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -167,8 +180,8 @@ public class DataInterpreterController {
 
 	}
 
-	private List<ContinuousValue> readContinuousStats() {
-		List<ContinuousValue> values = new ArrayList<>();
+	private List<Double> readContinuousStats() {
+		List<Double> values = new ArrayList<>();
 
 		CharacterStream str = CharacterStream.from(continuousDataInput.getText());
 		StringBuilder curr = new StringBuilder();
@@ -180,7 +193,7 @@ public class DataInterpreterController {
 					while (Character.isWhitespace(n = str.next()))
 						;
 
-					values.add(new ContinuousValue(Double.parseDouble(curr.toString())));
+					values.add(Double.parseDouble(curr.toString()));
 
 					if (n == -1)
 						break;
@@ -189,7 +202,7 @@ public class DataInterpreterController {
 				} else
 					curr.append((char) n);
 			if (curr.length() != 0)
-				values.add(new ContinuousValue(Double.parseDouble(curr.toString())));
+				values.add(Double.parseDouble(curr.toString()));
 		} catch (NumberFormatException e) {
 			throw new RuntimeException("The input: " + curr.toString() + " could not be parsed as a number.", e);
 		}
@@ -198,7 +211,7 @@ public class DataInterpreterController {
 	}
 
 	private @FXML void calcContStats() {
-		List<ContinuousValue> values;
+		List<Double> values;
 		try {
 			values = readContinuousStats();
 		} catch (Exception e) {
@@ -206,6 +219,52 @@ public class DataInterpreterController {
 			Logging.err(e);
 			return;
 		}
+
+		int size = values.size();
+		double n = size, sum = 0, sumofsquares = 0;
+		N.set(String.valueOf(size), contProps);
+
+		for (double cv : values) {
+			sum += cv;
+			sumofsquares += cv * cv;
+		}
+		setProp(SUM, sum);
+		setProp(SQUARE_OF_SUM, sum * sum);
+		setProp(SUM_OF_SQUARES, sumofsquares);
+
+		double mean = n == 0 ? 0 : sum / n;
+		setProp(MEAN, mean);
+
+		Pair<Double, Double> res = JavaTools.findMedian(values);
+		setProp(MEDIAN, res == null ? 0 : res.second == null ? res.first : (res.first + res.second) / 2);
+
+		Map<Double, Integer> freqMap = JavaTools.frequencyMap(values);
+
+		List<Double> list = new ArrayList<>(3);
+		int curr = 0;
+		for (Entry<Double, Integer> e : freqMap.entrySet())
+			if (e.getValue() > curr) {
+				list.clear();
+				curr = e.getValue();
+				list.add(e.getKey());
+			} else if (e.getValue() == curr)
+				list.add(e.getKey());
+		if (list.isEmpty())
+			MODE.set("N/A", contProps);
+		else if (list.size() == 1)
+			setProp(MODE, list.get(0));
+		else {
+			Iterator<Double> itr = list.iterator();
+			StringBuilder builder = new StringBuilder(itr.next().toString());
+			do
+				builder.append(", ").append(itr.next());
+			while (itr.hasNext());
+			MODE.set(builder.toString(), contProps);
+		}
+	}
+
+	private void setProp(ContProperty prop, double val) {
+		prop.set(val, contProps);
 	}
 
 }
