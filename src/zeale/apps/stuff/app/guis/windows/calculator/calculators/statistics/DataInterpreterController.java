@@ -261,6 +261,19 @@ public class DataInterpreterController {
 			while (itr.hasNext());
 			MODE.set(builder.toString(), contProps);
 		}
+
+		double popvar = 0, sampvar;
+		if (!list.isEmpty()) {
+			for (double cv : values)
+				popvar += (cv - mean) * (cv - mean);
+			sampvar = popvar / (n - 1);
+			popvar /= n;
+		} else
+			sampvar = 0;
+		setProp(POPULATION_VARIANCE, popvar);
+		setProp(POPULATION_STANDARD_DEVIATION, Math.sqrt(popvar));
+		setProp(SAMPLE_VARIANCE, sampvar);
+		setProp(SAMPLE_STANDARD_DEVIATION, Math.sqrt(sampvar));
 	}
 
 	private void setProp(ContProperty prop, double val) {
