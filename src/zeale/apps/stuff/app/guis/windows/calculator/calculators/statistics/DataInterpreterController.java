@@ -2,11 +2,15 @@ package zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics;
 
 import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.MEAN;
 import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.MEDIAN;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.MODE;
 import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.N;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.POPULATION_STANDARD_DEVIATION;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.POPULATION_VARIANCE;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.SAMPLE_STANDARD_DEVIATION;
+import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.SAMPLE_VARIANCE;
 import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.SQUARE_OF_SUM;
 import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.SUM;
 import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.SUM_OF_SQUARES;
-import static zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics.ContProperty.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +22,7 @@ import org.alixia.javalibrary.JavaTools;
 import org.alixia.javalibrary.streams.CharacterStream;
 import org.alixia.javalibrary.util.Pair;
 
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -28,6 +33,7 @@ import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.FlowPane;
@@ -127,10 +133,10 @@ public class DataInterpreterController {
 			{
 
 				tableRowProperty().addListener((observable, oldValue, newValue) -> {
-					if (newValue != null) {
+					if (oldValue != null)
 						textFillProperty().unbind();
+					if (newValue != null)
 						textFillProperty().bind(newValue.textFillProperty());
-					}
 				});
 			}
 
@@ -148,6 +154,13 @@ public class DataInterpreterController {
 		Callback<TableView<Property>, TableRow<Property>> rowFactory = param -> new TableRow<Property>() {
 			{
 				setStyle("-fx-font-size: 1.2em;");
+
+				itemProperty().addListener((ChangeListener<Property>) (observable, oldValue, newValue) -> {
+					if (oldValue != null)
+						setTooltip(null);
+					if (newValue != null)
+						setTooltip(newValue.tooltip());
+				});
 
 				selectedProperty().addListener((observable, oldValue, newValue) -> setStyle(
 						newValue ? "-fx-font-size: 1.2em;-fx-font-weight: bold;" : "-fx-font-size: 1.2em;"));

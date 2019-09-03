@@ -14,4 +14,9 @@ enum DiscProperty implements PropertyTemplate<DiscProperty> {
 		return name;
 	}
 
+	@Override
+	public String tooltip() {
+		return null;
+	}
+
 }

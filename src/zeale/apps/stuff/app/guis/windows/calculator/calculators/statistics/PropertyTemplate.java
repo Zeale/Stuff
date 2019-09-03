@@ -2,6 +2,7 @@ package zeale.apps.stuff.app.guis.windows.calculator.calculators.statistics;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.Tooltip;
 
 interface PropertyTemplate<E extends Enum<E>> {
 	String getName();
@@ -13,6 +14,8 @@ interface PropertyTemplate<E extends Enum<E>> {
 	default String get(Property... props) {
 		return props[ordinal()].valueProperty().get();
 	}
+
+	String tooltip();
 
 	int ordinal();
 
@@ -33,6 +36,19 @@ interface PropertyTemplate<E extends Enum<E>> {
 				@Override
 				public StringProperty nameProperty() {
 					return new SimpleStringProperty(enumVals[j].getName());
+				}
+
+				@Override
+				public Tooltip tooltip() {
+					if (enumVals[j].tooltip() == null)
+						return null;
+					else {
+						Tooltip tooltip = new Tooltip(enumVals[j].tooltip());
+						tooltip.setWrapText(true);
+						tooltip.setMaxWidth(500);
+						tooltip.setAutoHide(false);
+						return tooltip;
+					}
 				}
 			};
 		}
