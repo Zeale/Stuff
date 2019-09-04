@@ -2,10 +2,12 @@ package zeale.apps.stuff.app.guis.windows.calendar;
 
 import java.io.IOException;
 
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 
@@ -29,6 +31,10 @@ public class CalendarWindow extends Window {
 		} catch (IOException e) {
 			throw new WindowLoadFailureException(e);
 		}
+	}
+
+	private @FXML void goHome() {
+		Stuff.displayHome();
 	}
 
 }
