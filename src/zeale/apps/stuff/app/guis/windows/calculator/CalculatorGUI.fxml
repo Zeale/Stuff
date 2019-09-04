@@ -345,6 +345,11 @@
 						<MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
 					</items>
 				</Menu>
+            <Menu fx:id="appExitMenu" mnemonicParsing="false" text="Exit..." visible="false">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#exitApp" text="...to Main Window" />
+              </items>
+            </Menu>
 			</menus>
 		</MenuBar>
 	</top>

@@ -17,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.KeyCode;
@@ -34,7 +35,9 @@ import zeale.apps.stuff.api.logging.Logging;
 public final class CalculatorWindow extends Window {
 
 	private @FXML BorderPane root;
+	private Node rootChild;
 	private @FXML TextField inputField;
+	private @FXML Menu appExitMenu;
 
 	private @FXML VBox leftSide;
 	private @FXML Accordion calcSelectorAccordion;// rightSide
@@ -65,7 +68,13 @@ public final class CalculatorWindow extends Window {
 		}
 	}
 
+	private @FXML void exitApp() {
+		showSides(true);
+		root.setCenter(rootChild);
+	}
+
 	void showCalc(CalculatorMenuButton calculator) {
+		appExitMenu.setVisible(true);
 		try {
 			calculator.showCalc(root);
 		} catch (Exception e) {
@@ -96,6 +105,8 @@ public final class CalculatorWindow extends Window {
 	}
 
 	private @FXML void initialize() {
+
+		rootChild = root.getCenter();
 
 		List<TaggedCalculatorButton> buttons = new ArrayList<>(extendedFunctionalityFlowPane.getChildren().size());
 		for (Node n : extendedFunctionalityFlowPane.getChildren())
