@@ -1,25 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="Commands">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
-   <center>
-      <AnchorPane prefHeight="700.0" prefWidth="1100.0" BorderPane.alignment="CENTER" />
-   </center>
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1"
+	xmlns:fx="http://javafx.com/fxml/1">
+	<top>
+		<MenuBar BorderPane.alignment="CENTER">
+			<menus>
+				<Menu mnemonicParsing="false" text="Commands">
+					<items>
+						<MenuItem mnemonicParsing="false" onAction="#goHome"
+							text="Go Home" />
+					</items>
+				</Menu>
+			</menus>
+		</MenuBar>
+	</top>
+	<center>
+		<VBox alignment="TOP_CENTER" prefHeight="700.0"
+			prefWidth="1100.0" spacing="20.0" BorderPane.alignment="CENTER">
+			<children>
+				<StackPane>
+					<children>
+						<Button mnemonicParsing="false" onAction="#left"
+							styleClass="pop-button" text="&lt;--"
+							StackPane.alignment="CENTER_LEFT" />
+						<Button mnemonicParsing="false" onAction="#right"
+							styleClass="pop-button" text="--&gt;"
+							StackPane.alignment="CENTER_RIGHT" />
+					</children>
+				</StackPane>
+				<GridPane fx:id="calendar"
+					style="-fx-border-color: -stuff-dark;" VBox.vgrow="ALWAYS">
+					<columnConstraints>
+						<ColumnConstraints halignment="CENTER"
+							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER"
+							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER"
+							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER"
+							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER"
+							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER"
+							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+						<ColumnConstraints halignment="CENTER"
+							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+					</columnConstraints>
+					<rowConstraints>
+						<RowConstraints minHeight="10.0"
+							percentHeight="8.0" valignment="CENTER" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0"
+							valignment="CENTER" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0"
+							valignment="CENTER" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0"
+							valignment="CENTER" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0"
+							valignment="CENTER" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0"
+							valignment="CENTER" vgrow="SOMETIMES" />
+						<RowConstraints minHeight="10.0" prefHeight="30.0"
+							valignment="CENTER" vgrow="SOMETIMES" />
+					</rowConstraints>
+					<children>
+						<StackPane
+							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';">
+							<children>
+								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sunday" />
+							</children>
+						</StackPane>
+						<StackPane
+							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
+							GridPane.columnIndex="1">
+							<children>
+								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Monday" />
+							</children>
+						</StackPane>
+						<StackPane
+							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
+							GridPane.columnIndex="2">
+							<children>
+								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tuesday" />
+							</children>
+						</StackPane>
+						<StackPane
+							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
+							GridPane.columnIndex="3">
+							<children>
+								<Text strokeType="OUTSIDE" strokeWidth="0.0"
+									text="Wednesday" />
+							</children>
+						</StackPane>
+						<StackPane
+							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
+							GridPane.columnIndex="4">
+							<children>
+								<Text strokeType="OUTSIDE" strokeWidth="0.0"
+									text="Thursday" />
+							</children>
+						</StackPane>
+						<StackPane
+							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
+							GridPane.columnIndex="5">
+							<children>
+								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Friday" />
+							</children>
+						</StackPane>
+						<StackPane
+							style="-fx-border-color: transparent transparent -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
+							GridPane.columnIndex="6">
+							<children>
+								<Text strokeType="OUTSIDE" strokeWidth="0.0"
+									text="Saturday" />
+							</children>
+						</StackPane>
+					</children>
+				</GridPane>
+			</children>
+			<padding>
+				<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+			</padding>
+		</VBox>
+	</center>
 </BorderPane>
