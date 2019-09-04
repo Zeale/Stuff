@@ -23,6 +23,7 @@
 <?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 <?import zeale.apps.stuff.api.javafx.guis.windows.calculator.TaggedCalculatorButton?>
+<?import zeale.apps.stuff.app.guis.windows.calculator.CalculatorMenuButton?>
 
 <BorderPane fx:id="root" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
 	<center>
@@ -327,6 +328,9 @@
                      <padding>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                      </padding>
+                     <children>
+                        <CalculatorMenuButton file="DataInterpreter" text="Data Interpreter" />
+                     </children>
                   </VBox>
                </content>
             </TitledPane>

@@ -41,7 +41,7 @@ public class EncryptionWindow extends Window {
 		try {
 			inputField.setText(algorithm.hexDecrypt(keyField.getText(), outputField.getText()));
 		} catch (BadPaddingException e) {
-			Logging.err("The key you gave is invalid.");
+			Logging.err("The input text isn't valid; it can't be encrypted.");
 		} catch (GeneralSecurityException e) {
 			Logging.err(e);
 		} catch (UnsupportedOperationException e) {
