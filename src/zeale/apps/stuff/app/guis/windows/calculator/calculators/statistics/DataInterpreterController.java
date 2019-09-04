@@ -22,11 +22,14 @@ import org.alixia.javalibrary.JavaTools;
 import org.alixia.javalibrary.streams.CharacterStream;
 import org.alixia.javalibrary.util.Pair;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -189,8 +192,46 @@ public class DataInterpreterController {
 		continuousVals.setCellFactory(leftCellFactory);
 	}
 
-	private @FXML void calcDiscStats() {
+	private Property[] props;
 
+	private @FXML void calcDiscStats() {
+		if (props != null)
+			discreteTable.getItems().removeAll(props);
+
+		List<String> vals = new ArrayList<>(discreteDetectedData.getChildren().size());
+		System.out.println(discreteDetectedData.getChildren().size());
+		for (Node n : discreteDetectedData.getChildren())
+			if (n instanceof StackPane)
+				for (Node x : ((StackPane) n).getChildren())
+					if (x instanceof Text)
+						vals.add(((Text) x).getText());
+
+		DiscProperty.N.set(String.valueOf(vals.size()), discProps);
+
+		Map<String, Integer> freqMap = JavaTools.frequencyMap(vals);
+
+		props = new Property[freqMap.size()];
+		int x = 0;
+		for (Entry<String, Integer> e : freqMap.entrySet())
+			props[x++] = new Property() {
+
+				@Override
+				public StringProperty valueProperty() {
+					return new SimpleStringProperty(String.valueOf(e.getValue()));
+				}
+
+				@Override
+				public Tooltip tooltip() {
+					return new Tooltip("The number of " + e.getKey() + " values in your sample.");
+				}
+
+				@Override
+				public StringProperty nameProperty() {
+					return new SimpleStringProperty('\'' + e.getKey() + "' Frequency");
+				}
+			};
+
+		discreteTable.getItems().addAll(props);
 	}
 
 	private List<Double> readContinuousStats() {
