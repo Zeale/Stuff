@@ -199,7 +199,6 @@ public class DataInterpreterController {
 			discreteTable.getItems().removeAll(props);
 
 		List<String> vals = new ArrayList<>(discreteDetectedData.getChildren().size());
-		System.out.println(discreteDetectedData.getChildren().size());
 		for (Node n : discreteDetectedData.getChildren())
 			if (n instanceof StackPane)
 				for (Node x : ((StackPane) n).getChildren())
