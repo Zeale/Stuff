@@ -11,6 +11,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import zeale.applicationss.notesss.utilities.Utilities;
 
 class CalendarCell extends StackPane {
 	private final IntegerProperty number = new SimpleIntegerProperty();
@@ -43,6 +44,8 @@ class CalendarCell extends StackPane {
 			setEffect(null);
 			setStyle(style.value);
 		});
+		disabledProperty().addListener((observable, oldValue, newValue) -> setBackground(
+				newValue ? Utilities.getBackgroundFromColor(new Color(0.6, 0, 0, 0.2)) : null));
 	}
 
 	public final IntegerProperty numberProperty() {
