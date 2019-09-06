@@ -57,6 +57,20 @@ public class CalendarWindow extends Window {
 		recalcGrid();
 	}
 
+	private void disable(int x, int y) {
+		calendar.getChildren().remove(grid[x][y]);
+		calendar.getChildren().add(0, grid[x][y]);
+		GridPane.setColumnIndex(grid[x][y], x);
+		GridPane.setRowIndex(grid[x][y], y + 1);
+		grid[x][y].setDisable(true);
+	}
+
+	private void enable(int x, int y) {
+		calendar.getChildren().remove(grid[x][y]);
+		calendar.add(grid[x][y], x, y + 1);
+		grid[x][y].setDisable(false);
+	}
+
 	private void recalcGrid() {
 		LocalDate firstDay = LocalDate.of(year.get(), month.get(), 1);
 		DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
@@ -67,7 +81,7 @@ public class CalendarWindow extends Window {
 			int maxDaysOfLastMonth = firstDay.minusMonths(1).lengthOfMonth();
 			for (int g = i - 1; g >= 0; g--) {
 				grid[g][j].setNumber(maxDaysOfLastMonth--);
-				grid[g][j].setDisable(true);
+				disable(g, j);
 			}
 		}
 
@@ -77,14 +91,14 @@ public class CalendarWindow extends Window {
 					break ROWITR;
 				}
 				grid[i][j].setNumber(day);
-				grid[i][j].setDisable(false);
+				enable(i, j);
 			}
 		if (day > maxDaysThisMonth && j < 6) {
 			day = 1;
 			for (; j < 6; j++, i = 0)
 				for (; i < 7; i++, day++) {
 					grid[i][j].setNumber(day);
-					grid[i][j].setDisable(true);
+					disable(i, j);
 				}
 		}
 	}
@@ -108,11 +122,9 @@ public class CalendarWindow extends Window {
 	private @FXML void initialize() {
 		for (int i = 0; i < grid.length; i++)
 			for (int j = 0; j < grid[i].length; j++) {
-				calendar.getChildren().add(0, grid[i][j] = new CalendarCell());
-				GridPane.setColumnIndex(grid[i][j], i);
-				GridPane.setRowIndex(grid[i][j], j + 1);
-				grid[i][j].setStyle("-fx-border-color: " + (j == 0 ? "transparent" : "-stuff-dark")
-						+ " transparent transparent " + (i == 0 ? "transparent" : "-stuff-dark") + ";");
+				calendar.add(grid[i][j] = new CalendarCell(), i, j + 1);
+				grid[i][j].setStyle("-fx-border-color: transparent " + (i < 6 ? "-stuff-dark " : "transparent ")
+						+ (j < 5 ? "-stuff-dark" : "transparent") + " transparent");
 			}
 
 		LocalDate now = LocalDate.now();
