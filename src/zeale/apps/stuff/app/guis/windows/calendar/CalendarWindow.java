@@ -19,7 +19,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -38,7 +37,7 @@ public class CalendarWindow extends Window {
 
 	// The first node under Sunday in calendar will be grid[0][1].
 	// grid[column][row + 1]
-	private StackPane[][] grid = new StackPane[7][6];
+	private CalendarCell[][] grid = new CalendarCell[7][6];
 	private @FXML Text currMonth;
 	private final IntegerProperty year = new SimpleIntegerProperty();
 	private final ObjectProperty<Month> month = new SimpleObjectProperty<>();;
@@ -85,11 +84,11 @@ public class CalendarWindow extends Window {
 
 		ChangeListener<Object> listener = (observable, oldValue, newValue) -> recalcGrid();
 		year.addListener(listener);
-		month.addListener(listener);
+		month.addListener(listener);// TODO
 
 		for (int i = 0; i < grid.length; i++)
 			for (int j = 0; j < grid[i].length; j++) {
-				calendar.add(grid[i][j] = new StackPane(), i, j + 1);
+				calendar.add(grid[i][j] = new CalendarCell(), i, j + 1);
 				grid[i][j].setStyle("-fx-border-color: transparent " + (i < 6 ? "-stuff-dark " : "transparent ")
 						+ (j < 5 ? "-stuff-dark" : "transparent") + " transparent");
 			}
