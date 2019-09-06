@@ -13,7 +13,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -40,14 +39,22 @@ public class CalendarWindow extends Window {
 	private CalendarCell[][] grid = new CalendarCell[7][6];
 	private @FXML Text currMonth;
 	private final IntegerProperty year = new SimpleIntegerProperty();
-	private final ObjectProperty<Month> month = new SimpleObjectProperty<>();;
+	private final ObjectProperty<Month> month = new SimpleObjectProperty<>();
 
 	private @FXML void left() {
-		month.set(month.get().minus(1));
+		Month newMonth = month.get().minus(1);
+		if (newMonth == Month.DECEMBER)
+			year.set(year.get() - 1);
+		month.set(newMonth);
+		recalcGrid();
 	}
 
 	private @FXML void right() {
-		month.set(month.get().plus(1));
+		Month newMonth = month.get().plus(1);
+		if (newMonth == Month.JANUARY)
+			year.set(year.get() + 1);
+		month.set(newMonth);
+		recalcGrid();
 	}
 
 	private void recalcGrid() {
@@ -117,9 +124,10 @@ public class CalendarWindow extends Window {
 
 		recalcGrid();
 
-		ChangeListener<Object> listener = (observable, oldValue, newValue) -> recalcGrid();
-		year.addListener(listener);
-		month.addListener(listener);// TODO
+		// Methods that change values recalc grid manually.
+//		ChangeListener<Object> listener = (observable, oldValue, newValue) -> recalcGrid();
+//		year.addListener(listener);
+//		month.addListener(listener);
 
 	}
 
