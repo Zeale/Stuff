@@ -43,11 +43,11 @@ public class CalendarWindow extends Window {
 	private final ObjectProperty<Month> month = new SimpleObjectProperty<>();;
 
 	private @FXML void left() {
-
+		month.set(month.get().minus(1));
 	}
 
 	private @FXML void right() {
-
+		month.set(month.get().plus(1));
 	}
 
 	private void recalcGrid() {
@@ -56,12 +56,21 @@ public class CalendarWindow extends Window {
 		int day = 1, i = weekdayToIndex(dayOfWeek), j = 0;
 		int maxDaysThisMonth = firstDay.lengthOfMonth();
 
+		if (i != 0) {
+			int maxDaysOfLastMonth = firstDay.minusMonths(1).lengthOfMonth();
+			for (int g = i - 1; g >= 0; g--) {
+				grid[g][j].setNumber(maxDaysOfLastMonth--);
+				grid[g][j].setDisable(true);
+			}
+		}
+
 		ROWITR: for (; j < 6; j++, i = 0)
 			for (; i < 7; i++, day++) {
 				if (day > maxDaysThisMonth) {
 					break ROWITR;
 				}
 				grid[i][j].setNumber(day);
+				grid[i][j].setDisable(false);
 			}
 		if (day > maxDaysThisMonth && j < 6) {
 			day = 1;
