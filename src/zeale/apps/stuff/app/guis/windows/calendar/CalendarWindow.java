@@ -101,9 +101,11 @@ public class CalendarWindow extends Window {
 	private @FXML void initialize() {
 		for (int i = 0; i < grid.length; i++)
 			for (int j = 0; j < grid[i].length; j++) {
-				calendar.add(grid[i][j] = new CalendarCell(), i, j + 1);
-				grid[i][j].setStyle("-fx-border-color: transparent " + (i < 6 ? "-stuff-dark " : "transparent ")
-						+ (j < 5 ? "-stuff-dark" : "transparent") + " transparent");
+				calendar.getChildren().add(0, grid[i][j] = new CalendarCell());
+				GridPane.setColumnIndex(grid[i][j], i);
+				GridPane.setRowIndex(grid[i][j], j + 1);
+				grid[i][j].setStyle("-fx-border-color: " + (j == 0 ? "transparent" : "-stuff-dark")
+						+ " transparent transparent " + (i == 0 ? "transparent" : "-stuff-dark") + ";");
 			}
 
 		LocalDate now = LocalDate.now();
