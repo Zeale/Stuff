@@ -53,29 +53,20 @@ public class CalendarWindow extends Window {
 	private void recalcGrid() {
 		LocalDate firstDay = LocalDate.of(year.get(), month.get(), 1);
 		DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
-		int day = 1, i = weekdayToIndex(dayOfWeek), j = 1;
+		int day = 1, i = weekdayToIndex(dayOfWeek), j = 0;
 		int maxDaysThisMonth = firstDay.lengthOfMonth();
 
-		System.out.println(maxDaysThisMonth);
-
-		for (; i < 7; i++, day++)
-			grid[i][0].setNumber(day);
-		ROWITR: for (; j < 6; j++)
-			for (i = 0; i < 7; i++, day++) {
+		ROWITR: for (; j < 6; j++, i = 0)
+			for (; i < 7; i++, day++) {
 				if (day > maxDaysThisMonth) {
-					System.out.println("BREAKING AT " + day);
 					break ROWITR;
 				}
 				grid[i][j].setNumber(day);
 			}
 		if (day > maxDaysThisMonth && j < 6) {
 			day = 1;
-			for (; i < 7; i++, day++) {
-				grid[i][j].setNumber(day);
-				grid[i][j].setDisable(true);
-			}
-			for (j++; j < 6; j++)
-				for (i = 0; i < 7; i++, day++) {
+			for (; j < 6; j++, i = 0)
+				for (; i < 7; i++, day++) {
 					grid[i][j].setNumber(day);
 					grid[i][j].setDisable(true);
 				}
