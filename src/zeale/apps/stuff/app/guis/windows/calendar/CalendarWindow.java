@@ -1,13 +1,26 @@
 package zeale.apps.stuff.app.guis.windows.calendar;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
+import org.alixia.javalibrary.javafx.bindings.BindingTools;
+
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
@@ -26,6 +39,9 @@ public class CalendarWindow extends Window {
 	// The first node under Sunday in calendar will be grid[0][1].
 	// grid[column][row + 1]
 	private StackPane[][] grid = new StackPane[7][6];
+	private @FXML Text currMonth;
+	private final IntegerProperty year = new SimpleIntegerProperty();
+	private final ObjectProperty<Month> month = new SimpleObjectProperty<>();;
 
 	private @FXML void left() {
 
@@ -35,16 +51,47 @@ public class CalendarWindow extends Window {
 
 	}
 
-	private String getBorder(int x, int y) {
-		return "-fx-border-color: transparent " + (x < 6 ? "-stuff-dark " : "transparent ")
-				+ (y < 5 ? "-stuff-dark" : "transparent") + " transparent";
+	private void recalcGrid() {
+		LocalDate firstDay = LocalDate.of(year.get(), month.get(), 1);
+		DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
+		int day = 1, i = weekdayToIndex(dayOfWeek), j = 0;
+	}
+
+	private int weekdayToIndex(DayOfWeek day) {
+		return ordinalToIndex(day.ordinal());
+	}
+
+	private int weekdayToIndex(int dayOfWeekIndex) {
+		return ordinalToIndex(dayOfWeekIndex - 1);
+	}
+
+	private int ordinalToIndex(int ordinal) {
+		return (ordinal + 1) % 7;
+	}
+
+	private DayOfWeek indexToWeekday(int index) {
+		return DayOfWeek.of((index + 6) % 7 + 1);
 	}
 
 	private @FXML void initialize() {
+		LocalDate now = LocalDate.now();
+		month.set(now.getMonth());
+		year.set(now.getYear());
+
+		currMonth.textProperty()
+				.bind(BindingTools.mask(month, t -> t.getDisplayName(TextStyle.FULL, Locale.getDefault())));
+
+		recalcGrid();
+
+		ChangeListener<Object> listener = (observable, oldValue, newValue) -> recalcGrid();
+		year.addListener(listener);
+		month.addListener(listener);
+
 		for (int i = 0; i < grid.length; i++)
 			for (int j = 0; j < grid[i].length; j++) {
 				calendar.add(grid[i][j] = new StackPane(), i, j + 1);
-				grid[i][j].setStyle(getBorder(i, j));
+				grid[i][j].setStyle("-fx-border-color: transparent " + (i < 6 ? "-stuff-dark " : "transparent ")
+						+ (j < 5 ? "-stuff-dark" : "transparent") + " transparent");
 			}
 	}
 

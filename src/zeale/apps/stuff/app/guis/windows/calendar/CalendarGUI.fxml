@@ -33,6 +33,7 @@
 			<children>
 				<StackPane>
 					<children>
+						<Text fx:id="currMonth" style="-fx-font-size: 2.4em;" />
 						<Button mnemonicParsing="false" onAction="#left"
 							styleClass="pop-button" text="&lt;--"
 							StackPane.alignment="CENTER_LEFT" />
