@@ -18,7 +18,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -178,7 +177,8 @@ public class CalendarWindow extends Window {
 		return grid[resCol][resRow];
 	}
 
-	private ObjectProperty<CalendarView<CalendarWindow>> calendarView = new SimpleObjectProperty<>();
+	private ObjectProperty<CalendarView<CalendarWindow>> calendarView = new SimpleObjectProperty<>(
+			new DefaultCalendarView());
 	{
 		calendarView.addListener((a, b, c) -> c.style(this));
 	}
