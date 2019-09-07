@@ -46,6 +46,30 @@ public class CalendarWindow extends Window {
 	private final IntegerProperty year = new SimpleIntegerProperty();
 	private final ObjectProperty<Month> month = new SimpleObjectProperty<>();
 
+	public ObjectProperty<Month> monthProperty() {
+		return month;
+	}
+
+	public Month getMonth() {
+		return month.get();
+	}
+
+	public void setMonth(Month month) {
+		this.month.set(month);
+	}
+
+	public IntegerProperty yearProperty() {
+		return year;
+	}
+
+	public int getYear() {
+		return year.get();
+	}
+
+	public void setYear(int year) {
+		this.year.set(year);
+	}
+
 	private @FXML void left() {
 		Month newMonth = month.get().minus(1);
 		if (newMonth == Month.DECEMBER)
