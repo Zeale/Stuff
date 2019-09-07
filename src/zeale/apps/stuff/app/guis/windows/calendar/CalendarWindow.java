@@ -7,8 +7,7 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-import org.alixia.javalibrary.javafx.bindings.BindingTools;
-
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -220,7 +219,8 @@ public class CalendarWindow extends Window {
 		year.set(now.getYear());
 
 		currMonth.textProperty()
-				.bind(BindingTools.mask(month, t -> t.getDisplayName(TextStyle.FULL, Locale.getDefault())));
+				.bind(Bindings.createStringBinding(() -> month.get().getDisplayName(TextStyle.FULL, Locale.getDefault())
+						+ ", " + (year.get() < 0 ? -year.get() + " BCE" : year.get()), year, month));
 
 		recalcGrid();
 
