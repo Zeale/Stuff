@@ -18,6 +18,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -36,8 +37,11 @@ public class CalendarWindow extends Window {
 
 	private @FXML GridPane calendar;
 
-	// The first node under Sunday in calendar will be grid[0][1].
-	// grid[column][row + 1]
+	// The first node under Sunday in calendar will be grid[0][0].
+	// grid[column][row]
+	// This, however, matches with calendar's 0,1 element.
+	// grid[col][row] == cal[col][row + 1]
+	// This is because of the weekdays at the top of the calendar gridpane.
 	private CalendarCell[][] grid = new CalendarCell[7][6];
 	private @FXML Text currMonth;
 	private final IntegerProperty year = new SimpleIntegerProperty();
@@ -60,65 +64,124 @@ public class CalendarWindow extends Window {
 	}
 
 	private void disable(int x, int y) {
-		calendar.getChildren().remove(grid[x][y]);
-		calendar.getChildren().add(0, grid[x][y]);
-		GridPane.setColumnIndex(grid[x][y], x);
-		GridPane.setRowIndex(grid[x][y], y + 1);
 		grid[x][y].setDisable(true);
 	}
 
 	private void enable(int x, int y) {
-		calendar.getChildren().remove(grid[x][y]);
-		calendar.add(grid[x][y], x, y + 1);
 		grid[x][y].setDisable(false);
 	}
 
+	private void set(int x, int y, CalendarCell cell) {
+		if (cell == null)
+			throw null;
+		calendar.getChildren().remove(grid[x][y]);
+		grid[x][y] = cell;
+		calendar.add(cell, x, y + 1);
+	}
+
+	private void set(int gridx, int gridy, CalendarCell cell, int gridPaneChildPos) {
+		if (cell == null)
+			throw null;
+		calendar.getChildren().remove(grid[gridx][gridy]);
+		grid[gridx][gridy] = cell;
+		calendar.getChildren().add(gridPaneChildPos, grid[gridx][gridy] = cell);
+		GridPane.setColumnIndex(cell, gridx);
+		GridPane.setRowIndex(cell, gridy + 1);
+	}
+
+	/**
+	 * Creates a {@link CalendarCell} and gives it its necessary borders via
+	 * {@link CalendarCell#setStyle(String)}.
+	 * 
+	 * @param x The x position. This is used for border calculation.
+	 * @param y The y position. This is also used for border calculation.
+	 * @return The {@link CalendarCell}.
+	 */
+	private CalendarCell createCell(int x, int y) {
+		CalendarCell cell = new CalendarCell();
+		cell.setStyle("-fx-border-color: transparent " + (x < 6 ? "-stuff-dark " : "transparent ")
+				+ (y < 5 ? "-stuff-dark" : "transparent") + " transparent");
+		return cell;
+	}
+
+	/**
+	 * Creates a new {@link CalendarCell} with the specified coordinates and calls
+	 * {@link #set(int, int, CalendarCell)} on it with the specified coordinates.
+	 * This places the new cell in the specified position, both in the grid and in
+	 * the gridpane.
+	 * 
+	 * @param x The x position of the cell.
+	 * @param y The y position of the cell.
+	 * @return The newly created {@link CalendarCell}.
+	 */
+	private CalendarCell setNewCell(int x, int y) {
+		CalendarCell cell = createCell(x, y);
+		set(x, y, cell);
+		return cell;
+	}
+
+	/**
+	 * Recalculates and restyles the entire calendar.
+	 */
 	private void recalcGrid() {
 		LocalDate firstDay = LocalDate.of(year.get(), month.get(), 1);
 		DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
-		int day = 1, i = weekdayToIndex(dayOfWeek), j = 0;
+		int day = 1, i = WeekUtils.weekdayToIndex(dayOfWeek), j = 0;
 		int maxDaysThisMonth = firstDay.lengthOfMonth();
 
 		if (i != 0) {
 			int maxDaysOfLastMonth = firstDay.minusMonths(1).lengthOfMonth();
 			for (int g = i - 1; g >= 0; g--) {
-				grid[g][j].setNumber(maxDaysOfLastMonth--);
+				setNewCell(g, j).setNumber(maxDaysOfLastMonth--);
 				disable(g, j);
 			}
 		}
 
 		ROWITR: for (; j < 6; j++, i = 0)
 			for (; i < 7; i++, day++) {
-				if (day > maxDaysThisMonth) {
+				if (day > maxDaysThisMonth)
 					break ROWITR;
-				}
-				grid[i][j].setNumber(day);
+				setNewCell(i, j).setNumber(day);
 				enable(i, j);
 			}
 		if (day > maxDaysThisMonth && j < 6) {
 			day = 1;
 			for (; j < 6; j++, i = 0)
 				for (; i < 7; i++, day++) {
-					grid[i][j].setNumber(day);
+					setNewCell(i, j).setNumber(day);
 					disable(i, j);
 				}
 		}
+		if (calendarView.get() != null)
+			calendarView.get().style(this);
+
+		cell(1).setBackgroundColor(Color.PURPLE);
 	}
 
-	private int weekdayToIndex(DayOfWeek day) {
-		return ordinalToIndex(day.ordinal());
+	/**
+	 * Returns the {@link CalendarCell} for the given day of the current month.
+	 * 
+	 * @param day The day represented by the {@link CalendarCell} that will be
+	 *            returned.
+	 * @return The {@link CalendarCell}.
+	 */
+	CalendarCell cell(int day) {
+		Month month = this.month.get();
+		if (day > month.maxLength() || day < 0)
+			throw new IllegalArgumentException();
+
+		// Index of first day of this month.
+		DayOfWeek dayOfWeek = LocalDate.of(this.year.get(), this.month.get(), 1).getDayOfWeek();
+		int weekday = WeekUtils.weekdayToIndex(dayOfWeek.getValue());
+		int resCol = (weekday + day - 1) % 7;
+		int resRow = (weekday + day - 1) / 7;
+
+		return grid[resCol][resRow];
 	}
 
-	private int weekdayToIndex(int dayOfWeekIndex) {
-		return ordinalToIndex(dayOfWeekIndex - 1);
-	}
-
-	private int ordinalToIndex(int ordinal) {
-		return (ordinal + 1) % 7;
-	}
-
-	private DayOfWeek indexToWeekday(int index) {
-		return DayOfWeek.of((index + 6) % 7 + 1);
+	private ObjectProperty<CalendarView<CalendarWindow>> calendarView = new SimpleObjectProperty<>();
+	{
+		calendarView.addListener((a, b, c) -> c.style(this));
 	}
 
 	private @FXML void initialize() {
@@ -137,11 +200,6 @@ public class CalendarWindow extends Window {
 				.bind(BindingTools.mask(month, t -> t.getDisplayName(TextStyle.FULL, Locale.getDefault())));
 
 		recalcGrid();
-
-		// Methods that change values recalc grid manually.
-//		ChangeListener<Object> listener = (observable, oldValue, newValue) -> recalcGrid();
-//		year.addListener(listener);
-//		month.addListener(listener);
 
 	}
 
