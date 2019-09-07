@@ -20,6 +20,7 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Menu;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.app.guis.windows.calculator.CalculatorWindow;
+import zeale.apps.stuff.app.guis.windows.calendar.CalendarWindow;
 import zeale.apps.stuff.app.guis.windows.encryption.EncryptionWindow;
 import zeale.apps.stuff.app.guis.windows.modules.ModuleWindow;
 import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow;
@@ -156,8 +157,14 @@ public class HomeWindow extends Menu {
 					() -> new TaskSchedulerWindow(), "To Do List"), effect);
 		}
 
+		// Modules
 		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/modules/PCB Module.png", () -> new ModuleWindow(),
 				"Modules");
+
+		// Calendar Window
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/calendar/Calendar.png", () -> new CalendarWindow(),
+				"Calendar");
+
 	}
 
 }
