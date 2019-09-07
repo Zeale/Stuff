@@ -2,22 +2,31 @@ package zeale.apps.stuff.app.guis.windows.calendar;
 
 import org.alixia.javalibrary.javafx.bindings.BindingTools;
 import org.alixia.javalibrary.util.Box;
+import org.alixia.javalibrary.util.Pair;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.effect.Effect;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import zeale.applicationss.notesss.utilities.Utilities;
 
 class CalendarCell extends StackPane {
-	private final IntegerProperty number = new SimpleIntegerProperty();
-	private final Text text = new Text();
+	private final IntegerProperty number = new SimpleIntegerProperty(), eventCount = new SimpleIntegerProperty();
+	private final Text numberText = new Text(), eventText = new Text();
 	private final static Effect DEFAULT_HOVER_EFFECT = null;
 
 	public static final double DEFAULT_CELL_BACKGROUND_OPACITY = 0.2;
@@ -49,25 +58,66 @@ class CalendarCell extends StackPane {
 		setBackground(Utilities.getBackgroundFromColor(color));
 	}
 
+	private static Pair<Double, Double> getSize(String txt, Font font) {
+		Text text = new Text(txt);
+		text.setFont(font);
+		new Scene(new Group(text));
+		text.applyCss();
+		Bounds bounds = text.getLayoutBounds();
+		return new Pair<>(bounds.getWidth(), bounds.getHeight());
+	}
+
 	{
-		getChildren().add(text);
-		setAlignment(text, Pos.TOP_RIGHT);
-		text.setStyle("-fx-font-size: 1.4em;-fx-color: egg;");
+		getChildren().add(numberText);
+		setAlignment(numberText, Pos.TOP_RIGHT);
+		numberText.setStyle("-fx-font-size: 1.4em;-fx-color: egg;");
 
-		if (!text.textProperty().isBound())
-			text.textProperty().bind(BindingTools.mask(number, Number::toString));
+		numberText.textProperty().bind(BindingTools.mask(number, Number::toString));
 
-		StackPane.setMargin(text, new Insets(0, 5, 0, 0));// Match inexplicable downward shift.
+		eventText.setBoundsType(TextBoundsType.VISUAL);
+		eventText.setFont(Font.font("monospace"));
+		Rectangle box = new Rectangle();
+		box.strokeProperty().bind(numberText.fillProperty());
+		box.setFill(Color.TRANSPARENT);
+		eventText.fillProperty().bind(box.strokeProperty());
+
+		StackPane eventBox = new StackPane(box, eventText);
+		StackPane.setAlignment(eventBox, Pos.BOTTOM_LEFT);
+		eventCount.addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				if (newValue.intValue() == 0)
+					getChildren().remove(eventBox);
+				else {
+					String str = newValue.toString();
+					eventText.setText(str);
+					Pair<Double, Double> size = getSize(str, eventText.getFont());
+
+					box.setWidth(Math.max(size.first + 8, size.second + 6));
+					box.setHeight(size.second + 6);
+
+					eventBox.setMaxSize(box.getWidth() + 2, box.getHeight() + 2);
+
+					box.setArcHeight(5);
+					box.setArcWidth(5);
+					if (!getChildren().contains(eventBox))
+						getChildren().add(eventBox);
+				}
+			}
+		});
+
+		StackPane.setMargin(numberText, new Insets(0, 5, 0, 0));// Match inexplicable downward shift.
 
 		Box<Background> bg = new Box<>();
 		setOnMouseEntered(event -> {
-			text.setFill(Color.RED);
+			numberText.setFill(Color.RED);
 			setEffect(DEFAULT_HOVER_EFFECT);
 			bg.value = getBackground();
 			setBackgroundColor(Color.ORANGE);
 		});
 		setOnMouseExited(event -> {
-			text.setFill(Color.GOLD);
+			numberText.setFill(Color.GOLD);
 			setEffect(null);
 			setBackground(bg.value);
 		});
