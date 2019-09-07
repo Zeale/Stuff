@@ -63,15 +63,15 @@ public class CalendarWindow extends Window {
 		recalcGrid();
 	}
 
-	private void disable(int x, int y) {
+	void disable(int x, int y) {
 		grid[x][y].setDisable(true);
 	}
 
-	private void enable(int x, int y) {
+	void enable(int x, int y) {
 		grid[x][y].setDisable(false);
 	}
 
-	private void set(int x, int y, CalendarCell cell) {
+	void set(int x, int y, CalendarCell cell) {
 		if (cell == null)
 			throw null;
 		calendar.getChildren().remove(grid[x][y]);
@@ -79,7 +79,7 @@ public class CalendarWindow extends Window {
 		calendar.add(cell, x, y + 1);
 	}
 
-	private void set(int gridx, int gridy, CalendarCell cell, int gridPaneChildPos) {
+	void set(int gridx, int gridy, CalendarCell cell, int gridPaneChildPos) {
 		if (cell == null)
 			throw null;
 		calendar.getChildren().remove(grid[gridx][gridy]);
@@ -97,7 +97,7 @@ public class CalendarWindow extends Window {
 	 * @param y The y position. This is also used for border calculation.
 	 * @return The {@link CalendarCell}.
 	 */
-	private CalendarCell createCell(int x, int y) {
+	CalendarCell createCell(int x, int y) {
 		CalendarCell cell = new CalendarCell();
 		cell.setStyle("-fx-border-color: transparent " + (x < 6 ? "-stuff-dark " : "transparent ")
 				+ (y < 5 ? "-stuff-dark" : "transparent") + " transparent");
@@ -114,7 +114,7 @@ public class CalendarWindow extends Window {
 	 * @param y The y position of the cell.
 	 * @return The newly created {@link CalendarCell}.
 	 */
-	private CalendarCell setNewCell(int x, int y) {
+	CalendarCell setNewCell(int x, int y) {
 		CalendarCell cell = createCell(x, y);
 		set(x, y, cell);
 		return cell;
@@ -155,7 +155,6 @@ public class CalendarWindow extends Window {
 		if (calendarView.get() != null)
 			calendarView.get().style(this);
 
-		cell(1).setBackgroundColor(Color.PURPLE);
 	}
 
 	/**
