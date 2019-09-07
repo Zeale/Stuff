@@ -33,6 +33,15 @@
 			<children>
 				<StackPane>
 					<children>
+						<Button mnemonicParsing="false" onAction="#leftX"
+							styleClass="pop-button" text="&lt;&lt;"
+							StackPane.alignment="CENTER_LEFT" />
+						<Button mnemonicParsing="false" onAction="#rightX" styleClass="pop-button"
+							text="&gt;&gt;" StackPane.alignment="CENTER_RIGHT" />
+					</children>
+				</StackPane>
+				<StackPane>
+					<children>
 						<Text fx:id="currMonth" style="-fx-font-size: 2.4em;" />
 						<Button mnemonicParsing="false" onAction="#left"
 							styleClass="pop-button" text="&lt;--"

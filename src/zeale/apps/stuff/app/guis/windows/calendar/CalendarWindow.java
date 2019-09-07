@@ -24,6 +24,17 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 
 public class CalendarWindow extends Window {
+	// TODO Check bounds for years.
+
+	private @FXML void leftX() {
+		year.set(year.get() - 1);
+		recalcGrid();
+	}
+
+	private @FXML void rightX() {
+		year.set(year.get() + 1);
+		recalcGrid();
+	}
 
 	private Stage stage;
 
