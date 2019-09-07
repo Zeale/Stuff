@@ -7,7 +7,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Effect;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -18,7 +18,7 @@ import zeale.applicationss.notesss.utilities.Utilities;
 class CalendarCell extends StackPane {
 	private final IntegerProperty number = new SimpleIntegerProperty();
 	private final Text text = new Text();
-	private final static DropShadow shadow = new DropShadow();
+	private final static Effect DEFAULT_HOVER_EFFECT = null;
 
 	public static final double DEFAULT_CELL_BACKGROUND_OPACITY = 0.2;
 
@@ -35,7 +35,7 @@ class CalendarCell extends StackPane {
 	 *              to.
 	 */
 	public void setBackgroundColor(Color color) {
-		setBackgroundColorStrict(color.deriveColor(0, 0, 0, 0.2));
+		setBackgroundColorStrict(color.deriveColor(0, 1, 1, 0.2));
 	}
 
 	/**
@@ -54,27 +54,22 @@ class CalendarCell extends StackPane {
 		setAlignment(text, Pos.TOP_RIGHT);
 		text.setStyle("-fx-font-size: 1.4em;-fx-color: egg;");
 
-		text.textProperty().bind(BindingTools.mask(number, Number::toString));
+		if (!text.textProperty().isBound())
+			text.textProperty().bind(BindingTools.mask(number, Number::toString));
 
 		StackPane.setMargin(text, new Insets(0, 5, 0, 0));// Match inexplicable downward shift.
 
-		Box<String> style = new Box<>();
+		Box<Background> bg = new Box<>();
 		setOnMouseEntered(event -> {
 			text.setFill(Color.RED);
-			setScaleX(1.05);
-			setScaleY(1.05);
-			setScaleZ(1.05);
-			setEffect(shadow);
-			style.value = getStyle();
-			setStyle("-fx-border-color: -stuff-dark;-fx-background-color: -stuff-light;");
+			setEffect(DEFAULT_HOVER_EFFECT);
+			bg.value = getBackground();
+			setBackgroundColor(Color.ORANGE);
 		});
 		setOnMouseExited(event -> {
 			text.setFill(Color.GOLD);
-			setScaleX(1);
-			setScaleY(1);
-			setScaleZ(1);
 			setEffect(null);
-			setStyle(style.value);
+			setBackground(bg.value);
 		});
 		disabledProperty().addListener(
 				(observable, oldValue, newValue) -> setBackground(newValue ? DEFAULT_DISABLED_CELL_BACKGROUND : null));
