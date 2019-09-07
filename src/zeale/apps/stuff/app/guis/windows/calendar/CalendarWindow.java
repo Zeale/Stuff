@@ -1,5 +1,6 @@
 package zeale.apps.stuff.app.guis.windows.calendar;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -12,6 +13,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,8 +25,36 @@ import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
+import zeale.apps.stuff.api.logging.Logging;
 
 public class CalendarWindow extends Window {
+
+	private final static ObservableMap<LocalDate, CalendarEvent> calendarEvents = FXCollections.observableHashMap();
+	private static final File CALENDAR_EVENT_STORAGE_LOCATION = new File(Stuff.APPLICATION_DATA, "Calendar/Events");
+
+	static {
+		try {
+			if (!CALENDAR_EVENT_STORAGE_LOCATION.isDirectory())
+				CALENDAR_EVENT_STORAGE_LOCATION.mkdirs();
+			else
+				for (File f : CALENDAR_EVENT_STORAGE_LOCATION.listFiles()) {
+					if (f.isDirectory())
+						Logging.wrn("Found a directory in the Calendar app's Event storage directory. (Directory: "
+								+ f.getAbsolutePath() + ")");
+					else
+						try {
+							CalendarEvent ev = CalendarEvent.load(f);
+							calendarEvents.put(ev.getDate(), ev);
+						} catch (Exception e) {
+							Logging.err("An error occurred while trying to load a Calendar Event.");
+							Logging.err(e);
+						}
+				}
+		} catch (Exception e) {
+			Logging.err("An exception occurred while loading calendar events from the file.");
+		}
+	}
+
 	// TODO Check bounds for years.
 
 	private @FXML void leftX() {
