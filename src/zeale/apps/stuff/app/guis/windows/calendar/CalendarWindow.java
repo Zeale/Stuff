@@ -6,6 +6,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javafx.beans.binding.Bindings;
@@ -29,7 +31,8 @@ import zeale.apps.stuff.api.logging.Logging;
 
 public class CalendarWindow extends Window {
 
-	private final static ObservableMap<LocalDate, CalendarEvent> calendarEvents = FXCollections.observableHashMap();
+	private final static ObservableMap<LocalDate, List<CalendarEvent>> calendarEvents = FXCollections
+			.observableHashMap();
 	private static final File CALENDAR_EVENT_STORAGE_LOCATION = new File(Stuff.APPLICATION_DATA, "Calendar/Events");
 
 	static {
@@ -44,7 +47,12 @@ public class CalendarWindow extends Window {
 					else
 						try {
 							CalendarEvent ev = CalendarEvent.load(f);
-							calendarEvents.put(ev.getDate(), ev);
+							List<CalendarEvent> evs;
+							if (calendarEvents.containsKey(ev.getDate()))
+								evs = calendarEvents.get(ev.getDate());
+							else
+								calendarEvents.put(ev.getDate(), evs = new ArrayList<>());
+							evs.add(ev);
 						} catch (Exception e) {
 							Logging.err("An error occurred while trying to load a Calendar Event.");
 							Logging.err(e);
