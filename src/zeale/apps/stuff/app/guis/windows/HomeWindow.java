@@ -112,11 +112,11 @@ public class HomeWindow extends Menu {
 	protected void show(Stage stage, ApplicationProperties properties) {
 		super.show(stage, properties);
 		// Calculator
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/calculator/Calculator.png", () -> new CalculatorWindow(),
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/calculator/Calculator.png", CalculatorWindow::new,
 				"Calculator");
 
 		// Web Requests
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/WorldWeb.png", () -> new WebrequestWindow(),
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/webrequests/WorldWeb.png", WebrequestWindow::new,
 				"Web Requests");
 
 		// Console
@@ -148,16 +148,14 @@ public class HomeWindow extends Menu {
 		}
 
 		// Encryption
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/encryption/Key.png", () -> new EncryptionWindow(),
-				"Encryption");
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/encryption/Key.png", EncryptionWindow::new, "Encryption");
 		{
 			ColorAdjust effect = new ColorAdjust(0, 0, -0.2, 0.);
 			setCustomEffect(addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/taskscheduler/TodoList.png",
-					() -> new TaskSchedulerWindow(), "To Do List"), effect);
+					TaskSchedulerWindow::new, "To Do List"), effect);
 		}
 
-		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/modules/PCB Module.png", () -> new ModuleWindow(),
-				"Modules");
+		addImageNode("/zeale/apps/stuff/rsrc/app/guis/windows/modules/PCB Module.png", ModuleWindow::new, "Modules");
 	}
 
 }
