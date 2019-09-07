@@ -26,10 +26,12 @@ import zeale.apps.stuff.api.guis.windows.Window;
 
 public class CalendarWindow extends Window {
 
+	private Stage stage;
+
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-
+		stage.setMinHeight(0);
+		stage.setMinWidth(0);
 	}
 
 	private @FXML GridPane calendar;
@@ -145,6 +147,11 @@ public class CalendarWindow extends Window {
 
 	@Override
 	protected void show(Stage stage, ApplicationProperties properties) throws WindowLoadFailureException {
+		stage.setMinHeight(500);
+		stage.setMinWidth(900);
+
+		this.stage = stage;
+
 		FXMLLoader loader = new FXMLLoader(CalendarWindow.class.getResource("CalendarGUI.fxml"));
 		loader.setController(this);
 
