@@ -1,6 +1,7 @@
 package zeale.apps.stuff.app.guis.windows.calendar;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -10,12 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,6 +37,7 @@ public class CalendarWindow extends Window {
 	private final static ObservableMap<LocalDate, List<CalendarEvent>> calendarEvents = FXCollections
 			.observableHashMap();
 	private static final File CALENDAR_EVENT_STORAGE_LOCATION = new File(Stuff.APPLICATION_DATA, "Calendar/Events");
+	private static final ObservableList<CalendarEvent> DIRTY_CALENDAR_EVENTS = FXCollections.observableArrayList();
 
 	static {
 		try {
@@ -47,6 +51,16 @@ public class CalendarWindow extends Window {
 					else
 						try {
 							CalendarEvent ev = CalendarEvent.load(f);
+
+							InvalidationListener dirtyMarker = observable -> {
+								if (!DIRTY_CALENDAR_EVENTS.contains(ev))
+									DIRTY_CALENDAR_EVENTS.add(ev);
+							};
+							ev.dateProperty().addListener(dirtyMarker);
+							ev.descriptionProperty().addListener(dirtyMarker);
+							ev.nameProperty().addListener(dirtyMarker);
+							// ~PROPERTIES
+
 							List<CalendarEvent> evs;
 							if (calendarEvents.containsKey(ev.getDate()))
 								evs = calendarEvents.get(ev.getDate());
@@ -81,6 +95,18 @@ public class CalendarWindow extends Window {
 	public void destroy() {
 		stage.setMinHeight(0);
 		stage.setMinWidth(0);
+		for (CalendarEvent e : DIRTY_CALENDAR_EVENTS)
+			try {
+				e.flush();
+			} catch (FileNotFoundException e1) {
+				Logging.err("Failed to save a CalendarEvent with the name of " + e.getName()
+						+ ". Information about the error has been printed below.");
+			}
+
+	}
+
+	public static void reload() {
+
 	}
 
 	private @FXML GridPane calendar;
