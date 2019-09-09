@@ -34,7 +34,7 @@ import zeale.apps.stuff.api.logging.Logging;
 
 public class CalendarWindow extends Window {
 
-	private final static ObservableMap<LocalDate, List<CalendarEvent>> calendarEvents = FXCollections
+	private final static ObservableMap<LocalDate, ObservableList<CalendarEvent>> calendarEvents = FXCollections
 			.observableHashMap();
 	private static final File CALENDAR_EVENT_STORAGE_LOCATION = new File(Stuff.APPLICATION_DATA, "Calendar/Events");
 	private static final ObservableList<CalendarEvent> DIRTY_CALENDAR_EVENTS = FXCollections.observableArrayList();
@@ -61,11 +61,11 @@ public class CalendarWindow extends Window {
 							ev.nameProperty().addListener(dirtyMarker);
 							// ~PROPERTIES
 
-							List<CalendarEvent> evs;
+							ObservableList<CalendarEvent> evs;
 							if (calendarEvents.containsKey(ev.getDate()))
 								evs = calendarEvents.get(ev.getDate());
 							else
-								calendarEvents.put(ev.getDate(), evs = new ArrayList<>());
+								calendarEvents.put(ev.getDate(), evs = FXCollections.observableArrayList());
 							evs.add(ev);
 						} catch (Exception e) {
 							Logging.err("An error occurred while trying to load a Calendar Event.");
