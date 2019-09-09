@@ -213,7 +213,11 @@ public class CalendarWindow extends Window {
 			for (; i < 7; i++, day++) {
 				if (day > maxDaysThisMonth)
 					break ROWITR;
-				setNewCell(i, j).setNumber(day);
+				CalendarCell cell = setNewCell(i, j);
+				LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
+				if (calendarEvents.containsKey(cellDate))
+					cell.setEventCount(calendarEvents.get(cellDate).size());
+				cell.setNumber(day);
 				enable(i, j);
 			}
 		if (day > maxDaysThisMonth && j < 6) {

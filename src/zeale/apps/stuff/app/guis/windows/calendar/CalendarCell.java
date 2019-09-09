@@ -137,4 +137,16 @@ class CalendarCell extends StackPane {
 		this.numberProperty().set(number);
 	}
 
+	public final IntegerProperty eventCountProperty() {
+		return this.eventCount;
+	}
+
+	public final int getEventCount() {
+		return this.eventCountProperty().get();
+	}
+
+	public final void setEventCount(final int eventCount) {
+		this.eventCountProperty().set(eventCount);
+	}
+
 }
