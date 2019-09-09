@@ -7,8 +7,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import javafx.beans.InvalidationListener;
@@ -31,6 +29,7 @@ import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
+import zeale.apps.stuff.api.utilities.Utils;
 
 public class CalendarWindow extends Window {
 
@@ -38,6 +37,10 @@ public class CalendarWindow extends Window {
 			.observableHashMap();
 	private static final File CALENDAR_EVENT_STORAGE_LOCATION = new File(Stuff.APPLICATION_DATA, "Calendar/Events");
 	private static final ObservableList<CalendarEvent> DIRTY_CALENDAR_EVENTS = FXCollections.observableArrayList();
+	
+	public static CalendarEvent createCalendarEvent() throws FileNotFoundException {
+		return new CalendarEvent(Utils.findFeasibleFile(CALENDAR_EVENT_STORAGE_LOCATION, ".cev"));
+	}
 
 	static {
 		try {
