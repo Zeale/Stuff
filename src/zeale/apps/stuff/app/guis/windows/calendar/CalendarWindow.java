@@ -82,8 +82,8 @@ public class CalendarWindow extends Window {
 			this.x = x;
 			this.y = y;
 			calendar.add(this, x, y + 1);
-			setStyle("-fx-border-color: transparent " + (x < 6 ? "-stuff-dark " : "transparent ")
-					+ (y < 5 ? "-stuff-dark" : "transparent") + " transparent");
+			setStyle("-fx-border-width: 0 " + (x < 6 ? "1 " : "0 ")
+					+ (y < 5 ? "1" : "0") + " 0;-fx-border-color: -stuff-dark;");
 			grid[x][y] = this;
 		}
 
