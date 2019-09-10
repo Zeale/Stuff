@@ -12,8 +12,8 @@ class DefaultCalendarView extends CalendarView<CalendarWindow> {
 	protected void style(CalendarWindow window) {
 		LocalDate currDate = LocalDate.now();
 		if (currDate.getYear() == window.getYear() && currDate.getMonth() == window.getMonth())
-			window.cell(currDate.getDayOfMonth()).setBackgroundColor(CURRENT_DAY_COLOR);
-		window.cell(1).setBackgroundColor(FIRST_DAY_OF_MONTH_COLOR);
+			window.cellBox(currDate.getDayOfMonth()).getCalendarCell().setBackgroundColor(CURRENT_DAY_COLOR);
+		window.cellBox(1).getCalendarCell().setBackgroundColor(FIRST_DAY_OF_MONTH_COLOR);
 	}
 
 	@Override

@@ -13,7 +13,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.effect.Effect;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -25,48 +24,16 @@ import javafx.scene.text.TextBoundsType;
 import zeale.applicationss.notesss.utilities.Utilities;
 
 class CalendarCell extends StackPane {
-	private final IntegerProperty number = new SimpleIntegerProperty(), eventCount = new SimpleIntegerProperty();
-	private final Text numberText = new Text(), eventText = new Text();
-	private final static Effect DEFAULT_HOVER_EFFECT = null;
 
 	public static final double DEFAULT_CELL_BACKGROUND_OPACITY = 0.2;
-
 	private static final Color DEFAULT_DISABLED_CELL_BACKGROUND_COLOR = new Color(0.6, 0, 0,
 			DEFAULT_CELL_BACKGROUND_OPACITY);
 	private static final Background DEFAULT_DISABLED_CELL_BACKGROUND = Utilities
 			.getBackgroundFromColor(DEFAULT_DISABLED_CELL_BACKGROUND_COLOR);
 
-	/**
-	 * Sets the background color of this {@link CalendarCell} to be the given color
-	 * <em>with an opacity of <code>0.2</code></em>.
-	 * 
-	 * @param color The {@link Color} to set this {@link CalendarCell}'s background
-	 *              to.
-	 */
-	public void setBackgroundColor(Color color) {
-		setBackgroundColorStrict(color.deriveColor(0, 1, 1, 0.2));
-	}
+	private final IntegerProperty number = new SimpleIntegerProperty(), eventCount = new SimpleIntegerProperty();
 
-	/**
-	 * Sets the background of this {@link CalendarCell} to be a {@link Background}
-	 * derived from the given {@link Paint}.
-	 * 
-	 * @param color The {@link Paint} to make the background of this
-	 *              {@link CalendarCell}.
-	 */
-	public void setBackgroundColorStrict(Paint color) {
-		setBackground(Utilities.getBackgroundFromColor(color));
-	}
-
-	private static Pair<Double, Double> getSize(String txt, Font font) {
-		Text text = new Text(txt);
-		text.setFont(font);
-		new Scene(new Group(text));
-		text.applyCss();
-		Bounds bounds = text.getLayoutBounds();
-		return new Pair<>(bounds.getWidth(), bounds.getHeight());
-	}
-
+	private final Text numberText = new Text(), eventText = new Text();
 	{
 		getChildren().add(numberText);
 		setAlignment(numberText, Pos.TOP_RIGHT);
@@ -112,29 +79,15 @@ class CalendarCell extends StackPane {
 		Box<Background> bg = new Box<>();
 		setOnMouseEntered(event -> {
 			numberText.setFill(Color.RED);
-			setEffect(DEFAULT_HOVER_EFFECT);
 			bg.value = getBackground();
 			setBackgroundColor(Color.ORANGE);
 		});
 		setOnMouseExited(event -> {
 			numberText.setFill(Color.GOLD);
-			setEffect(null);
 			setBackground(bg.value);
 		});
 		disabledProperty().addListener(
 				(observable, oldValue, newValue) -> setBackground(newValue ? DEFAULT_DISABLED_CELL_BACKGROUND : null));
-	}
-
-	public final IntegerProperty numberProperty() {
-		return this.number;
-	}
-
-	public final int getNumber() {
-		return this.numberProperty().get();
-	}
-
-	public final void setNumber(final int number) {
-		this.numberProperty().set(number);
 	}
 
 	public final IntegerProperty eventCountProperty() {
@@ -145,8 +98,50 @@ class CalendarCell extends StackPane {
 		return this.eventCountProperty().get();
 	}
 
+	public final int getNumber() {
+		return this.numberProperty().get();
+	}
+
+	public final IntegerProperty numberProperty() {
+		return this.number;
+	}
+
+	/**
+	 * Sets the background color of this {@link CalendarCell} to be the given color
+	 * <em>with an opacity of <code>0.2</code></em>.
+	 * 
+	 * @param color The {@link Color} to set this {@link CalendarCell}'s background
+	 *              to.
+	 */
+	public void setBackgroundColor(Color color) {
+		setBackgroundColorStrict(color.deriveColor(0, 1, 1, 0.2));
+	}
+
+	/**
+	 * Sets the background of this {@link CalendarCell} to be a {@link Background}
+	 * derived from the given {@link Paint}.
+	 * 
+	 * @param color The {@link Paint} to make the background of this
+	 *              {@link CalendarCell}.
+	 */
+	public void setBackgroundColorStrict(Paint color) {
+		setBackground(Utilities.getBackgroundFromColor(color));
+	}
+
 	public final void setEventCount(final int eventCount) {
 		this.eventCountProperty().set(eventCount);
 	}
 
+	public final void setNumber(final int number) {
+		this.numberProperty().set(number);
+	}
+
+	private static Pair<Double, Double> getSize(String txt, Font font) {
+		Text text = new Text(txt);
+		text.setFont(font);
+		new Scene(new Group(text));
+		text.applyCss();
+		Bounds bounds = text.getLayoutBounds();
+		return new Pair<>(bounds.getWidth(), bounds.getHeight());
+	}
 }
