@@ -23,6 +23,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -287,6 +288,59 @@ public class CalendarWindow extends Window {
 			new DefaultCalendarView());
 	{
 		calendarView.addListener((a, b, c) -> c.style(this));
+	}
+
+	/**
+	 * A {@link StackPane} that handles
+	 * 
+	 * @author Zeale
+	 *
+	 */
+	public final class CalendarCellBox extends StackPane {
+		private final int x, y;
+
+		public CalendarCellBox(int x, int y) {
+			this.x = x;
+			this.y = y;
+			calendar.add(this, x, y + 1);
+			setStyle("-fx-border-color: transparent " + (x < 6 ? "-stuff-dark " : "transparent ")
+					+ (y < 5 ? "-stuff-dark" : "transparent") + " transparent");
+			grid[x][y] = this;
+		}
+
+		/**
+		 * <p>
+		 * Returns the position of this {@link CalendarCellBox} in the grid. The
+		 * position <code>0,0</code> would be the first column in the
+		 * {@link CalendarWindow#calendar} grid pane, but the <em>second</em> row in
+		 * that grid pane. This is due to the first row being taken up by the names of
+		 * the weekdays. Because of that, <b>this value is <em>not</em> the same as the
+		 * position of this node inside the {@link CalendarWindow#calendar} grid
+		 * pane.</b>
+		 * </p>
+		 * 
+		 * @return The x position of this {@link CalendarCellBox}.
+		 */
+		public int getX() {
+			return x;
+		}
+
+		public int getGridX() {
+			return getX();
+		}
+
+		public int getGridY() {
+			return getY();
+		}
+
+		public GridPane getGridPane() {
+			return calendar;
+		}
+
+		public int getY() {
+			return y;
+		}
+
 	}
 
 	private @FXML void initialize() {
