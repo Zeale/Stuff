@@ -9,10 +9,6 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-import org.alixia.javalibrary.javafx.bindings.BindingTools;
-import org.alixia.javalibrary.util.Box;
-import org.alixia.javalibrary.util.Pair;
-
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
@@ -20,30 +16,17 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.effect.Effect;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextBoundsType;
 import javafx.stage.Stage;
-import zeale.applicationss.notesss.utilities.Utilities;
 import zeale.apps.stuff.Stuff;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
@@ -61,13 +44,9 @@ public class CalendarWindow extends Window {
 	 */
 	private final Object CALENDAR_CELL_BOX_CALCELL_MATCH_KEY = new Object();
 	private static final File CALENDAR_EVENT_STORAGE_LOCATION = new File(Stuff.APPLICATION_DATA, "Calendar/Events");
-	public static final double DEFAULT_CELL_BACKGROUND_OPACITY = 0.2;
 	// TODO Check bounds for years.
 
-	private static final Color DEFAULT_DISABLED_CELL_BACKGROUND_COLOR = new Color(0.6, 0, 0,
-			DEFAULT_CELL_BACKGROUND_OPACITY);
-	private static final Background DEFAULT_DISABLED_CELL_BACKGROUND = Utilities
-			.getBackgroundFromColor(DEFAULT_DISABLED_CELL_BACKGROUND_COLOR);
+	
 
 	/**
 	 * A {@link StackPane} that handles
@@ -77,68 +56,12 @@ public class CalendarWindow extends Window {
 	 */
 	public final class CalendarCellBox extends StackPane {
 
-		private final IntegerProperty number = new SimpleIntegerProperty(), eventCount = new SimpleIntegerProperty();
-
-		private final Text numberText = new Text(), eventText = new Text();
-
 		private final int x, y;
 
 		private final ObjectProperty<CalendarCell> calendarCell = new SimpleObjectProperty<>();
 
+		
 		{
-			getChildren().add(numberText);
-			setAlignment(numberText, Pos.TOP_RIGHT);
-			numberText.setStyle("-fx-font-size: 1.4em;-fx-color: egg;");
-
-			numberText.textProperty().bind(BindingTools.mask(number, Number::toString));
-
-			eventText.setBoundsType(TextBoundsType.VISUAL);
-			eventText.setFont(Font.font("monospace"));
-			Rectangle box = new Rectangle();
-			box.strokeProperty().bind(numberText.fillProperty());
-			box.setFill(Color.TRANSPARENT);
-			eventText.fillProperty().bind(box.strokeProperty());
-
-			StackPane eventBox = new StackPane(box, eventText);
-			StackPane.setAlignment(eventBox, Pos.BOTTOM_LEFT);
-			eventCount.addListener(new ChangeListener<Number>() {
-
-				@Override
-				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-					if (newValue.intValue() == 0)
-						getChildren().remove(eventBox);
-					else {
-						String str = newValue.toString();
-						eventText.setText(str);
-						Pair<Double, Double> size = getSize(str, eventText.getFont());
-
-						box.setWidth(Math.max(size.first + 8, size.second + 6));
-						box.setHeight(size.second + 6);
-
-						eventBox.setMaxSize(box.getWidth() + 2, box.getHeight() + 2);
-
-						box.setArcHeight(5);
-						box.setArcWidth(5);
-						if (!getChildren().contains(eventBox))
-							getChildren().add(eventBox);
-					}
-				}
-			});
-
-			StackPane.setMargin(numberText, new Insets(0, 5, 0, 0));// Match inexplicable downward shift.
-
-			Box<Background> bg = new Box<>();
-			setOnMouseEntered(event -> {
-				numberText.setFill(Color.RED);
-				bg.value = getBackground();
-				setBackgroundColor(Color.ORANGE);
-			});
-			setOnMouseExited(event -> {
-				numberText.setFill(Color.GOLD);
-				setBackground(bg.value);
-			});
-			disabledProperty().addListener((observable, oldValue,
-					newValue) -> setBackground(newValue ? DEFAULT_DISABLED_CELL_BACKGROUND : null));
 
 			calendarCell.addListener((ChangeListener<CalendarCell>) (observable, oldValue, newValue) -> {
 				if (oldValue != null) {
@@ -168,17 +91,12 @@ public class CalendarWindow extends Window {
 			return calendarCell;
 		}
 
-		public final IntegerProperty eventCountProperty() {
-			return this.eventCount;
-		}
+		
 
 		public CalendarCell getCalendarCell() {
 			return calendarCell.get();
 		}
-
-		public final int getEventCount() {
-			return this.eventCountProperty().get();
-		}
+		
 
 		public GridPane getGridPane() {
 			return calendar;
@@ -192,9 +110,7 @@ public class CalendarWindow extends Window {
 			return getY();
 		}
 
-		public final int getNumber() {
-			return this.numberProperty().get();
-		}
+		
 
 		/**
 		 * <p>
@@ -216,44 +132,13 @@ public class CalendarWindow extends Window {
 		public int getY() {
 			return y;
 		}
-
-		public final IntegerProperty numberProperty() {
-			return this.number;
-		}
-
-		/**
-		 * Sets the background color of this {@link CalendarCell} to be the given color
-		 * <em>with an opacity of <code>0.2</code></em>.
-		 * 
-		 * @param color The {@link Color} to set this {@link CalendarCell}'s background
-		 *              to.
-		 */
-		public void setBackgroundColor(Color color) {
-			setBackgroundColorStrict(color.deriveColor(0, 1, 1, 0.2));
-		}
-
-		/**
-		 * Sets the background of this {@link CalendarCell} to be a {@link Background}
-		 * derived from the given {@link Paint}.
-		 * 
-		 * @param color The {@link Paint} to make the background of this
-		 *              {@link CalendarCell}.
-		 */
-		public void setBackgroundColorStrict(Paint color) {
-			setBackground(Utilities.getBackgroundFromColor(color));
-		}
+		
 
 		public void setCalendarCell(CalendarCell calendarCell) {
 			this.calendarCell.set(calendarCell);
 		}
 
-		public final void setEventCount(final int eventCount) {
-			this.eventCountProperty().set(eventCount);
-		}
-
-		public final void setNumber(final int number) {
-			this.numberProperty().set(number);
-		}
+		
 
 	}
 
@@ -511,13 +396,6 @@ public class CalendarWindow extends Window {
 		return year;
 	}
 
-	private static Pair<Double, Double> getSize(String txt, Font font) {
-		Text text = new Text(txt);
-		text.setFont(font);
-		new Scene(new Group(text));
-		text.applyCss();
-		Bounds bounds = text.getLayoutBounds();
-		return new Pair<>(bounds.getWidth(), bounds.getHeight());
-	}
+	
 
 }
