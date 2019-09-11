@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.alixia.javalibrary.javafx.bindings.ListListener;
 
@@ -30,6 +29,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
@@ -345,8 +345,25 @@ public class CalendarWindow extends Window {
 		return month;
 	}
 
-	protected void layoutPreviousMonth(int x, int y, int day) {
+	private CalendarCell createCalendarCell() {
 		CalendarCell cell = new CalendarCell();
+		cell.setOnMouseClicked(event -> {
+			if (event.getButton() == MouseButton.PRIMARY) {
+				DayViewWindow dayWindow = new DayViewWindow(this,
+						LocalDate.of(year.get(), month.get(), cell.getNumber()), true);
+				try {
+					Stuff.displayWindow(dayWindow);
+				} catch (WindowLoadFailureException e) {
+					Logging.err("Failed to load up and show the GUI for that day...");
+					Logging.err(e);
+				}
+			}
+		});
+		return cell;
+	}
+
+	protected void layoutPreviousMonth(int x, int y, int day) {
+		CalendarCell cell = createCalendarCell();
 		cell.setNumber(day);
 		grid[x][y].setCalendarCell(cell);
 		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
@@ -356,7 +373,7 @@ public class CalendarWindow extends Window {
 	}
 
 	protected void layoutCurrentMonth(int x, int y, int day) {
-		CalendarCell cell = new CalendarCell();
+		CalendarCell cell = createCalendarCell();
 		grid[x][y].setCalendarCell(cell);
 		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
 		if (calendarEvents.containsKey(cellDate))
@@ -365,7 +382,7 @@ public class CalendarWindow extends Window {
 	}
 
 	protected void layoutNextMonth(int x, int y, int day) {
-		CalendarCell cell = new CalendarCell();
+		CalendarCell cell = createCalendarCell();
 		cell.setNumber(day);
 		grid[x][y].setCalendarCell(cell);
 		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
