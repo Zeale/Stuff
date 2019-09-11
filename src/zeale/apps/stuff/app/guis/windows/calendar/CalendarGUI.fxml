@@ -2,147 +2,174 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane xmlns="http://javafx.com/javafx/10.0.1"
-	xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
 	<top>
 		<MenuBar BorderPane.alignment="CENTER">
 			<menus>
 				<Menu mnemonicParsing="false" text="Commands">
 					<items>
-						<MenuItem mnemonicParsing="false" onAction="#goHome"
-							text="Go Home" />
+						<MenuItem mnemonicParsing="false" onAction="#goHome" text="Go Home" />
 					</items>
 				</Menu>
 			</menus>
 		</MenuBar>
 	</top>
 	<center>
-		<VBox alignment="TOP_CENTER" prefHeight="700.0"
-			prefWidth="1100.0" spacing="20.0" BorderPane.alignment="CENTER">
-			<children>
-				<StackPane>
-					<children>
-						<Button mnemonicParsing="false" onAction="#leftX"
-							styleClass="pop-button" text="&lt;&lt;"
-							StackPane.alignment="CENTER_LEFT" />
-						<Button mnemonicParsing="false" onAction="#rightX" styleClass="pop-button"
-							text="&gt;&gt;" StackPane.alignment="CENTER_RIGHT" />
-					</children>
-				</StackPane>
-				<StackPane>
-					<children>
-						<Text fx:id="currMonth" style="-fx-font-size: 2.4em;" />
-						<Button mnemonicParsing="false" onAction="#left"
-							styleClass="pop-button" text="&lt;--"
-							StackPane.alignment="CENTER_LEFT" />
-						<Button mnemonicParsing="false" onAction="#right"
-							styleClass="pop-button" text="--&gt;"
-							StackPane.alignment="CENTER_RIGHT" />
-					</children>
-				</StackPane>
-				<GridPane fx:id="calendar"
-					style="-fx-border-color: -stuff-dark;" VBox.vgrow="ALWAYS">
-					<columnConstraints>
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-						<ColumnConstraints halignment="CENTER"
-							hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-					</columnConstraints>
-					<rowConstraints>
-						<RowConstraints minHeight="10.0"
-							percentHeight="8.0" valignment="CENTER" vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							valignment="CENTER" vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							valignment="CENTER" vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							valignment="CENTER" vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							valignment="CENTER" vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							valignment="CENTER" vgrow="SOMETIMES" />
-						<RowConstraints minHeight="10.0" prefHeight="30.0"
-							valignment="CENTER" vgrow="SOMETIMES" />
-					</rowConstraints>
-					<children>
-						<StackPane
-							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';">
-							<children>
-								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sunday" />
-							</children>
-						</StackPane>
-						<StackPane
-							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
-							GridPane.columnIndex="1">
-							<children>
-								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Monday" />
-							</children>
-						</StackPane>
-						<StackPane
-							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
-							GridPane.columnIndex="2">
-							<children>
-								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tuesday" />
-							</children>
-						</StackPane>
-						<StackPane
-							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
-							GridPane.columnIndex="3">
-							<children>
-								<Text strokeType="OUTSIDE" strokeWidth="0.0"
-									text="Wednesday" />
-							</children>
-						</StackPane>
-						<StackPane
-							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
-							GridPane.columnIndex="4">
-							<children>
-								<Text strokeType="OUTSIDE" strokeWidth="0.0"
-									text="Thursday" />
-							</children>
-						</StackPane>
-						<StackPane
-							style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
-							GridPane.columnIndex="5">
-							<children>
-								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Friday" />
-							</children>
-						</StackPane>
-						<StackPane
-							style="-fx-border-color: transparent transparent -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';"
-							GridPane.columnIndex="6">
-							<children>
-								<Text strokeType="OUTSIDE" strokeWidth="0.0"
-									text="Saturday" />
-							</children>
-						</StackPane>
-					</children>
-				</GridPane>
-			</children>
-			<padding>
-				<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-			</padding>
-		</VBox>
+      <TabPane BorderPane.alignment="CENTER">
+         <tabs>
+            <Tab closable="false" text="Calendar">
+               <content>
+            		<VBox alignment="TOP_CENTER" prefHeight="700.0" prefWidth="1100.0" spacing="20.0">
+            			<children>
+            				<StackPane>
+            					<children>
+            						<Button mnemonicParsing="false" onAction="#leftX" styleClass="pop-button" text="&lt;&lt;" StackPane.alignment="CENTER_LEFT" />
+            						<Button mnemonicParsing="false" onAction="#rightX" styleClass="pop-button" text="&gt;&gt;" StackPane.alignment="CENTER_RIGHT" />
+            					</children>
+            				</StackPane>
+            				<StackPane>
+            					<children>
+            						<Text fx:id="currMonth" style="-fx-font-size: 2.4em;" />
+            						<Button mnemonicParsing="false" onAction="#left" styleClass="pop-button" text="&lt;--" StackPane.alignment="CENTER_LEFT" />
+            						<Button mnemonicParsing="false" onAction="#right" styleClass="pop-button" text="--&gt;" StackPane.alignment="CENTER_RIGHT" />
+            					</children>
+            				</StackPane>
+            				<GridPane fx:id="calendar" style="-fx-border-color: -stuff-dark;" VBox.vgrow="ALWAYS">
+            					<columnConstraints>
+            						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            						<ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            					</columnConstraints>
+            					<rowConstraints>
+            						<RowConstraints minHeight="10.0" percentHeight="8.0" valignment="CENTER" vgrow="SOMETIMES" />
+            						<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            						<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            						<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            						<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            						<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            						<RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+            					</rowConstraints>
+            					<children>
+            						<StackPane style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';">
+            							<children>
+            								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sunday" />
+            							</children>
+            						</StackPane>
+            						<StackPane style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';" GridPane.columnIndex="1">
+            							<children>
+            								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Monday" />
+            							</children>
+            						</StackPane>
+            						<StackPane style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';" GridPane.columnIndex="2">
+            							<children>
+            								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Tuesday" />
+            							</children>
+            						</StackPane>
+            						<StackPane style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';" GridPane.columnIndex="3">
+            							<children>
+            								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Wednesday" />
+            							</children>
+            						</StackPane>
+            						<StackPane style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';" GridPane.columnIndex="4">
+            							<children>
+            								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Thursday" />
+            							</children>
+            						</StackPane>
+            						<StackPane style="-fx-border-color: transparent -stuff-dark -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';" GridPane.columnIndex="5">
+            							<children>
+            								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Friday" />
+            							</children>
+            						</StackPane>
+            						<StackPane style="-fx-border-color: transparent transparent -stuff-dark transparent;-fx-font-size: 2.1em;-fx-font-family: 'Times New Roman';" GridPane.columnIndex="6">
+            							<children>
+            								<Text strokeType="OUTSIDE" strokeWidth="0.0" text="Saturday" />
+            							</children>
+            						</StackPane>
+            					</children>
+            				</GridPane>
+            			</children>
+            			<padding>
+            				<Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            			</padding>
+            		</VBox>
+               </content>
+            </Tab>
+            <Tab closable="false" text="Events">
+              <content>
+                  <TabPane>
+                     <tabs>
+                        <Tab closable="false" text="View">
+                           <content>
+                              <SplitPane dividerPositions="0.65">
+                                 <items>
+                                    <TableView prefHeight="200.0" prefWidth="200.0">
+                                       <columns>
+                                          <TableColumn minWidth="100.0" prefWidth="120.0" text="Name" />
+                                          <TableColumn minWidth="150.0" prefWidth="200.0" text="Description" />
+                                          <TableColumn prefWidth="140.0" text="Date" />
+                                       </columns>
+                                    </TableView>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" />
+                                 </items>
+                              </SplitPane>
+                           </content>
+                        </Tab>
+                        <Tab closable="false" text="Create">
+                           <content>
+                              <VBox alignment="TOP_CENTER" spacing="20.0">
+                                 <children>
+                                    <TextField promptText="Name" />
+                                    <HBox alignment="CENTER" spacing="20.0">
+                                       <children>
+                                          <DatePicker promptText="Date" />
+                                          <TextField promptText="Start Time" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" spacing="20.0">
+                                       <children>
+                                          <CheckBox mnemonicParsing="false" selected="true" text="Include Duration" />
+                                          <TextField promptText="End Time" />
+                                       </children>
+                                    </HBox>
+                                    <TextArea promptText="Event Description" wrapText="true" VBox.vgrow="SOMETIMES" />
+                                    <Button mnemonicParsing="false" styleClass="pop-button" text="Create" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="50.0" left="50.0" right="50.0" top="100.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+              </content>
+            </Tab>
+         </tabs>
+      </TabPane>
 	</center>
 </BorderPane>
