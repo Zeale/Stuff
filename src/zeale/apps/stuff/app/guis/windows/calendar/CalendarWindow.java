@@ -7,7 +7,13 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import org.alixia.javalibrary.javafx.bindings.ListListener;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
@@ -17,6 +23,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
@@ -136,6 +143,64 @@ public class CalendarWindow extends Window {
 	private static final ObservableList<CalendarEvent> DIRTY_CALENDAR_EVENTS = FXCollections.observableArrayList();
 
 	static {
+
+		final Map<CalendarEvent, InvalidationListener> listeners = new HashMap<>();
+		final Map<CalendarEvent, ChangeListener<LocalDate>> eventDateListeners = new HashMap<>();
+		ListListener<CalendarEvent> listListener = new ListListener<CalendarEvent>() {
+
+			@Override
+			public void added(List<? extends CalendarEvent> items, int startpos) {
+				for (CalendarEvent ce : items) {
+					InvalidationListener dirtyMarker = observable -> {
+						if (!DIRTY_CALENDAR_EVENTS.contains(ce))
+							DIRTY_CALENDAR_EVENTS.add(ce);
+					};
+					listeners.put(ce, dirtyMarker);
+					ce.dateProperty().addListener(dirtyMarker);
+					ChangeListener<LocalDate> eventDateListener = (ChangeListener<LocalDate>) (observable, oldValue,
+							newValue) -> {
+						calendarEvents.get(oldValue).remove(ce);
+
+						ObservableList<CalendarEvent> eventsForTheNewDate;
+						if (calendarEvents.containsKey(newValue))
+							eventsForTheNewDate = calendarEvents.get(newValue);
+						else
+							calendarEvents.put(newValue, eventsForTheNewDate = FXCollections.observableArrayList());
+						eventsForTheNewDate.add(ce);
+					};
+					eventDateListeners.put(ce, eventDateListener);
+					ce.dateProperty().addListener(eventDateListener);
+					ce.descriptionProperty().addListener(dirtyMarker);
+					ce.nameProperty().addListener(dirtyMarker);
+					// ~PROPERTIES
+				}
+			}
+
+			@Override
+			public void removed(List<? extends CalendarEvent> items, int startpos) {
+				for (CalendarEvent ce : items) {
+					InvalidationListener dirtyMarker = listeners.get(ce);
+					ce.dateProperty().removeListener(dirtyMarker);
+					ce.dateProperty().removeListener(eventDateListeners.get(ce));
+					ce.descriptionProperty().removeListener(dirtyMarker);
+					ce.nameProperty().removeListener(dirtyMarker);
+				}
+			}
+		};
+		calendarEvents.addListener(new MapChangeListener<LocalDate, ObservableList<CalendarEvent>>() {
+
+			@Override
+			public void onChanged(Change<? extends LocalDate, ? extends ObservableList<CalendarEvent>> change) {
+				if (change.wasAdded()) {
+					if (change.getValueAdded() != null) {
+						listListener.added(change.getValueAdded(), -1);
+						change.getValueAdded().addListener(listListener);
+					}
+				} else
+					// TODO Does anything else need to be done here?
+					change.getValueRemoved().removeListener(listListener);
+			}
+		});
 		try {
 			if (!CALENDAR_EVENT_STORAGE_LOCATION.isDirectory())
 				CALENDAR_EVENT_STORAGE_LOCATION.mkdirs();
@@ -147,15 +212,6 @@ public class CalendarWindow extends Window {
 					else
 						try {
 							CalendarEvent ev = CalendarEvent.load(f);
-
-							InvalidationListener dirtyMarker = observable -> {
-								if (!DIRTY_CALENDAR_EVENTS.contains(ev))
-									DIRTY_CALENDAR_EVENTS.add(ev);
-							};
-							ev.dateProperty().addListener(dirtyMarker);
-							ev.descriptionProperty().addListener(dirtyMarker);
-							ev.nameProperty().addListener(dirtyMarker);
-							// ~PROPERTIES
 
 							ObservableList<CalendarEvent> evs;
 							if (calendarEvents.containsKey(ev.getDate()))
