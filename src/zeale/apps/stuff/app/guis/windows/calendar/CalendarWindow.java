@@ -197,7 +197,7 @@ public class CalendarWindow extends Window {
 
 	private final ObjectProperty<Month> month = new SimpleObjectProperty<>();
 
-	private ObjectProperty<CalendarView<CalendarWindow>> calendarView = new SimpleObjectProperty<>(
+	private ObjectProperty<CalendarStyle<CalendarWindow>> calendarView = new SimpleObjectProperty<>(
 			new DefaultCalendarView());
 
 	{

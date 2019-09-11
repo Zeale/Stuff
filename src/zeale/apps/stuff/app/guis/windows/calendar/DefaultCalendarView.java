@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import javafx.scene.paint.Color;
 
-class DefaultCalendarView extends CalendarView<CalendarWindow> {
+class DefaultCalendarView extends CalendarStyle<CalendarWindow> {
 
 	private static final Color CURRENT_DAY_COLOR = Color.BLUE, FIRST_DAY_OF_MONTH_COLOR = Color.PURPLE;
 
