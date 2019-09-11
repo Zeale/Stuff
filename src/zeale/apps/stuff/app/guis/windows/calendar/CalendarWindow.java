@@ -46,8 +46,6 @@ public class CalendarWindow extends Window {
 	private static final File CALENDAR_EVENT_STORAGE_LOCATION = new File(Stuff.APPLICATION_DATA, "Calendar/Events");
 	// TODO Check bounds for years.
 
-	
-
 	/**
 	 * A {@link StackPane} that handles
 	 * 
@@ -60,7 +58,6 @@ public class CalendarWindow extends Window {
 
 		private final ObjectProperty<CalendarCell> calendarCell = new SimpleObjectProperty<>();
 
-		
 		{
 
 			calendarCell.addListener((ChangeListener<CalendarCell>) (observable, oldValue, newValue) -> {
@@ -82,8 +79,8 @@ public class CalendarWindow extends Window {
 			this.x = x;
 			this.y = y;
 			calendar.add(this, x, y + 1);
-			setStyle("-fx-border-width: 0 " + (x < 6 ? "1 " : "0 ")
-					+ (y < 5 ? "1" : "0") + " 0;-fx-border-color: -stuff-dark;");
+			setStyle("-fx-border-width: 0 " + (x < 6 ? "1 " : "0 ") + (y < 5 ? "1" : "0")
+					+ " 0;-fx-border-color: -stuff-dark;");
 			grid[x][y] = this;
 		}
 
@@ -91,12 +88,9 @@ public class CalendarWindow extends Window {
 			return calendarCell;
 		}
 
-		
-
 		public CalendarCell getCalendarCell() {
 			return calendarCell.get();
 		}
-		
 
 		public GridPane getGridPane() {
 			return calendar;
@@ -109,8 +103,6 @@ public class CalendarWindow extends Window {
 		public int getGridY() {
 			return getY();
 		}
-
-		
 
 		/**
 		 * <p>
@@ -132,13 +124,10 @@ public class CalendarWindow extends Window {
 		public int getY() {
 			return y;
 		}
-		
 
 		public void setCalendarCell(CalendarCell calendarCell) {
 			this.calendarCell.set(calendarCell);
 		}
-
-		
 
 	}
 
@@ -268,9 +257,8 @@ public class CalendarWindow extends Window {
 
 	private @FXML void initialize() {
 		for (int i = 0; i < grid.length; i++)
-			for (int j = 0; j < grid[i].length; j++) {
+			for (int j = 0; j < grid[i].length; j++)
 				new CalendarCellBox(i, j);
-			}
 
 		LocalDate now = LocalDate.now();
 		month.set(now.getMonth());
@@ -301,52 +289,60 @@ public class CalendarWindow extends Window {
 		return month;
 	}
 
+	protected void layoutPreviousMonth(int x, int y, int day) {
+		CalendarCell cell = new CalendarCell();
+		cell.setNumber(day);
+		grid[x][y].setCalendarCell(cell);
+		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
+		if (calendarEvents.containsKey(cellDate))
+			cell.setEventCount(calendarEvents.get(cellDate).size());
+		cell.setDisable(true);
+	}
+
+	protected void layoutCurrentMonth(int x, int y, int day) {
+		CalendarCell cell = new CalendarCell();
+		grid[x][y].setCalendarCell(cell);
+		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
+		if (calendarEvents.containsKey(cellDate))
+			cell.setEventCount(calendarEvents.get(cellDate).size());
+		cell.setNumber(day);
+	}
+
+	protected void layoutNextMonth(int x, int y, int day) {
+		CalendarCell cell = new CalendarCell();
+		cell.setNumber(day);
+		grid[x][y].setCalendarCell(cell);
+		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
+		if (calendarEvents.containsKey(cellDate))
+			cell.setEventCount(calendarEvents.get(cellDate).size());
+		cell.setDisable(true);
+	}
+
 	/**
 	 * Recalculates and restyles the entire calendar.
 	 */
-	private void recalcGrid() {
+	protected void recalcGrid() {
 		LocalDate firstDay = LocalDate.of(year.get(), month.get(), 1);
 		DayOfWeek dayOfWeek = firstDay.getDayOfWeek();
 		int day = 1, i = WeekUtils.weekdayToIndex(dayOfWeek), j = 0;
 		int maxDaysThisMonth = firstDay.lengthOfMonth();
 
-		if (i != 0) {
-			int maxDaysOfLastMonth = firstDay.minusMonths(1).lengthOfMonth();
-			for (int g = i - 1; g >= 0; g--) {
-				CalendarCell cell = new CalendarCell();
-				cell.setNumber(maxDaysOfLastMonth--);
-				grid[g][j].setCalendarCell(cell);
-				LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
-				if (calendarEvents.containsKey(cellDate))
-					cell.setEventCount(calendarEvents.get(cellDate).size());
-				cell.setDisable(true);
-			}
-		}
+		if (i != 0)
+			for (int maxDaysOfLastMonth = firstDay.minusMonths(1).lengthOfMonth(), g = i - 1; g >= 0; g--)
+				layoutPreviousMonth(g, j, maxDaysOfLastMonth--);
 
 		ROWITR: for (; j < 6; j++, i = 0)
-			for (; i < 7; i++, day++) {
+			for (; i < 7; i++, day++)
 				if (day > maxDaysThisMonth)
 					break ROWITR;
-				CalendarCell cell = new CalendarCell();
-				grid[i][j].setCalendarCell(cell);
-				LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
-				if (calendarEvents.containsKey(cellDate))
-					cell.setEventCount(calendarEvents.get(cellDate).size());
-				cell.setNumber(day);
-			}
-		if (day > maxDaysThisMonth && j < 6) {
-			day = 1;
-			for (; j < 6; j++, i = 0)
-				for (; i < 7; i++, day++) {
-					CalendarCell cell = new CalendarCell();
-					cell.setNumber(day);
-					grid[i][j].setCalendarCell(cell);
-					LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
-					if (calendarEvents.containsKey(cellDate))
-						cell.setEventCount(calendarEvents.get(cellDate).size());
-					cell.setDisable(true);
-				}
-		}
+				else
+					layoutCurrentMonth(i, j, day);
+
+		if (day > maxDaysThisMonth && j < 6)
+			for (day = 1; j < 6; j++, i = 0)
+				for (; i < 7; i++, day++)
+					layoutNextMonth(i, j, day);
+
 		if (calendarView.get() != null)
 			calendarView.get().style(this);
 
@@ -395,7 +391,5 @@ public class CalendarWindow extends Window {
 	public IntegerProperty yearProperty() {
 		return year;
 	}
-
-	
 
 }
