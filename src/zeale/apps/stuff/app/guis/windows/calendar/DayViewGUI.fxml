@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -7,6 +9,9 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <top>
@@ -21,11 +26,43 @@
       </MenuBar>
    </top>
    <center>
-      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane prefHeight="800.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
          <tabs>
             <Tab closable="false" text="Overview">
               <content>
-                  <BorderPane />
+                  <ScrollPane fitToHeight="true" fitToWidth="true">
+                     <content>
+                        <VBox alignment="TOP_CENTER" spacing="50.0">
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 1.3em;" text="Good">
+                                       <VBox.margin>
+                                          <Insets left="25.0" top="25.0" />
+                                       </VBox.margin>
+                                    </Text>
+                                 </children>
+                              </VBox>
+                              <Text fx:id="dayText" blendMode="SRC_ATOP" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 3em;" text="Day" />
+                              <VBox>
+                                 <children>
+                                    <HBox>
+                                       <children>
+                                          <PieChart title="Task Breakdown" HBox.hgrow="SOMETIMES" />
+                                          <PieChart legendSide="TOP" title="Event Breakdown" titleSide="BOTTOM" HBox.hgrow="SOMETIMES" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox>
+                                 <children>
+                                    <PieChart legendSide="RIGHT" title="Day Progress" titleSide="LEFT" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </ScrollPane>
               </content>
             </Tab>
             <Tab closable="false" text="Events">
