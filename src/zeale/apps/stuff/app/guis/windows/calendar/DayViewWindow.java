@@ -44,7 +44,7 @@ class DayViewWindow extends Window {
 		try {
 			Parent parent = loader.load();
 			parent.getStylesheets().addAll(properties.popButtonStylesheet.get(), properties.themeStylesheet.get());
-			stage.setScene(new Scene(loader.load()));
+			stage.setScene(new Scene(parent));
 		} catch (IOException e) {
 			throw new WindowLoadFailureException("Failed to show the Daily View window.", e);
 		}
