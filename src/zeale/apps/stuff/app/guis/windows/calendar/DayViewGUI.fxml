@@ -22,6 +22,11 @@
               <MenuItem mnemonicParsing="false" text="Back" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Operations">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#refreshEvents" text="Refresh Events" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>
@@ -48,15 +53,15 @@
                                  <children>
                                     <HBox>
                                        <children>
-                                          <PieChart title="Task Breakdown" HBox.hgrow="SOMETIMES" />
-                                          <PieChart legendSide="TOP" title="Event Breakdown" titleSide="BOTTOM" HBox.hgrow="SOMETIMES" />
+                                          <PieChart fx:id="taskBreakdown" title="Task Breakdown" HBox.hgrow="SOMETIMES" />
+                                          <PieChart fx:id="eventBreakdown" legendSide="TOP" title="Event Breakdown" titleSide="BOTTOM" HBox.hgrow="SOMETIMES" />
                                        </children>
                                     </HBox>
                                  </children>
                               </VBox>
                               <VBox>
                                  <children>
-                                    <PieChart legendSide="RIGHT" title="Day Progress" titleSide="LEFT" />
+                                    <PieChart fx:id="dayProgress" legendSide="RIGHT" title="Day Progress" titleSide="LEFT" />
                                  </children>
                               </VBox>
                            </children>

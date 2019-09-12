@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.MapChangeListener;
@@ -15,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Menu;
 import javafx.stage.Stage;
 import zeale.apps.stuff.Stuff;
@@ -76,6 +78,16 @@ class DayViewWindow extends Window {
 	private @FXML void initialize() {
 		if (!showBackButton)
 			commandsMenu.setVisible(false);
+		Data finEvents = new Data("Finished",
+				finishedEvents.get() / ((double) finishedEvents.get() + unfinishedEvents.get())),
+				unfEvents = new Data("Unfinished",
+						unfinishedEvents.get() / ((double) unfinishedEvents.get() + finishedEvents.get()));
+
+		eventBreakdown.getData().setAll(finEvents, unfEvents);
+
+		NumberBinding totalEvents = finishedEvents.add(unfinishedEvents);
+		finEvents.pieValueProperty().bind(finishedEvents.divide(totalEvents));
+		unfEvents.pieValueProperty().bind(unfinishedEvents.divide(totalEvents));
 
 	}
 
