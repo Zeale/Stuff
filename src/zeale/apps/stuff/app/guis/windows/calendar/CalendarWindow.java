@@ -159,7 +159,7 @@ public class CalendarWindow extends Window {
 	 * {@link ObservableList} should be put and then populated immediately after.
 	 * </p>
 	 */
-	private final static ObservableMap<LocalDate, ObservableList<CalendarEvent>> calendarEvents = FXCollections
+	private final static ObservableMap<LocalDate, ObservableList<CalendarEvent>> CALENDAR_EVENTS = FXCollections
 			.observableHashMap();
 	private static final ObservableList<CalendarEvent> DIRTY_CALENDAR_EVENTS = FXCollections.observableArrayList();
 
@@ -184,13 +184,13 @@ public class CalendarWindow extends Window {
 
 							ChangeListener<LocalDate> eventDateListener = (ChangeListener<LocalDate>) (observable,
 									oldValue, newValue) -> {
-								calendarEvents.get(oldValue).remove(ev);
+								CALENDAR_EVENTS.get(oldValue).remove(ev);
 
 								ObservableList<CalendarEvent> eventsForTheNewDate;
-								if (calendarEvents.containsKey(newValue))
-									eventsForTheNewDate = calendarEvents.get(newValue);
+								if (CALENDAR_EVENTS.containsKey(newValue))
+									eventsForTheNewDate = CALENDAR_EVENTS.get(newValue);
 								else
-									calendarEvents.put(newValue,
+									CALENDAR_EVENTS.put(newValue,
 											eventsForTheNewDate = FXCollections.observableArrayList());
 								eventsForTheNewDate.add(ev);
 							};
@@ -203,10 +203,10 @@ public class CalendarWindow extends Window {
 							// ~PROPERTIES
 
 							ObservableList<CalendarEvent> evs;
-							if (calendarEvents.containsKey(ev.getDate()))
-								evs = calendarEvents.get(ev.getDate());
+							if (CALENDAR_EVENTS.containsKey(ev.getDate()))
+								evs = CALENDAR_EVENTS.get(ev.getDate());
 							else
-								calendarEvents.put(ev.getDate(), evs = FXCollections.observableArrayList());
+								CALENDAR_EVENTS.put(ev.getDate(), evs = FXCollections.observableArrayList());
 							evs.add(ev);
 						} catch (Exception e) {
 							Logging.err("An error occurred while trying to load a Calendar Event.");
@@ -339,7 +339,7 @@ public class CalendarWindow extends Window {
 		cell.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				DayViewWindow dayWindow = new DayViewWindow(this,
-						LocalDate.of(year.get(), month.get(), cell.getNumber()), true);
+						LocalDate.of(year.get(), month.get(), cell.getNumber()), true, CALENDAR_EVENTS);
 				try {
 					Stuff.displayWindow(dayWindow);
 				} catch (WindowLoadFailureException e) {
@@ -356,8 +356,8 @@ public class CalendarWindow extends Window {
 		cell.setNumber(day);
 		grid[x][y].setCalendarCell(cell);
 		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
-		if (calendarEvents.containsKey(cellDate))
-			cell.setEventCount(calendarEvents.get(cellDate).size());
+		if (CALENDAR_EVENTS.containsKey(cellDate))
+			cell.setEventCount(CALENDAR_EVENTS.get(cellDate).size());
 		cell.setDisable(true);
 	}
 
@@ -365,8 +365,8 @@ public class CalendarWindow extends Window {
 		CalendarCell cell = createCalendarCell();
 		grid[x][y].setCalendarCell(cell);
 		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
-		if (calendarEvents.containsKey(cellDate))
-			cell.setEventCount(calendarEvents.get(cellDate).size());
+		if (CALENDAR_EVENTS.containsKey(cellDate))
+			cell.setEventCount(CALENDAR_EVENTS.get(cellDate).size());
 		cell.setNumber(day);
 	}
 
@@ -375,8 +375,8 @@ public class CalendarWindow extends Window {
 		cell.setNumber(day);
 		grid[x][y].setCalendarCell(cell);
 		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
-		if (calendarEvents.containsKey(cellDate))
-			cell.setEventCount(calendarEvents.get(cellDate).size());
+		if (CALENDAR_EVENTS.containsKey(cellDate))
+			cell.setEventCount(CALENDAR_EVENTS.get(cellDate).size());
 		cell.setDisable(true);
 	}
 
