@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import javafx.beans.InvalidationListener;
-import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -78,16 +78,19 @@ class DayViewWindow extends Window {
 	private @FXML void initialize() {
 		if (!showBackButton)
 			commandsMenu.setVisible(false);
-		Data finEvents = new Data("Finished",
-				finishedEvents.get() / ((double) finishedEvents.get() + unfinishedEvents.get())),
-				unfEvents = new Data("Unfinished",
-						unfinishedEvents.get() / ((double) unfinishedEvents.get() + finishedEvents.get()));
+
+		Data finEvents = new Data("Finished", 0), unfEvents = new Data("Unfinished", 0);
+
+		ChangeListener<Number> listener = (observable, oldValue, newValue) -> {
+			finEvents.setPieValue(finishedEvents.get() == 0 && unfinishedEvents.get() == 0 ? 0
+					: finishedEvents.get() / ((double) finishedEvents.get() + unfinishedEvents.get()));
+			unfEvents.setPieValue(finishedEvents.get() == 0 && unfinishedEvents.get() == 0 ? 0
+					: unfinishedEvents.get() / ((double) unfinishedEvents.get() + finishedEvents.get()));
+		};
+		finishedEvents.addListener(listener);
+		unfinishedEvents.addListener(listener);
 
 		eventBreakdown.getData().setAll(finEvents, unfEvents);
-
-		NumberBinding totalEvents = finishedEvents.add(unfinishedEvents);
-		finEvents.pieValueProperty().bind(finishedEvents.divide(totalEvents));
-		unfEvents.pieValueProperty().bind(unfinishedEvents.divide(totalEvents));
 
 	}
 
