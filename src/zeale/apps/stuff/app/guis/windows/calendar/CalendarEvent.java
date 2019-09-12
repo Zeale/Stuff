@@ -42,12 +42,12 @@ public class CalendarEvent extends Datapiece {
 
 		@Override
 		public LocalTime to(String value) {
-			return LocalTime.parse(value);
+			return value.equals("null") ? null : LocalTime.parse(value);
 		}
 
 		@Override
 		public String from(LocalTime value) {
-			return value.format(DateTimeFormatter.ISO_LOCAL_TIME);
+			return value == null ? "null" : value.format(DateTimeFormatter.ISO_LOCAL_TIME);
 		}
 	};
 	private final ObjectProperty<LocalTime> time = oprop("time", timeStringGateway),
