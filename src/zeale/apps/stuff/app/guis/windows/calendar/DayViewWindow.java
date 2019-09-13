@@ -39,11 +39,13 @@ class DayViewWindow extends Window {
 	private @FXML void refreshEvents() {
 		int fin = 0, un = 0;
 		LocalTime now = LocalTime.now();
-		for (CalendarEvent ce : events.get(date))
-			if ((ce.getEndTime() == null ? ce.getTime() : ce.getEndTime()).isBefore(now))
-				fin++;
-			else
-				un++;
+		ObservableList<CalendarEvent> evs = events.get(date);
+		if (evs != null)
+			for (CalendarEvent ce : evs)
+				if ((ce.getEndTime() == null ? ce.getTime() : ce.getEndTime()).isBefore(now))
+					fin++;
+				else
+					un++;
 		finishedEvents.set(fin);
 		unfinishedEvents.set(un);
 	}
@@ -91,7 +93,7 @@ class DayViewWindow extends Window {
 		unfinishedEvents.addListener(listener);
 
 		eventBreakdown.getData().setAll(finEvents, unfEvents);
-
+		refreshEvents();
 	}
 
 	@Override
