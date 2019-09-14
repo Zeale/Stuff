@@ -8,13 +8,11 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
@@ -97,25 +95,6 @@ class DayViewWindow extends Window {
 
 		Data finEvents = new Data("Finished", 1), unfEvents = new Data("Unfinished", 0);
 
-		class ColorListener implements ChangeListener<Node> {
-
-			private final String color;
-
-			public ColorListener(String color) {
-				this.color = color;
-			}
-
-			@Override
-			public void changed(ObservableValue<? extends Node> observable, Node oldValue, Node newValue) {
-				if (oldValue != null)
-					oldValue.setStyle("");
-				if (newValue != null)
-					newValue.setStyle("-fx-pie-color: " + color + ";-fx-border-color: derive(-fx-pie-color, -60%);");
-			}
-		}
-		finEvents.nodeProperty().addListener(new ColorListener("red"));
-		unfEvents.nodeProperty().addListener(new ColorListener("gold"));
-
 		ChangeListener<Number> listener = (observable, oldValue, newValue) -> {
 			finEvents.setPieValue(finishedEvents.get() == 0 && unfinishedEvents.get() == 0 ? 1
 					: finishedEvents.get() / ((double) finishedEvents.get() + unfinishedEvents.get()));
@@ -126,14 +105,14 @@ class DayViewWindow extends Window {
 		unfinishedEvents.addListener(listener);
 
 		eventBreakdown.getData().setAll(finEvents, unfEvents);
+		finEvents.getNode().setStyle("-fx-border-color: derive(-fx-pie-color, -60%);");
+		unfEvents.getNode().setStyle("-fx-border-color: derive(-fx-pie-color, -60%);");
 		refreshEvents();
 
 		//
 
 		Data finTasks = new Data("Finished", 1), unfTasks = new Data("Unfinished", 0);
 
-		finTasks.nodeProperty().addListener(new ColorListener("red"));
-		unfTasks.nodeProperty().addListener(new ColorListener("gold"));
 		listener = (observable, oldValue, newValue) -> {
 			finTasks.setPieValue(finishedTasks.get() == 0 && unfinishedTasks.get() == 0 ? 1
 					: finishedTasks.get() / ((double) finishedTasks.get() + unfinishedTasks.get()));
@@ -144,6 +123,8 @@ class DayViewWindow extends Window {
 		unfinishedTasks.addListener(listener);
 
 		taskBreakdown.getData().setAll(finTasks, unfTasks);
+		finTasks.getNode().setStyle("-fx-border-color: derive(-fx-pie-color, -60%);");
+		unfTasks.getNode().setStyle("-fx-border-color: derive(-fx-pie-color, -60%);");
 		refreshTasks();
 	}
 

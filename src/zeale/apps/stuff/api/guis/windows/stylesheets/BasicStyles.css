@@ -297,7 +297,7 @@ Text {
 
 /* Color Pickers */
 .color-picker .color-picker-label {
-	-fx-text-fill: gold;
+	-fx-text-fill: -stuff-text-fill;
 }
 
 .color-picker .color-picker-label .picker-color .picker-color-rect, .color-picker .color-picker-label .picker-color {
@@ -328,6 +328,31 @@ Text {
 }
 
 /* Pie Charts */
-.chart .chart-title .text {
+.chart .chart-title .text, .chart-pie-label {
 	-fx-fill: -stuff-text-fill;
+}
+.chart-pie-label-line {
+	-fx-fill: -stuff-text-fill;
+	-fx-stroke: -stuff-text-fill;
+}
+
+.chart-legend {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-radius: 0;
+	-fx-fill: -stuff-text-fill;
+	-fx-stroke: -stuff-text-fill;
+}
+.chart-legend-item {
+	-fx-text-fill: -stuff-text-fill;
+}
+.chart-legend-item-symbol {
+	-fx-background-radius: 0;
+}
+
+.default-color0.chart-pie {
+	-fx-pie-color: -stuff-text-fill;
+}
+.default-color1.chart-pie { 
+	-fx-pie-color: -stuff-hover-fill;
 }
