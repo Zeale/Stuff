@@ -2,7 +2,9 @@ package zeale.apps.stuff.app.guis.windows.calendar;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.IntegerProperty;
@@ -61,7 +63,7 @@ class DayViewWindow extends Window {
 		int fin = 0, un = 0;
 		LocalDate today = date;
 		for (Task task : TaskSchedulerWindow.getTasks()) {
-			if (LocalDate.from(task.getDueDate()).equals(today))
+			if (LocalDateTime.ofInstant(task.getDueDate(), ZoneId.systemDefault()).toLocalDate().equals(today))
 				if (task.isCompleted())
 					fin++;
 				else
@@ -120,7 +122,7 @@ class DayViewWindow extends Window {
 		listener = (observable, oldValue, newValue) -> {
 			finTasks.setPieValue(finishedTasks.get() == 0 && unfinishedTasks.get() == 0 ? 1
 					: finishedTasks.get() / ((double) finishedTasks.get() + unfinishedTasks.get()));
-			finTasks.setPieValue(finishedTasks.get() == 0 && unfinishedTasks.get() == 0 ? 0
+			unfTasks.setPieValue(finishedTasks.get() == 0 && unfinishedTasks.get() == 0 ? 0
 					: unfinishedTasks.get() / ((double) unfinishedTasks.get() + finishedTasks.get()));
 		};
 		finishedTasks.addListener(listener);
