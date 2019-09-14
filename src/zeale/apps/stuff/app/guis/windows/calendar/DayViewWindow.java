@@ -39,21 +39,27 @@ class DayViewWindow extends Window {
 
 	private @FXML void refreshEvents() {
 		int fin = 0, un = 0;
+
 		LocalTime now = LocalTime.now();
 		ObservableList<CalendarEvent> evs = events.get(date);
 		if (evs != null)
-			for (CalendarEvent ce : evs)
-				if ((ce.getEndTime() == null ? ce.getTime() : ce.getEndTime()).isBefore(now))
-					fin++;
-				else
-					un++;
+			if (date.isBefore(LocalDate.now()))
+				fin = evs.size();
+			else if (date.isAfter(LocalDate.now()))
+				un = evs.size();
+			else
+				for (CalendarEvent ce : evs)
+					if ((ce.getEndTime() == null ? ce.getTime() : ce.getEndTime()).isBefore(now))
+						fin++;
+					else
+						un++;
 		finishedEvents.set(fin);
 		unfinishedEvents.set(un);
 	}
 
 	private @FXML void refreshTasks() {
 		int fin = 0, un = 0;
-		LocalDate today = LocalDate.now();
+		LocalDate today = date;
 		for (Task task : TaskSchedulerWindow.getTasks()) {
 			if (LocalDate.from(task.getDueDate()).equals(today))
 				if (task.isCompleted())
