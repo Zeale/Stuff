@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -171,6 +172,10 @@ public class CalendarWindow extends Window {
 	static {
 
 		try {
+			CalendarEvent event = new CalendarEvent(Utils.findFeasibleFile(CALENDAR_EVENT_STORAGE_LOCATION, ".cev"));
+			event.setDate(LocalDate.now());
+			event.setTime(LocalTime.now().plusMinutes(5));
+			event.flush();
 			if (!CALENDAR_EVENT_STORAGE_LOCATION.isDirectory())
 				CALENDAR_EVENT_STORAGE_LOCATION.mkdirs();
 			else

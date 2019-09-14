@@ -35,9 +35,9 @@
          <tabs>
             <Tab closable="false" text="Overview">
               <content>
-                  <ScrollPane fitToHeight="true" fitToWidth="true">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER">
                      <content>
-                        <VBox alignment="TOP_CENTER" spacing="50.0">
+                        <VBox alignment="TOP_CENTER" spacing="20.0">
                            <children>
                               <VBox>
                                  <children>
@@ -49,21 +49,13 @@
                                  </children>
                               </VBox>
                               <Text fx:id="dayText" blendMode="SRC_ATOP" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-size: 3em;" text="Day" />
-                              <VBox>
+                              <HBox>
                                  <children>
-                                    <HBox>
-                                       <children>
-                                          <PieChart fx:id="taskBreakdown" title="Task Breakdown" HBox.hgrow="SOMETIMES" />
-                                          <PieChart fx:id="eventBreakdown" legendSide="TOP" title="Event Breakdown" titleSide="BOTTOM" HBox.hgrow="SOMETIMES" />
-                                       </children>
-                                    </HBox>
+                                    <PieChart fx:id="taskBreakdown" title="Task Breakdown" HBox.hgrow="SOMETIMES" />
+                                    <PieChart fx:id="eventBreakdown" legendSide="TOP" title="Event Breakdown" titleSide="BOTTOM" HBox.hgrow="SOMETIMES" />
                                  </children>
-                              </VBox>
-                              <VBox>
-                                 <children>
-                                    <PieChart fx:id="dayProgress" legendSide="RIGHT" title="Day Progress" titleSide="LEFT" />
-                                 </children>
-                              </VBox>
+                              </HBox>
+                              <PieChart fx:id="dayProgress" legendSide="RIGHT" title="Day Progress" titleSide="LEFT" />
                            </children>
                         </VBox>
                      </content>

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -266,6 +267,10 @@ public class TaskSchedulerWindow extends Window {
 			return list;
 		}
 	};
+	
+	public static Collection<Task> getTasks(){
+		return Collections.unmodifiableCollection(TASK_LIST.get());
+	}
 
 	private static final Border SELECTED_ROW_DEFAULT_BORDER = Utilities.getBorderFromColor(Color.GOLD, 1),
 			SELECTED_ROW_HOVER_BORDER = Utilities.getBorderFromColor(Color.RED, 1);

@@ -15,7 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import zeale.apps.stuff.api.files.data.Datapiece;
 
-class Task extends Datapiece {
+public class Task extends Datapiece {
 	public static Task load(File file, Function<? super String, ? extends Label> labelObtainer)
 			throws FileNotFoundException {
 		Task task = new Task(file, labelObtainer);
