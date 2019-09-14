@@ -172,10 +172,6 @@ public class CalendarWindow extends Window {
 	static {
 
 		try {
-			CalendarEvent event = new CalendarEvent(Utils.findFeasibleFile(CALENDAR_EVENT_STORAGE_LOCATION, ".cev"));
-			event.setDate(LocalDate.now());
-			event.setTime(LocalTime.now().plusMinutes(5));
-			event.flush();
 			if (!CALENDAR_EVENT_STORAGE_LOCATION.isDirectory())
 				CALENDAR_EVENT_STORAGE_LOCATION.mkdirs();
 			else
@@ -343,8 +339,8 @@ public class CalendarWindow extends Window {
 		CalendarCell cell = new CalendarCell();
 		cell.setOnMouseClicked(event -> {
 			if (event.getButton() == MouseButton.PRIMARY) {
-				DayViewWindow dayWindow = new DayViewWindow(this,
-						LocalDate.of(year.get(), month.get(), cell.getNumber()), true, CALENDAR_EVENTS);
+				DayViewWindow dayWindow = new DayViewWindow(LocalDate.of(year.get(), month.get(), cell.getNumber()),
+						true, CALENDAR_EVENTS);
 				try {
 					Stuff.displayWindow(dayWindow);
 				} catch (WindowLoadFailureException e) {

@@ -29,7 +29,6 @@ class DayViewWindow extends Window {
 
 	private final LocalDate date;
 	private final ObservableMap<LocalDate, ObservableList<CalendarEvent>> events;
-	private final CalendarWindow window;
 	private final boolean showBackButton;
 	private @FXML Menu commandsMenu;
 
@@ -81,9 +80,8 @@ class DayViewWindow extends Window {
 
 	}
 
-	public DayViewWindow(CalendarWindow window, LocalDate date, boolean showBackButton,
+	public DayViewWindow(LocalDate date, boolean showBackButton,
 			ObservableMap<LocalDate, ObservableList<CalendarEvent>> events) {
-		this.window = window;
 		this.date = date;
 		(this.events = events).addListener(mapListener);
 		this.showBackButton = showBackButton;
@@ -142,9 +140,9 @@ class DayViewWindow extends Window {
 
 	}
 
-	private @FXML void back() {
+	private @FXML void goBack() {
 		try {
-			Stuff.displayWindow(window);
+			Stuff.displayWindow(new CalendarWindow());
 		} catch (WindowLoadFailureException e) {
 			e.printStackTrace();
 		}

@@ -19,12 +19,13 @@
         <menus>
           <Menu fx:id="commandsMenu" mnemonicParsing="false" text="Commands">
             <items>
-              <MenuItem mnemonicParsing="false" text="Back" />
+              <MenuItem mnemonicParsing="false" onAction="#goBack" text="Back" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Operations">
               <items>
                 <MenuItem mnemonicParsing="false" onAction="#refreshEvents" text="Refresh Events" />
+                  <MenuItem mnemonicParsing="false" onAction="#refreshTasks" text="Refresh Tasks" />
               </items>
             </Menu>
         </menus>
