@@ -31,6 +31,8 @@ class CalendarCell extends StackPane {
 	private static final Background DEFAULT_DISABLED_CELL_BACKGROUND = Utilities
 			.getBackgroundFromColor(DEFAULT_DISABLED_CELL_BACKGROUND_COLOR);
 
+	private final static Color DEFAULT_BUBBLE_COLOR = Color.GOLD, DEFAULT_BUBBLE_HOVER_COLOR = Color.RED;
+
 	private final IntegerProperty number = new SimpleIntegerProperty(), eventCount = new SimpleIntegerProperty(),
 			taskCount = new SimpleIntegerProperty();
 
@@ -44,19 +46,31 @@ class CalendarCell extends StackPane {
 		class NumberBubble extends StackPane {
 			private final Text text = new Text();
 			private final Rectangle box = new Rectangle();
+			private final Paint color, hoverColor;
 			{
 
 				text.setBoundsType(TextBoundsType.VISUAL);
 				text.setFont(font);
 
-				box.strokeProperty().bind(numberText.fillProperty());
+				CalendarCell.this.hoverProperty().addListener(new ChangeListener<Boolean>() {
+
+					@Override
+					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+							Boolean newValue) {
+						box.setStroke(newValue ? hoverColor : color);
+					}
+				});
+
 				box.setFill(Color.TRANSPARENT);
 				text.fillProperty().bind(box.strokeProperty());
 				getChildren().setAll(box, text);
 
 			}
 
-			public NumberBubble(Pos alignment, ObservableValue<? extends Number> observable) {
+			public NumberBubble(Pos alignment, ObservableValue<? extends Number> observable, Paint color,
+					Paint hoverColor) {
+				box.setStroke(this.color = color);
+				this.hoverColor = hoverColor;
 				setAlignment(this, alignment);
 				observable.addListener((ChangeListener<Number>) (obs, oldValue, newValue) -> {
 					if (newValue.intValue() == 0)
@@ -78,10 +92,14 @@ class CalendarCell extends StackPane {
 					}
 				});
 			}
+
+			public NumberBubble(Pos alignment, ObservableValue<? extends Number> observable) {
+				this(alignment, observable, DEFAULT_BUBBLE_COLOR, DEFAULT_BUBBLE_HOVER_COLOR);
+			}
 		}
 
 		new NumberBubble(Pos.BOTTOM_LEFT, eventCount);
-		new NumberBubble(Pos.BOTTOM_RIGHT, taskCount);
+		new NumberBubble(Pos.BOTTOM_RIGHT, taskCount, Color.DEEPSKYBLUE, Color.DARKKHAKI);
 
 		StackPane.setMargin(numberText, new Insets(0, 5, 0, 0));// Match inexplicable downward shift.
 
@@ -157,15 +175,13 @@ class CalendarCell extends StackPane {
 	public final IntegerProperty taskCountProperty() {
 		return this.taskCount;
 	}
-	
 
 	public final int getTaskCount() {
 		return this.taskCountProperty().get();
 	}
-	
 
 	public final void setTaskCount(final int taskCount) {
 		this.taskCountProperty().set(taskCount);
 	}
-	
+
 }
