@@ -31,48 +31,57 @@ class CalendarCell extends StackPane {
 	private static final Background DEFAULT_DISABLED_CELL_BACKGROUND = Utilities
 			.getBackgroundFromColor(DEFAULT_DISABLED_CELL_BACKGROUND_COLOR);
 
-	private final IntegerProperty number = new SimpleIntegerProperty(), eventCount = new SimpleIntegerProperty();
+	private final IntegerProperty number = new SimpleIntegerProperty(), eventCount = new SimpleIntegerProperty(),
+			taskCount = new SimpleIntegerProperty();
 
-	private final Text numberText = new Text(), eventText = new Text();
+	private final Text numberText = new Text();
 	{
 		getChildren().add(numberText);
 		setAlignment(numberText, Pos.TOP_RIGHT);
 		numberText.setStyle("-fx-font-size: 1.4em;-fx-color: egg;");
-
 		numberText.textProperty().bind(BindingTools.mask(number, Number::toString));
+		Font font = Font.font("monospace");
+		class NumberBubble extends StackPane {
+			private final Text text = new Text();
+			private final Rectangle box = new Rectangle();
+			{
 
-		eventText.setBoundsType(TextBoundsType.VISUAL);
-		eventText.setFont(Font.font("monospace"));
-		Rectangle box = new Rectangle();
-		box.strokeProperty().bind(numberText.fillProperty());
-		box.setFill(Color.TRANSPARENT);
-		eventText.fillProperty().bind(box.strokeProperty());
+				text.setBoundsType(TextBoundsType.VISUAL);
+				text.setFont(font);
 
-		StackPane eventBox = new StackPane(box, eventText);
-		StackPane.setAlignment(eventBox, Pos.BOTTOM_LEFT);
-		eventCount.addListener(new ChangeListener<Number>() {
+				box.strokeProperty().bind(numberText.fillProperty());
+				box.setFill(Color.TRANSPARENT);
+				text.fillProperty().bind(box.strokeProperty());
+				getChildrenUnmodifiable().setAll(box, text);
 
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				if (newValue.intValue() == 0)
-					getChildren().remove(eventBox);
-				else {
-					String str = newValue.toString();
-					eventText.setText(str);
-					Pair<Double, Double> size = getSize(str, eventText.getFont());
-
-					box.setWidth(Math.max(size.first + 8, size.second + 6));
-					box.setHeight(size.second + 6);
-
-					eventBox.setMaxSize(box.getWidth() + 2, box.getHeight() + 2);
-
-					box.setArcHeight(5);
-					box.setArcWidth(5);
-					if (!getChildren().contains(eventBox))
-						getChildren().add(eventBox);
-				}
 			}
-		});
+
+			public NumberBubble(Pos alignment, ObservableValue<? extends Number> observable) {
+				setAlignment(this, alignment);
+				observable.addListener((ChangeListener<Number>) (obs, oldValue, newValue) -> {
+					if (newValue.intValue() == 0)
+						CalendarCell.this.getChildren().remove(this);
+					else {
+						String str = newValue.toString();
+						text.setText(str);
+						Pair<Double, Double> size = getSize(str, text.getFont());
+
+						box.setWidth(Math.max(size.first + 8, size.second + 6));
+						box.setHeight(size.second + 6);
+
+						setMaxSize(box.getWidth() + 2, box.getHeight() + 2);
+
+						box.setArcHeight(5);
+						box.setArcWidth(5);
+						if (!CalendarCell.this.getChildren().contains(this))
+							CalendarCell.this.getChildren().add(this);
+					}
+				});
+			}
+		}
+
+		new NumberBubble(Pos.BOTTOM_LEFT, eventCount);
+		new NumberBubble(Pos.BOTTOM_RIGHT, taskCount);
 
 		StackPane.setMargin(numberText, new Insets(0, 5, 0, 0));// Match inexplicable downward shift.
 
