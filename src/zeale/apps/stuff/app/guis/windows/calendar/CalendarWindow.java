@@ -411,10 +411,12 @@ public class CalendarWindow extends Window {
 					temporaryMap.put(result.first, result.second);
 				}
 		for (Task t : TaskSchedulerWindow.getTasks()) {
-			LocalDate date = LocalDateTime.ofInstant(t.getDueDate(), ZoneId.systemDefault()).toLocalDate();
-			if (temporaryMap.containsKey(date)) {
-				CalendarCell cell = temporaryMap.get(date);
-				cell.setTaskCount(cell.getTaskCount() + 1);
+			if (!t.isCompleted()) {
+				LocalDate date = LocalDateTime.ofInstant(t.getDueDate(), ZoneId.systemDefault()).toLocalDate();
+				if (temporaryMap.containsKey(date)) {
+					CalendarCell cell = temporaryMap.get(date);
+					cell.setTaskCount(cell.getTaskCount() + 1);
+				}
 			}
 		}
 
