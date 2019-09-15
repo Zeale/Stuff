@@ -5,10 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.ZoneId;
 import java.time.format.TextStyle;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import org.alixia.javalibrary.util.Pair;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
@@ -34,6 +39,8 @@ import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.logging.Logging;
 import zeale.apps.stuff.api.utilities.Utils;
+import zeale.apps.stuff.app.guis.windows.taskscheduler.Task;
+import zeale.apps.stuff.app.guis.windows.taskscheduler.TaskSchedulerWindow;
 
 public class CalendarWindow extends Window {
 
@@ -351,7 +358,7 @@ public class CalendarWindow extends Window {
 		return cell;
 	}
 
-	protected void layoutPreviousMonth(int x, int y, int day) {
+	private void layoutPreviousMonth(int x, int y, int day) {
 		CalendarCell cell = createCalendarCell();
 		cell.setNumber(day);
 		grid[x][y].setCalendarCell(cell);
@@ -361,16 +368,17 @@ public class CalendarWindow extends Window {
 		cell.setDisable(true);
 	}
 
-	protected void layoutCurrentMonth(int x, int y, int day) {
+	private Pair<LocalDate, CalendarCell> layoutCurrentMonth(int x, int y, int day) {
 		CalendarCell cell = createCalendarCell();
 		grid[x][y].setCalendarCell(cell);
 		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
 		if (CALENDAR_EVENTS.containsKey(cellDate))
 			cell.setEventCount(CALENDAR_EVENTS.get(cellDate).size());
 		cell.setNumber(day);
+		return new Pair<>(cellDate, cell);
 	}
 
-	protected void layoutNextMonth(int x, int y, int day) {
+	private void layoutNextMonth(int x, int y, int day) {
 		CalendarCell cell = createCalendarCell();
 		cell.setNumber(day);
 		grid[x][y].setCalendarCell(cell);
@@ -393,12 +401,22 @@ public class CalendarWindow extends Window {
 			for (int maxDaysOfLastMonth = firstDay.minusMonths(1).lengthOfMonth(), g = i - 1; g >= 0; g--)
 				layoutPreviousMonth(g, j, maxDaysOfLastMonth--);
 
+		Map<LocalDate, CalendarCell> temporaryMap = new HashMap<>();
 		ROWITR: for (; j < 6; j++, i = 0)
 			for (; i < 7; i++, day++)
 				if (day > maxDaysThisMonth)
 					break ROWITR;
-				else
-					layoutCurrentMonth(i, j, day);
+				else {
+					Pair<LocalDate, CalendarCell> result = layoutCurrentMonth(i, j, day);
+					temporaryMap.put(result.first, result.second);
+				}
+		for (Task t : TaskSchedulerWindow.getTasks()) {
+			LocalDate date = LocalDateTime.ofInstant(t.getDueDate(), ZoneId.systemDefault()).toLocalDate();
+			if (temporaryMap.containsKey(date)) {
+				CalendarCell cell = temporaryMap.get(date);
+				cell.setTaskCount(cell.getTaskCount() + 1);
+			}
+		}
 
 		if (day > maxDaysThisMonth && j < 6)
 			for (day = 1; j < 6; j++, i = 0)

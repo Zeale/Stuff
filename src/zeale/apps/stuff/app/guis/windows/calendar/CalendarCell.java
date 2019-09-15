@@ -52,7 +52,7 @@ class CalendarCell extends StackPane {
 				box.strokeProperty().bind(numberText.fillProperty());
 				box.setFill(Color.TRANSPARENT);
 				text.fillProperty().bind(box.strokeProperty());
-				getChildrenUnmodifiable().setAll(box, text);
+				getChildren().setAll(box, text);
 
 			}
 
@@ -153,4 +153,19 @@ class CalendarCell extends StackPane {
 		Bounds bounds = text.getLayoutBounds();
 		return new Pair<>(bounds.getWidth(), bounds.getHeight());
 	}
+
+	public final IntegerProperty taskCountProperty() {
+		return this.taskCount;
+	}
+	
+
+	public final int getTaskCount() {
+		return this.taskCountProperty().get();
+	}
+	
+
+	public final void setTaskCount(final int taskCount) {
+		this.taskCountProperty().set(taskCount);
+	}
+	
 }
