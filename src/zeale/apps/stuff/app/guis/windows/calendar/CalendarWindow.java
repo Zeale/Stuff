@@ -362,7 +362,7 @@ public class CalendarWindow extends Window {
 		CalendarCell cell = createCalendarCell();
 		cell.setNumber(day);
 		grid[x][y].setCalendarCell(cell);
-		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
+		LocalDate cellDate = LocalDate.of(year.get(), month.get().minus(1), day);
 		if (CALENDAR_EVENTS.containsKey(cellDate))
 			cell.setEventCount(CALENDAR_EVENTS.get(cellDate).size());
 		cell.setDisable(true);
@@ -382,7 +382,7 @@ public class CalendarWindow extends Window {
 		CalendarCell cell = createCalendarCell();
 		cell.setNumber(day);
 		grid[x][y].setCalendarCell(cell);
-		LocalDate cellDate = LocalDate.of(year.get(), month.get(), day);
+		LocalDate cellDate = LocalDate.of(year.get(), month.get().plus(1), day);
 		if (CALENDAR_EVENTS.containsKey(cellDate))
 			cell.setEventCount(CALENDAR_EVENTS.get(cellDate).size());
 		cell.setDisable(true);
