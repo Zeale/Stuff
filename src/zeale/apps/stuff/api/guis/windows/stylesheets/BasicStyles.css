@@ -326,3 +326,8 @@ Text {
 	-fx-background-insets: 0;
 	-fx-background-radius: 0em;
 }
+
+/* Separators */
+.separator .line {
+	-fx-border-color: -stuff-text-fill;
+}
