@@ -83,7 +83,7 @@ public final class CalculatorWindow extends Window {
 		}
 	}
 
-	private @FXML void clearInputField(ActionEvent event) {
+	private @FXML void clearInputField() {
 		inputField.clear();
 	}
 
@@ -100,7 +100,7 @@ public final class CalculatorWindow extends Window {
 					+ source + "   " + source.getClass() + ".)");
 	}
 
-	private @FXML void goHome(ActionEvent event) {
+	private @FXML void goHome() {
 		Stuff.displayHome();
 	}
 

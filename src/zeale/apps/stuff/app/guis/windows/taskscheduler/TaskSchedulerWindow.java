@@ -143,7 +143,7 @@ public class TaskSchedulerWindow extends Window {
 
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "rawtypes" })
 	private static class BooleanCheckBoxCell extends BasicCheckboxCell<Boolean> {
 
 		protected final Function<Task, Property<Boolean>> propertyRetriever;
