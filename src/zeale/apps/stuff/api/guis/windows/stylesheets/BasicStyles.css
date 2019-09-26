@@ -363,3 +363,36 @@ Text {
 .axis .axis-label {
 	-fx-text-fill: -stuff-text-fill;
 }
+
+/* Pie Charts */
+.chart .chart-title .text, .chart-pie-label {
+	-fx-fill: -stuff-text-fill;
+}
+.chart-pie-label-line {
+	-fx-fill: -stuff-text-fill;
+	-fx-stroke: -stuff-text-fill;
+}
+.chart-pie {
+	-fx-border-color: black;
+}
+
+.chart-legend {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-radius: 0;
+	-fx-fill: -stuff-text-fill;
+	-fx-stroke: -stuff-text-fill;
+}
+.chart-legend-item {
+	-fx-text-fill: -stuff-text-fill;
+}
+.chart-legend-item-symbol {
+	-fx-background-radius: 0;
+}
+
+.default-color0.chart-pie {
+	-fx-pie-color: -stuff-text-fill;
+}
+.default-color1.chart-pie { 
+	-fx-pie-color: -stuff-hover-fill;
+}
