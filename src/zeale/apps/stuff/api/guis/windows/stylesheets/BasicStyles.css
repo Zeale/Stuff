@@ -340,3 +340,26 @@ Text {
 .separator .line {
 	-fx-border-color: -stuff-text-fill;
 }
+
+/* Charts */
+.chart .chart-content .chart-plot-background {
+	-fx-background-color: -stuff-dark;
+}
+.chart .chart-content .chart-vertical-grid-lines, .chart .chart-content .chart-horizontal-grid-lines {
+	-fx-stroke: derive(-stuff-light, 30%);
+}
+.chart .chart-content .chart-plot-background {
+	-fx-border-width: 0;
+}
+.chart .chart-content .chart-horizontal-zero-line, .chart .chart-content .chart-vertical-zero-line {
+	-fx-background-color: derive(-stuff-light, -20%);
+}
+.axis .axis-tick-mark {
+	-fx-stroke: -stuff-text-fill;
+}
+.axis .axis-minor-tick-mark {
+	-fx-stroke: derive(-stuff-light, 30%);
+}
+.axis .axis-label {
+	-fx-text-fill: -stuff-text-fill;
+}
