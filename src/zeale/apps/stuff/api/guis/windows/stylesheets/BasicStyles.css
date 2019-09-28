@@ -108,27 +108,27 @@ Text {
 	-fx-border-color: -stuff-dark;
 }
 
-.tab-pane:top .tab-header-area .tab-header-background {
+.tab-pane .tab-header-area .tab-header-background {
 	-fx-background-color: -stuff-dark;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab {
+.tab-pane .tab-header-area .headers-region .tab {
 	-fx-background-color: black;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab .tab-container .focus-indicator {
+.tab-pane .tab-header-area .headers-region .tab .tab-container .focus-indicator {
 	-fx-border-color: transparent;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab .tab-container .tab-label {
+.tab-pane .tab-header-area .headers-region .tab .tab-container .tab-label {
 	-fx-text-fill: -stuff-text-fill;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab:selected .tab-container .tab-label {
+.tab-pane .tab-header-area .headers-region .tab:selected .tab-container .tab-label {
 	-fx-font-weight: bold;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab:hover .tab-container .tab-label {
+.tab-pane .tab-header-area .headers-region .tab:hover .tab-container .tab-label {
 	-fx-text-fill: -stuff-hover-fill;
 }
 
