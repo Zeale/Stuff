@@ -256,19 +256,19 @@ Text {
 .table-view .virtual-flow, .tree-table-view .virtual-flow {
 	-fx-background-color: -stuff-dark;
 }
-.table-view .virtual-flow .table-row-cell:odd, .tree-table-view .virtual-flow .table-row-cell:odd {
+.table-view .virtual-flow .table-row-cell:odd, .tree-table-view .virtual-flow .tree-table-cell:odd {
 	-fx-background-color: -stuff-light;
 }
-.table-view .virtual-flow .table-row-cell:even, .tree-table-view .virtual-flow .table-row-cell:even {
+.table-view .virtual-flow .table-row-cell:even, .tree-table-view .virtual-flow .tree-table-cell:even {
 	-fx-background-color: derive(-stuff-light, 20%);
 }
 
-.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column, .tree-table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column {
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column, .tree-table-view .virtual-flow .clipped-container .sheet .tree-table-cell {
 	-fx-border-width: 0 1 0 0;
 	-fx-border-color: -stuff-dark;
 }
 
-.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column:last-visible, .tree-table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column:last-visible {
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column:last-visible, .tree-table-view .virtual-flow .clipped-container .sheet .tree-table-cell:last-visible {
 	-fx-border-color: transparent;
 }
 
