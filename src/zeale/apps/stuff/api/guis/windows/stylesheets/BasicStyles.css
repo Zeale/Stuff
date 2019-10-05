@@ -282,7 +282,7 @@ Text {
 .check-box .box {
 	-fx-background-color: -stuff-dark;
 }
-.check-box:selected .box .mark {
+.check-box:selected .box .mark, .check-box:indeterminate .box .mark {
 	-fx-background-color: -stuff-text-fill;
 }
 
