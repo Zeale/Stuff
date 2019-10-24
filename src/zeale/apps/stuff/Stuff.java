@@ -167,6 +167,9 @@ public class Stuff extends Application {
 
 		Parameters args = getParameters();
 
+		if (args.getNamed().containsKey(ProgramArguments.DEBUGGING_ENABLED))
+			System.setProperty(ProgramArguments.DEBUGGING_ENABLED,
+					args.getNamed().get(ProgramArguments.DEBUGGING_ENABLED));
 		if (args.getNamed().containsKey(ProgramArguments.INSTALLATION_CLEANUP)) {
 			File file = new File(args.getNamed().get(ProgramArguments.INSTALLATION_CLEANUP));
 			try {
