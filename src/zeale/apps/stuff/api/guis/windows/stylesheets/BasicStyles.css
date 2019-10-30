@@ -108,27 +108,27 @@ Text {
 	-fx-border-color: -stuff-dark;
 }
 
-.tab-pane:top .tab-header-area .tab-header-background {
+.tab-pane .tab-header-area .tab-header-background {
 	-fx-background-color: -stuff-dark;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab {
+.tab-pane .tab-header-area .headers-region .tab {
 	-fx-background-color: black;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab .tab-container .focus-indicator {
+.tab-pane .tab-header-area .headers-region .tab .tab-container .focus-indicator {
 	-fx-border-color: transparent;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab .tab-container .tab-label {
+.tab-pane .tab-header-area .headers-region .tab .tab-container .tab-label {
 	-fx-text-fill: -stuff-text-fill;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab:selected .tab-container .tab-label {
+.tab-pane .tab-header-area .headers-region .tab:selected .tab-container .tab-label {
 	-fx-font-weight: bold;
 }
 
-.tab-pane:top .tab-header-area .headers-region .tab:hover .tab-container .tab-label {
+.tab-pane .tab-header-area .headers-region .tab:hover .tab-container .tab-label {
 	-fx-text-fill: -stuff-hover-fill;
 }
 
@@ -213,53 +213,62 @@ Text {
 	-fx-background-color: -stuff-hover-fill;
 }
 
-/* TableView */
-.table-view {
+/* TableViews and TreeTableViews */
+.table-view, .tree-table-view {
 	-fx-background-color: transparent;
 	-fx-border-color: -stuff-dark;
 	-fx-border-style: solid;
+	-fx-border-width: 0 1 1 1;
 }
 
-.table-view .placeholder {
+.table-view .placeholder, .tree-table-view .placeholder {
 	-fx-background-color: #77000018;
 }
-.table-view .placeholder .label {
+.table-view .placeholder .label, .tree-table-view .placeholder .label {
 	-fx-text-fill: firebrick;
 	-fx-font-size: 1.2em;
 }
 
-.table-view .column-header-background .filler {
-	-fx-background-color: transparent;
-}
-
-.table-view .column-header-background, .table-view .column-header-background .nested-column-header .table-column {
+.table-view .column-header-background .filler, .tree-table-view .column-header-background .filler {
 	-fx-background-color: transparent;
 	-fx-border-color: -stuff-dark;
-	-fx-border-width: 0.0 1.0 0.0 0.0;
+	-fx-border-width: 1 0 0 0;
 }
-.table-view .column-header-background, .table-view .column-header-background .nested-column-header TableColumnHeader /* When using the ".table-column" selector, (instead of "TableColumnHeader"), borders appear "wrong." */ {
+
+.table-view .column-header-background, .table-view .column-header-background .nested-column-header .table-column, 
+.tree-table-view .column-header-background, .tree-table-view .column-header-background .nested-column-header .table-column {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-width: 1.0 1.0 0.0 0.0;
+}
+.table-view .column-header-background, .table-view .column-header-background .nested-column-header TableColumnHeader, /* When using the ".table-column" selector, (instead of "TableColumnHeader"), borders appear "wrong." */
+.tree-table-view .column-header-background, .tree-table-view .column-header-background .nested-column-header TableColumnHeader {
 	-fx-border-width: 0.0 0.0 1.0 0.0;
 }
-.table-view .column-header-background .nested-column-header .table-column .label {
+.table-view .column-header-background .nested-column-header NestedTableColumnHeader .table-column,
+.tree-table-view .column-header-background .nested-column-header NestedTableColumnHeader .table-column {
+	-fx-border-width: 1.0 1.0 0.0 0.0;
+}
+.table-view .column-header-background .nested-column-header .table-column .label, .tree-table-view .column-header-background .nested-column-header .table-column .label {
 	-fx-text-fill: -stuff-text-fill;
 }
 
-.table-view .virtual-flow {
+.table-view .virtual-flow, .tree-table-view .virtual-flow {
 	-fx-background-color: -stuff-dark;
 }
-.table-view .virtual-flow .table-row-cell:odd {
+.table-view .virtual-flow .table-row-cell:odd, .tree-table-view .virtual-flow .tree-table-cell:odd {
 	-fx-background-color: -stuff-light;
 }
-.table-view .virtual-flow .table-row-cell:even {
+.table-view .virtual-flow .table-row-cell:even, .tree-table-view .virtual-flow .tree-table-cell:even {
 	-fx-background-color: derive(-stuff-light, 20%);
 }
 
-.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column {
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column, .tree-table-view .virtual-flow .clipped-container .sheet .tree-table-cell {
 	-fx-border-width: 0 1 0 0;
 	-fx-border-color: -stuff-dark;
 }
 
-.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column:last-visible {
+.table-view .virtual-flow .clipped-container .sheet .table-row-cell .table-column:last-visible, .tree-table-view .virtual-flow .clipped-container .sheet .tree-table-cell:last-visible {
 	-fx-border-color: transparent;
 }
 
@@ -273,7 +282,7 @@ Text {
 .check-box .box {
 	-fx-background-color: -stuff-dark;
 }
-.check-box:selected .box .mark {
+.check-box:selected .box .mark, .check-box:indeterminate .box .mark {
 	-fx-background-color: -stuff-text-fill;
 }
 
@@ -325,4 +334,65 @@ Text {
 	-fx-background-color: -stuff-light;
 	-fx-background-insets: 0;
 	-fx-background-radius: 0em;
+}
+
+/* Separators */
+.separator .line {
+	-fx-border-color: -stuff-text-fill;
+}
+
+/* Charts */
+.chart .chart-content .chart-plot-background {
+	-fx-background-color: -stuff-dark;
+}
+.chart .chart-content .chart-vertical-grid-lines, .chart .chart-content .chart-horizontal-grid-lines {
+	-fx-stroke: derive(-stuff-light, 30%);
+}
+.chart .chart-content .chart-plot-background {
+	-fx-border-width: 0;
+}
+.chart .chart-content .chart-horizontal-zero-line, .chart .chart-content .chart-vertical-zero-line {
+	-fx-background-color: derive(-stuff-light, -20%);
+}
+.axis .axis-tick-mark {
+	-fx-stroke: -stuff-text-fill;
+}
+.axis .axis-minor-tick-mark {
+	-fx-stroke: derive(-stuff-light, 30%);
+}
+.axis .axis-label {
+	-fx-text-fill: -stuff-text-fill;
+}
+
+/* Pie Charts */
+.chart .chart-title .text, .chart-pie-label {
+	-fx-fill: -stuff-text-fill;
+}
+.chart-pie-label-line {
+	-fx-fill: -stuff-text-fill;
+	-fx-stroke: -stuff-text-fill;
+}
+.chart-pie {
+	-fx-border-color: black;
+}
+
+.chart-legend {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-radius: 0;
+	-fx-fill: -stuff-text-fill;
+	-fx-stroke: -stuff-text-fill;
+}
+.chart-legend-item {
+	-fx-text-fill: -stuff-text-fill;
+}
+.chart-legend-item-symbol {
+	-fx-background-radius: 0;
+}
+
+.default-color0.chart-pie {
+	-fx-pie-color: -stuff-text-fill;
+}
+.default-color1.chart-pie { 
+	-fx-pie-color: -stuff-hover-fill;
 }

@@ -7,10 +7,15 @@ import org.alixia.chatroom.api.items.LateLoadItem;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import main.alixia.javalibrary.javafx.tools.FXTools;
 import zeale.apps.stuff.api.appprops.ApplicationProperties;
 import zeale.apps.stuff.api.guis.windows.Window;
 import zeale.apps.stuff.api.guis.windows.Window.WindowLoadFailureException;
@@ -130,6 +135,20 @@ public class Stuff extends Application {
 			if (event.getCode() == KeyCode.F11) {
 				stage.setFullScreen(!stage.isFullScreen());
 				event.consume();
+			} else if (event.getCode() == KeyCode.PRINTSCREEN) {
+				try {
+					WritableImage img = stage.getScene().snapshot(
+							new WritableImage((int) stage.getScene().getWidth(), (int) stage.getScene().getHeight()));
+					ClipboardContent content = new ClipboardContent();
+					content.putImage(img);
+					Clipboard.getSystemClipboard().setContent(content);
+					FXTools.spawnLabelAtMousePos("Screenshot copied to Clipboard!", Color.GREEN, stage);
+				} catch (Exception e) {
+					Logging.err(
+							"Failed to take a screenshot and copy it to the clipboard. The error's stacktrace has been printed.");
+					Logging.err(e);
+					FXTools.spawnLabelAtMousePos("Screenshot failed...", Color.RED, stage);
+				}
 			}
 		});
 		stage.setTitle("Stuff");
@@ -148,6 +167,9 @@ public class Stuff extends Application {
 
 		Parameters args = getParameters();
 
+		if (args.getNamed().containsKey(ProgramArguments.DEBUGGING_ENABLED))
+			System.setProperty(ProgramArguments.DEBUGGING_ENABLED,
+					args.getNamed().get(ProgramArguments.DEBUGGING_ENABLED));
 		if (args.getNamed().containsKey(ProgramArguments.INSTALLATION_CLEANUP)) {
 			File file = new File(args.getNamed().get(ProgramArguments.INSTALLATION_CLEANUP));
 			try {

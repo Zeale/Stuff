@@ -84,27 +84,29 @@ public class HelpBook {
 	public boolean print(StyledPrintable printable, String command, boolean allowAliases, boolean ignoreCase) {
 		if (allowAliases) {
 			if (ignoreCase) {
-				for (CommandHelp ch : helps)
+				for (CommandHelp ch : helps) {
 					if (ch.name.equalsIgnoreCase(command)) {
 						print(printable, ch);
 						return true;
-					} else
-						for (String s : ch.aliases)
-							if (s.equalsIgnoreCase(command)) {
-								print(printable, ch);
-								return true;
-							}
+					}
+					for (String s : ch.aliases)
+						if (s.equalsIgnoreCase(command)) {
+							print(printable, ch);
+							return true;
+						}
+				}
 			} else
-				for (CommandHelp ch : helps)
+				for (CommandHelp ch : helps) {
 					if (ch.name.equals(command)) {
 						print(printable, ch);
 						return true;
-					} else
-						for (String s : ch.aliases)
-							if (s.equals(command)) {
-								print(printable, ch);
-								return true;
-							}
+					}
+					for (String s : ch.aliases)
+						if (s.equals(command)) {
+							print(printable, ch);
+							return true;
+						}
+				}
 		} else if (ignoreCase) {
 			for (CommandHelp ch : helps)
 				if (ch.name.equalsIgnoreCase(command)) {

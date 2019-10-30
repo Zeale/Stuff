@@ -82,7 +82,7 @@ public class EncryptionWindow extends Window {
 		}
 	}
 
-	private EncryptionAlgorithm getAlgorithm(Toggle toggle) {
+	private static EncryptionAlgorithm getAlgorithm(Toggle toggle) {
 		return (EncryptionAlgorithm) toggle.getProperties().get(RADIO_BUTTON_ALGORITHM_MAP_KEY);
 	}
 

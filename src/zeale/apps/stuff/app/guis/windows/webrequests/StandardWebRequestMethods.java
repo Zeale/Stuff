@@ -51,6 +51,9 @@ public enum StandardWebRequestMethods implements WebRequestMethod {
 	},
 	PATCH;
 
+	/**
+	 * @throws WebRequestException In case of an error while executing.
+	 */
 	private static String addExtras(String userAgent, Map<String, String> params) throws WebRequestException {
 		String result = "";
 		if (userAgent != null && !userAgent.isEmpty())

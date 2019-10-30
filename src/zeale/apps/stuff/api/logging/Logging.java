@@ -8,12 +8,17 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import zeale.apps.stuff.Stuff;
+import zeale.apps.stuff.api.installation.ProgramArguments;
 
 public final class Logging {
 	private static final Logger standard = new Logger("STD"), error = new Logger("ERR"), warn = new Logger("WRN"),
 			debug = new Logger("DBG");
 
+	private static boolean debugging;
+
 	static {
+		debugging = System.getProperty(ProgramArguments.DEBUGGING_ENABLED, "").equals("true");
+
 		standard.bracketColor = standard.messageColor = standard.childColor = Color.GREEN;
 		error.bracketColor = error.messageColor = error.childColor = Color.RED;
 		warn.bracketColor = warn.messageColor = warn.childColor = Color.GOLD;
@@ -26,8 +31,20 @@ public final class Logging {
 	}
 
 	public static void dbg(String text) {
-		debug.log(text);
-		Stuff.displayConsole();
+		if (debugging) {
+			debug.log(text);
+			Stuff.displayConsole();
+		}
+	}
+
+	public static void dbg(Throwable err) {
+		if (debugging) {
+			try (PrintWriter writer = Stuff.PROGRAM_CONSOLE.getWriter(Logging.debug.messageColor, FontWeight.NORMAL,
+					FontPosture.REGULAR)) {
+				err.printStackTrace(writer);
+			}
+			Stuff.displayConsole();
+		}
 	}
 
 	public static void err(String text) {

@@ -74,7 +74,7 @@ public class Datapiece {
 		return result;
 	}
 
-	protected final DatapieceMap datamap = new DatapieceMap();
+	private final DatapieceMap datamap = new DatapieceMap();
 	private final Map<String, Supplier<String>> converters = new HashMap<>();
 
 	protected final File data;
@@ -161,8 +161,20 @@ public class Datapiece {
 	 *
 	 * @return The editable {@link Map} of update handlers.
 	 */
-	protected Map<String, Consumer<String>> getUpdateHandlers() {
+	protected final Map<String, Consumer<String>> getUpdateHandlers() {
 		return updateHandlers;
+	}
+
+	/**
+	 * Registers a {@link Consumer} to be called when this {@link Datapiece} and the
+	 * given {@link String} is in the updated map.
+	 * 
+	 * @param text    The text that the update handler will receive the matching
+	 *                value of.
+	 * @param handler The update handler.
+	 */
+	protected final void registerUpdateHandler(String text, Consumer<String> handler) {
+		updateHandlers.put(text, handler);
 	}
 
 	protected <T, LT extends ObservableList<T>> LT lprop(String name, Gateway<String, T> gateway, LT list) {
@@ -224,7 +236,7 @@ public class Datapiece {
 		return prop;
 	}
 
-	private void put(String key, String value) {
+	protected final void put(String key, String value) {
 		datamap.put(key, value);
 		update(key, value);
 	}
@@ -253,7 +265,7 @@ public class Datapiece {
 		update();
 	}
 
-	private void rem(String key) {
+	protected final void rem(String key) {
 		datamap.remove(key);
 		update(key, null);
 	}
@@ -262,7 +274,8 @@ public class Datapiece {
 	 * Updates this {@link Datapiece} from its {@link File}.
 	 *
 	 * @throws FileNotFoundException In case reading from the {@link #getData()
-	 *                               data} object fails.
+	 *                               data} object fails because {@link #getData()}
+	 *                               cannot be opened for reading.
 	 */
 	public void update() throws FileNotFoundException {
 		datamap.update(new FileInputStream(data));

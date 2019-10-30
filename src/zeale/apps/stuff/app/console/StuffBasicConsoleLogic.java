@@ -172,7 +172,7 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 		this.console = console;
 	}
 
-	private void err(String error) {
+	private static void err(String error) {
 		Logging.err(error);
 	}
 

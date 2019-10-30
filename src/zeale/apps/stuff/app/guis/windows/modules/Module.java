@@ -52,6 +52,10 @@ class Module {
 	};
 	private final File file;
 
+	/**
+	 * @throws IOException In case an IO error occurs while attempting to create
+	 *                     this {@link Module}.
+	 */
 	public Module(File file) throws IOException, ModuleLoadException {
 		try (ZipFile jar = new JarFile(this.file = file)) {
 			ZipEntry entry = jar.getEntry(zeale.apps.stuff.api.modules.Module.STUFF_MODULE_INTERNAL_MANIFEST_LOCATION);
