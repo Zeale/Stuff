@@ -97,7 +97,17 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 				long bytes = Runtime.getRuntime().freeMemory();
 				System.gc();
 				long res = Runtime.getRuntime().freeMemory() - bytes;
-				println("Cleanup complete. Freed: " + res + " bytes.");
+
+				print("Cleanup complete. Freed: " + res + " bytes.");
+				if (res >= 1024l * 1024 * 1024 * 1024)
+					print(" (" + res / 1024 / 1024 / 1024 / 1024 + "TB)");
+				else if (res >= 1024 * 1024 * 1024)
+					print(" (" + res / 1024 / 1024 / 1024 + "GB)");
+				else if (res >= 1024 * 1024)
+					print(" (" + res / 1024 / 1024 + "MB)");
+				else if (res >= 1024)
+					print(" (" + res / 1024 + "KB)");
+				println();
 			}
 		};
 
