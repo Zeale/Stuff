@@ -3,6 +3,8 @@ package zeale.apps.stuff.app.console;
 import static javafx.scene.paint.Color.DARKORANGE;
 import static javafx.scene.paint.Color.GOLD;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.alixia.chatroom.api.printables.StyledPrintable;
 import org.alixia.javalibrary.commands.GenericCommandManager;
 import org.alixia.javalibrary.commands.StringCommand;
@@ -130,16 +132,25 @@ public final class StuffBasicConsoleLogic implements ConsoleLogic<StandardConsol
 					err("Illegal number of arguments for command: " + data.cmd());
 				else
 					try {
-						Stuff.displayWindow((Window) Class.forName(data.getArgs()[0]).newInstance());
+						Stuff.displayWindow(
+								(Window) Class.forName(data.getArgs()[0]).getDeclaredConstructor().newInstance());
 						print("The task completed successfully.");
 					} catch (InstantiationException e) {
-						err("Failed to create the new window.");
+						err("Cannot create an instance of that window directly. (Abstract Class)");
 					} catch (IllegalAccessException e) {
-						err("That window cannot be created by this means.");
+						err("That window cannot be opened by this means. (Access Restrictions)");
 					} catch (ClassNotFoundException e) {
-						err("That window couldn't be found.");
+						err("That window couldn't be found. (Class Not Found)");
 					} catch (WindowLoadFailureException e) {
-						err("An error occurred while launching that window.");
+						err("An error occurred while launching that window. (Window Init Raised Error)");
+					} catch (IllegalArgumentException e) {
+						err("Opening that window is not yet supported; (window creation requires extraneous information of which there is no means for conveying). ([No Public No-arg]/Enum)");
+					} catch (InvocationTargetException e) {
+						err("An error was encountered while initializing the window. (Wrapped Exception)");
+					} catch (NoSuchMethodException e) {
+						err("That window can't be initialized by this means. (No Constructor Match)");
+					} catch (SecurityException e) {
+						err("A security manager is present and it prevented accessing/initializing the specified window. (Security Manager)");
 					}
 			}
 		};
