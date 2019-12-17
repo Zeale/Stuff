@@ -184,7 +184,7 @@ public class Stuff extends Application {
 			Class<?> cls = Class.forName(args.getNamed().get(ProgramArguments.LAUNCH_MODULE));
 			try {
 				if (Module.class.isAssignableFrom(cls))
-					((Class<? extends Module>) cls).newInstance().launch();
+					((Class<? extends Module>) cls).getDeclaredConstructor().newInstance().launch();
 				else
 					throw new RuntimeException(
 							"The specified module class is not a subclass of Module, and so, cannot be loaded as a module. (Class: "

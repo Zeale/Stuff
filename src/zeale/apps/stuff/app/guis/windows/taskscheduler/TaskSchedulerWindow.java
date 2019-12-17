@@ -143,29 +143,27 @@ public class TaskSchedulerWindow extends Window {
 
 	}
 
-	@SuppressWarnings({ "rawtypes" })
 	private static class BooleanCheckBoxCell extends BasicCheckboxCell<Boolean> {
 
 		protected final Function<Task, Property<Boolean>> propertyRetriever;
 
 		{
 
-			tableRowProperty().addListener(new ChangeListener<TableRow>() {
+			tableRowProperty().addListener(new ChangeListener<TableRow<Task>>() {
 
-				ChangeListener<Object> taskListener = new ChangeListener<Object>() {
+				ChangeListener<Task> taskListener = new ChangeListener<Task>() {
 					@Override
-					public void changed(ObservableValue<? extends Object> observable1, Object oldValue1,
-							Object newValue1) {
+					public void changed(ObservableValue<? extends Task> observable1, Task oldValue1, Task newValue1) {
 						if (oldValue1 != null)
-							checkBox.selectedProperty().unbindBidirectional(propertyRetriever.apply((Task) oldValue1));
+							checkBox.selectedProperty().unbindBidirectional(propertyRetriever.apply(oldValue1));
 						if (newValue1 != null)
-							checkBox.selectedProperty().bindBidirectional(propertyRetriever.apply((Task) newValue1));
+							checkBox.selectedProperty().bindBidirectional(propertyRetriever.apply(newValue1));
 					}
 				};
 
 				@Override
-				public void changed(ObservableValue<? extends TableRow> observable, TableRow oldValue,
-						TableRow newValue) {
+				public void changed(ObservableValue<? extends TableRow<Task>> observable, TableRow<Task> oldValue,
+						TableRow<Task> newValue) {
 					if (oldValue != null)
 						oldValue.itemProperty().removeListener(taskListener);
 					if (newValue != null) {

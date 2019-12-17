@@ -2,6 +2,7 @@ package zeale.apps.stuff.app.guis.windows.modules;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.JarFile;
@@ -26,6 +27,7 @@ class Module {
 		@Override
 		protected URLClassLoader generate() {
 			return new URLClassLoader(new URL[] { location }) {
+				@SuppressWarnings("deprecation")
 				@Override
 				protected void finalize() throws Throwable {
 					super.finalize();// In case this method is overridden by parent in future Java versions.
@@ -122,8 +124,9 @@ class Module {
 		Class<? extends zeale.apps.stuff.api.modules.Module> clz = (Class<? extends zeale.apps.stuff.api.modules.Module>) cls;
 
 		try {
-			return clz.newInstance();// We should be careful with this.
-		} catch (InstantiationException e) {
+			return clz.getDeclaredConstructor().newInstance();
+		} catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException
+				| InstantiationException e) {
 			throw new ModuleLoadException("Unable to instantiate the module, \"" + name + "\"'s module class.", e);
 		} catch (IllegalAccessException e) {
 			throw new ModuleLoadException("Unable to instantiate the module \"" + name
