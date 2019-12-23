@@ -241,6 +241,20 @@ Text {
 	-fx-border-color: -stuff-dark;
 	-fx-border-width: 1.0 1.0 0.0 0.0;
 }
+.table-view .column-header-background .show-hide-columns-button,
+.tree-table-view .column-header-background .show-hide-columns-button {
+	-fx-background-color: transparent;
+	-fx-border-color: -stuff-dark;
+	-fx-border-width: 0 0 0 1;
+}
+.table-view .column-header-background .show-hide-columns-button .show-hide-column-image,
+.tree-table-view .column-header-background .show-hide-columns-button .show-hide-column-image {
+	-fx-background-color: -stuff-text-fill;
+}
+.table-view .column-header-background .show-hide-columns-button:hover .show-hide-column-image,
+.tree-table-view .column-header-background .show-hide-columns-button:hover .show-hide-column-image {
+	-fx-background-color: -stuff-hover-fill;
+}
 .table-view .column-header-background, .table-view .column-header-background .nested-column-header TableColumnHeader, /* When using the ".table-column" selector, (instead of "TableColumnHeader"), borders appear "wrong." */
 .tree-table-view .column-header-background, .tree-table-view .column-header-background .nested-column-header TableColumnHeader {
 	-fx-border-width: 0.0 0.0 1.0 0.0;
