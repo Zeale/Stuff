@@ -151,13 +151,15 @@ public class Stuff extends Application {
 				}
 			}
 		});
-		stage.setTitle("Stuff");
 	}
+
+	public static LateLoadItem<? extends Module> externalWindow;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		prepareStage(stage = primaryStage);
+		primaryStage.setTitle("Stuff");
 		// When the primary window is closed, we shut down the application. (This
 		// behavior is very likely to change later.
 
@@ -170,6 +172,7 @@ public class Stuff extends Application {
 		if (args.getNamed().containsKey(ProgramArguments.DEBUGGING_ENABLED))
 			System.setProperty(ProgramArguments.DEBUGGING_ENABLED,
 					args.getNamed().get(ProgramArguments.DEBUGGING_ENABLED));
+
 		if (args.getNamed().containsKey(ProgramArguments.INSTALLATION_CLEANUP)) {
 			File file = new File(args.getNamed().get(ProgramArguments.INSTALLATION_CLEANUP));
 			try {
@@ -179,6 +182,11 @@ public class Stuff extends Application {
 				Logging.wrn("Failed to delete temporary files needed for installation.");
 				Logging.wrn("File location: " + file);
 			}
+		}
+
+		if (externalWindow != null) {
+			externalWindow.get().launch();
+			return;
 		}
 		if (args.getNamed().containsKey(ProgramArguments.LAUNCH_MODULE)) {
 			Class<?> cls = Class.forName(args.getNamed().get(ProgramArguments.LAUNCH_MODULE));
