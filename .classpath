@@ -3,14 +3,9 @@
 	<classpathentry excluding="javafx-nodes/" kind="src" path="src"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="src" path="src/javafx-nodes"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk-13">
-		<attributes>
-			<attribute name="module" value="true"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/standard-console"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Evaluator"/>
 	<classpathentry exported="true" kind="lib" path="libs/mslinks/mslinks.jar"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX 13"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -143,13 +143,14 @@ public class TaskSchedulerWindow extends Window {
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	private static class BooleanCheckBoxCell extends BasicCheckboxCell<Boolean> {
 
 		protected final Function<Task, Property<Boolean>> propertyRetriever;
 
 		{
 
-			tableRowProperty().addListener(new ChangeListener<TableRow<Task>>() {
+			tableRowProperty().addListener(new ChangeListener<TableRow>() {
 
 				ChangeListener<Task> taskListener = new ChangeListener<Task>() {
 					@Override
@@ -161,15 +162,16 @@ public class TaskSchedulerWindow extends Window {
 					}
 				};
 
+				@SuppressWarnings("unchecked")
 				@Override
-				public void changed(ObservableValue<? extends TableRow<Task>> observable, TableRow<Task> oldValue,
-						TableRow<Task> newValue) {
+				public void changed(ObservableValue<? extends TableRow> observable, TableRow oldValue,
+						TableRow newValue) {
 					if (oldValue != null)
 						oldValue.itemProperty().removeListener(taskListener);
 					if (newValue != null) {
 						newValue.itemProperty().addListener(taskListener);
-						taskListener.changed(newValue.itemProperty(), oldValue == null ? null : oldValue.getItem(),
-								newValue.getItem());
+						taskListener.changed(newValue.itemProperty(),
+								oldValue == null ? null : (Task) oldValue.getItem(), (Task) newValue.getItem());
 					}
 				}
 			});

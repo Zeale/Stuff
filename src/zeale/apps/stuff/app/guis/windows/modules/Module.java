@@ -27,7 +27,6 @@ class Module {
 		@Override
 		protected URLClassLoader generate() {
 			return new URLClassLoader(new URL[] { location }) {
-				@SuppressWarnings("deprecation")
 				@Override
 				protected void finalize() throws Throwable {
 					super.finalize();// In case this method is overridden by parent in future Java versions.
