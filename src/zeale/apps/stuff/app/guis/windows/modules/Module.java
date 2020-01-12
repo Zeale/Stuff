@@ -86,7 +86,7 @@ class Module {
 				icon = new Image(ico);
 
 		} catch (Exception e) {
-			throw new ModuleLoadException("An unexpected error occurred while loading a module.");
+			throw new ModuleLoadException("An unexpected error occurred while loading a module.", e);
 		}
 
 	}
