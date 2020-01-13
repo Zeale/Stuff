@@ -158,6 +158,12 @@ public class Stuff extends Application {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+			Logging.err(
+					"An uncaught error propagated up the stack! (You might want to report this to the developer.) Thread: "
+							+ t.getName());
+			Logging.err(e);
+		});
 		prepareStage(stage = primaryStage);
 		primaryStage.setTitle("Stuff");
 		// When the primary window is closed, we shut down the application. (This
